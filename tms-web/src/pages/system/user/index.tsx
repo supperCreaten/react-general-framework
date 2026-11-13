@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef } from "react"
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react"
 import {
   Button,
   Card,
@@ -118,21 +118,32 @@ export default function UserPage() {
   const tableRef = useRef<BasicTableRef<UserRow>>(null)
   const [state, dispatch] = useReducer(userPageReducer, initialUserPageState)
   const { deptKeyword, deptTree, selectedDeptId, selectedKeys, userDialog, authDialog, resetPwdDialog } = state
+  /** 首屏部门数据就绪后再挂载 Tree，避免 TDesign Tree 在未 mount 完时异步 setState */
+  const [deptTreeReady, setDeptTreeReady] = useState(false)
 
   const treeKeys = useMemo(() => ({ label: "deptName", value: "deptId", children: "children" }), [])
   const selectedDeptIdRef = useRef<string | null>(null)
   selectedDeptIdRef.current = selectedDeptId ?? null
+  const isDeptSearch = Boolean(deptKeyword.trim())
 
   const loadDeptTree = useCallback(async (keyword = "") => {
     const text = keyword.trim()
-    if (text) {
-      const data = await api.getDepts({ status: "0", deptName: text })
-      dispatch({
-        deptTree: normalizeDeptTree(Array.isArray(data) ? (data as Array<Record<string, unknown>>) : []),
-      })
-      return
+    try {
+      if (text) {
+        const data = await api.getDepts({ status: "0", deptName: text })
+        dispatch({
+          deptTree: normalizeDeptTree(Array.isArray(data) ? (data as Array<Record<string, unknown>>) : []),
+        })
+        return
+      }
+      dispatch({ deptTree: await loadDeptChildren(0) })
+    } finally {
+      setDeptTreeReady(true)
     }
-    dispatch({ deptTree: await loadDeptChildren(0) })
+  }, [])
+
+  const onTreeLoad = useCallback(async (node: { value?: string | number }) => {
+    return loadDeptChildren(node.value as string | number)
   }, [])
 
   useEffect(() => {
@@ -385,20 +396,19 @@ export default function UserPage() {
                 onChange={(value) => dispatch({ deptKeyword: String(value ?? "") })}
               />
               <div className="min-h-0 flex-1 overflow-auto">
-                <Tree
-                  data={deptTree}
-                  keys={treeKeys}
-                  activable
-                  hover
-                  expandAll={Boolean(deptKeyword.trim())}
-                  load={
-                    deptKeyword.trim()
-                      ? undefined
-                      : async (node) => loadDeptChildren(node.value as string | number)
-                  }
-                  actived={selectedDeptId ? [selectedDeptId] : []}
-                  onActive={onTreeActive}
-                />
+                {deptTreeReady ? (
+                  <Tree
+                    key={isDeptSearch ? "dept-search" : "dept-lazy"}
+                    data={deptTree}
+                    keys={treeKeys}
+                    activable
+                    hover
+                    expandAll={isDeptSearch}
+                    load={isDeptSearch ? undefined : onTreeLoad}
+                    actived={selectedDeptId ? [selectedDeptId] : []}
+                    onActive={onTreeActive}
+                  />
+                ) : null}
               </div>
             </Card>
           </Col>

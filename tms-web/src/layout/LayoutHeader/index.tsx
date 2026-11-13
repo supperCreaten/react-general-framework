@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useDeviceType } from "@/hooks/use-device-type"
 import { usePreferences } from "@/hooks/use-preferences"
 import { useLayout } from "@/hooks/use-layout"
@@ -21,8 +21,19 @@ export default function LayoutHeader({ className, children }: LayoutHeaderProps)
   const { isTopNav } = useLayout()
   const dispatch = useAppDispatch()
   const [visible, setVisible] = useState(false)
+  /** Drawer 动画挂载完成后再渲染设置内容，避免 Tooltip/Popup 过早 setState */
+  const [settingReady, setSettingReady] = useState(false)
   const menuText =
     isMenuDark && !isDark ? "rgba(255, 255, 255, 0.85)" : "var(--td-text-color-primary)"
+
+  useEffect(() => {
+    if (!visible) {
+      setSettingReady(false)
+      return
+    }
+    const timer = window.setTimeout(() => setSettingReady(true), 0)
+    return () => window.clearTimeout(timer)
+  }, [visible])
 
   return (
     <header
@@ -63,7 +74,7 @@ export default function LayoutHeader({ className, children }: LayoutHeaderProps)
         destroyOnClose
         onClose={() => setVisible(false)}
       >
-        <PageSetting />
+        {settingReady ? <PageSetting /> : null}
       </Drawer>
     </header>
   )

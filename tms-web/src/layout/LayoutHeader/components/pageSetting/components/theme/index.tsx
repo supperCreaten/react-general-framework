@@ -3,7 +3,8 @@ import type { RootState } from "@/store"
 import { setPreferences } from "@/store/modules/preferences"
 import { cn, useAppDispatch } from "@/utils/methods"
 import { normalizeHex } from "@/utils/theme"
-import { ColorPickerPanel, Divider, Popup, Slider, Tooltip } from "tdesign-react"
+import { DelayedTooltip } from "@/components/DelayedTooltip"
+import { ColorPickerPanel, Divider, Popup, Slider } from "tdesign-react"
 import { startTransition, useMemo, type ReactNode } from "react"
 import { useSelector } from "react-redux"
 import { THEME_MODE_PRESETS, THEME_PRESET_COLORS, THEME_PRESETS } from "./constants"
@@ -45,7 +46,11 @@ function ThemeCardShell({
   )
 
   if (!tip) return card
-  return <Tooltip content={tip}>{card}</Tooltip>
+  return (
+    <DelayedTooltip content={tip} fallback={card}>
+      {card}
+    </DelayedTooltip>
+  )
 }
 
 export default function ThemeSetting() {

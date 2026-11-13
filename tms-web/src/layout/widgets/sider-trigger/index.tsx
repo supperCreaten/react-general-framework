@@ -25,7 +25,7 @@ export function SiderTrigger({ className }: SiderTriggerProps) {
       onClick={() => dispatch(setSidebarCollapsed(!sidebarCollapsed))}
       aria-label={sidebarCollapsed ? "展开侧边栏" : "折叠侧边栏"}
       className={cn(
-        "!w-full !rounded-none border-0 border-t border-solid border-t-[var(--td-component-border)]",
+        "w-full rounded-none border-0 border-t border-solid border-t-(--td-component-border)",
         className,
       )}
     />

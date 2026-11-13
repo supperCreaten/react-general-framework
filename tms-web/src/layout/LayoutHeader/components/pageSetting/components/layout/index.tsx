@@ -8,23 +8,18 @@ import type { NavigationType } from "@/interface"
 import { MIXED_NAVIGATION, SIDE_NAVIGATION, TOP_NAVIGATION, TWO_COLUMN_NAVIGATION } from "./constants"
 import type { RootState } from "@/store"
 import { setNavigationStyle } from "@/store/modules/preferences"
+import { DelayedTooltip } from "@/components/DelayedTooltip"
 import { cn, useAppDispatch } from "@/utils/methods"
 import { Icon } from "@iconify/react"
-import { startTransition, useEffect, useMemo, useState, type ComponentType, type SVGProps } from "react"
+import { startTransition, useMemo, type ComponentType, type SVGProps } from "react"
 import { useSelector } from "react-redux"
-import { Divider, Tooltip } from "tdesign-react"
+import { Divider } from "tdesign-react"
 
 type NavIcon = ComponentType<SVGProps<SVGSVGElement> & { className?: string }>
 
 const NAV_ICON_CLASS = "h-[0.63em] w-[1em] text-6xl"
 
 function TipIcon({ tip }: { tip: string }) {
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
   const trigger = (
     <span
       className="inline-flex cursor-help items-center text-td-text-placeholder hover:text-td-text-secondary"
@@ -34,13 +29,10 @@ function TipIcon({ tip }: { tip: string }) {
     </span>
   )
 
-  /* Drawer/CSSTransition 挂载完成后再挂 Tooltip，避免 Popup 在未 mount 时异步 setState */
-  if (!ready) return trigger
-
   return (
-    <Tooltip content={tip} placement="bottom" destroyOnClose>
+    <DelayedTooltip content={tip} placement="bottom" fallback={trigger}>
       {trigger}
-    </Tooltip>
+    </DelayedTooltip>
   )
 }
 

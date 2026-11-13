@@ -78,7 +78,7 @@ export default function LayoutContainer() {
 
   const layoutBody = (
     <>
-      {sidebarEnableState && !isTwoColumnNav && !isMobile && sideNavItems?.length ? (
+      {sidebarEnableState && !isTwoColumnNav && !isMobile ? (
         <LayoutSidebar computedSidebarWidth={computedSidebarWidth}>
           <LayoutMenu
             autoExpandCurrentMenu

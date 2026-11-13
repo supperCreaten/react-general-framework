@@ -1,14 +1,8 @@
 import { Icon } from "@iconify/react"
-import { useEffect, useState, type ReactNode } from "react"
-import { Tooltip } from "tdesign-react"
+import type { ReactNode } from "react"
+import { DelayedTooltip } from "@/components/DelayedTooltip"
 
 function TipIcon({ tip }: { tip: string }) {
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    setReady(true)
-  }, [])
-
   const trigger = (
     <span
       className="inline-flex cursor-help items-center text-td-text-placeholder hover:text-td-text-secondary"
@@ -18,12 +12,10 @@ function TipIcon({ tip }: { tip: string }) {
     </span>
   )
 
-  if (!ready) return trigger
-
   return (
-    <Tooltip content={tip} placement="top" destroyOnClose>
+    <DelayedTooltip content={tip} placement="top" fallback={trigger}>
       {trigger}
-    </Tooltip>
+    </DelayedTooltip>
   )
 }
 
