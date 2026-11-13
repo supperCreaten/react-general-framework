@@ -1,0 +1,76 @@
+.basic-form {
+  width: 100%;
+}
+
+.basic-form__row {
+  width: 100%;
+}
+
+.basic-form__col {
+  min-width: 0;
+}
+
+/* 不要给 .t-form__controls 设 width:100%，否则会挤掉左侧 float 标签，导致标签换行到输入框上方、双列错位 */
+.basic-form__col .t-form__controls-content {
+  min-width: 0;
+  width: 100%;
+}
+
+.basic-form__col .t-input,
+.basic-form__col .t-input-number,
+.basic-form__col .t-select__wrap,
+.basic-form__col .t-tree-select,
+.basic-form__col .t-textarea {
+  width: 100%;
+}
+
+/*
+ * 右对齐标签：在 label 内侧预留星号宽度，
+ * 必填 * 画在预留区内，文字与非必填右对齐齐平。
+ * 缩小右侧间距（TDesign 默认 padding-right 约 24px，偏大）。
+ */
+.basic-form .t-form__label {
+  padding-right: 8px;
+}
+
+.basic-form .t-form__label--right {
+  padding-left: 12px;
+  box-sizing: border-box;
+}
+
+.basic-form .t-form__label--right.t-form__label--required:not(.t-form__label--required-right) > label {
+  position: relative;
+}
+
+.basic-form .t-form__label--right.t-form__label--required:not(.t-form__label--required-right) > label::before {
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-right: 0;
+}
+
+/*
+ * Element 风格：统一预留下方错误区高度。
+ * TDesign 的 .t-input__extra 本身已是 absolute。
+ */
+.basic-form--reserve-error .basic-form__col > .t-form__item,
+.basic-form--reserve-error .basic-form__col > .t-form__item.t-form__item-with-help,
+.basic-form--reserve-error .basic-form__col > .t-form__item.t-form__item-with-extra {
+  margin-bottom: 22px;
+}
+
+.basic-form--reserve-error .basic-form__col > .t-form__item .t-input__help {
+  position: absolute;
+  left: 0;
+  bottom: calc(0px - var(--td-line-height-body-small));
+  margin: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.basic-form--dense .basic-form__col > .t-form__item {
+  margin-bottom: 0;
+}

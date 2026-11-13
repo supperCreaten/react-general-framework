@@ -1,0 +1,77 @@
+/* 仅保留 TDesign 内部皮肤覆盖；布局与视觉结构已迁到 Tailwind */
+@layer components {
+  .profile-avatar-wrap .t-avatar {
+    border: 3px solid #fff;
+    box-sizing: content-box;
+  }
+
+  .profile-panel-body .t-tabs__nav-container {
+    padding: 0 8px;
+  }
+
+  .profile-panel-body .t-tabs__nav-item {
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b !important;
+  }
+
+  .profile-panel-body .t-tabs__nav-item.t-is-active {
+    color: #0f8f82 !important;
+    font-weight: 650;
+  }
+
+  .profile-panel-body .t-tabs__bar {
+    background: #0f8f82 !important;
+    height: 3px !important;
+    border-radius: 999px;
+  }
+
+  .profile-panel-body .t-tabs__nav-wrap::after {
+    background: #eef2f6 !important;
+  }
+
+  .profile-form-wrap .t-form__label {
+    color: #475569;
+    font-weight: 500;
+  }
+
+  .profile-form-wrap .t-input,
+  .profile-form-wrap .t-input__wrap {
+    border-radius: 10px;
+  }
+
+  .profile-form-wrap .t-radio-group {
+    display: inline-flex;
+    gap: 8px;
+    padding: 4px;
+    border-radius: 10px;
+    background: #eef3f7;
+  }
+
+  .profile-form-wrap .t-radio {
+    margin-right: 0 !important;
+    padding: 6px 14px;
+    border-radius: 8px;
+  }
+
+  .profile-form-actions-item .t-form__label {
+    display: none !important;
+  }
+
+  .profile-form-actions-item .t-form__controls {
+    margin-left: 0 !important;
+  }
+
+  .profile-form-actions .t-button--theme-primary {
+    min-width: 96px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #14a897, #0f8f82);
+    border-color: transparent;
+    box-shadow: 0 8px 18px rgb(15 143 130 / 22%);
+  }
+
+  .profile-form-actions .t-button--variant-outline {
+    min-width: 88px;
+    border-radius: 10px;
+  }
+}

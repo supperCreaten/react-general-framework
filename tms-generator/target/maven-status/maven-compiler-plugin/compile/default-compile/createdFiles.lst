@@ -1,0 +1,12 @@
+com\tms\generator\util\VelocityInitializer.class
+com\tms\generator\service\IGenTableService.class
+com\tms\generator\mapper\GenTableMapper.class
+com\tms\generator\domain\GenTable.class
+com\tms\generator\util\VelocityUtils.class
+com\tms\generator\config\GenConfig.class
+com\tms\generator\service\GenTableServiceImpl.class
+com\tms\generator\service\GenTableColumnServiceImpl.class
+com\tms\generator\domain\GenTableColumn.class
+com\tms\generator\mapper\GenTableColumnMapper.class
+com\tms\generator\service\IGenTableColumnService.class
+com\tms\generator\util\GenUtils.class

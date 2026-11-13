@@ -1,0 +1,72 @@
+/* 去掉整框内边距，让 header / body / footer 各自铺满并分区 */
+.t-dialog.basic-dialog.t-dialog--default,
+.t-dialog.basic-dialog {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Header ---------- */
+.basic-dialog .t-dialog__header {
+  margin: 0;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--td-component-border);
+  background: var(--td-bg-color-container);
+  flex-shrink: 0;
+}
+
+.basic-dialog .basic-dialog__header-inner {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
+
+.basic-dialog .basic-dialog__title {
+  font: var(--td-font-title-medium);
+  font-weight: 600;
+  color: var(--td-text-color-primary);
+  line-height: 24px;
+}
+
+.basic-dialog .t-dialog__close {
+  margin-left: 12px;
+}
+
+/* ---------- Body ---------- */
+.basic-dialog .t-dialog__body {
+  margin: 0;
+  padding: 20px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  color: var(--td-text-color-primary);
+  background: var(--td-bg-color-container);
+}
+
+.basic-dialog .basic-dialog__body-inner {
+  min-width: 0;
+}
+
+/* ---------- Footer ---------- */
+.basic-dialog .t-dialog__footer {
+  margin: 0;
+  padding: 12px 20px;
+  border-top: 1px solid var(--td-component-border);
+  background: var(--td-bg-color-container);
+  text-align: right;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.basic-dialog .basic-dialog__footer-inner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.basic-dialog .basic-dialog__footer-inner .t-button + .t-button {
+  margin-left: 0;
+}

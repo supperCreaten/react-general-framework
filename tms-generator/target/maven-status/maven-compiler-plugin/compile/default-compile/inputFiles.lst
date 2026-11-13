@@ -1,0 +1,12 @@
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\service\IGenTableService.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\util\GenUtils.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\util\VelocityInitializer.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\service\GenTableServiceImpl.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\service\IGenTableColumnService.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\domain\GenTable.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\mapper\GenTableMapper.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\util\VelocityUtils.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\config\GenConfig.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\mapper\GenTableColumnMapper.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\service\GenTableColumnServiceImpl.java
+G:\代码\new-TMS-logistics\tms-generator\src\main\java\com\tms\generator\domain\GenTableColumn.java

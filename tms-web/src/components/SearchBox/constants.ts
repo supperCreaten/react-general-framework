@@ -1,0 +1,2 @@
+export const DEFAULT_FIELDS_PER_ROW = 3
+export const DEFAULT_COLLAPSED_VISIBLE = 3

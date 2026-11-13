@@ -1,0 +1,40 @@
+/* TDesign 表格内部结构覆盖（不要放进 @layer，否则会被未分层的 TDesign 样式盖掉） */
+.basic-table .t-table {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  color: var(--td-text-color-secondary);
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+}
+
+.basic-table .t-table__content {
+  flex: 1 1 0%;
+  min-height: 0;
+  height: auto !important;
+}
+
+.basic-table .t-table__pagination,
+.basic-table .t-table__pagination-wrap {
+  flex-shrink: 0;
+}
+
+.basic-table .t-table__header--fixed:not(.t-table__header--multiple) > tr > th {
+  background-color: var(--td-bg-color-secondarycontainer);
+  font-weight: bold;
+}
+
+.basic-table .t-table thead td,
+.basic-table .t-table th {
+  color: var(--td-text-color-primary);
+  font-size: 13px;
+}
+.basic-table .t-table td {
+  color: var(--td-text-color-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}

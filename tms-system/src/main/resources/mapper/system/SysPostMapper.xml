@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tms.system.mapper.SysPostMapper">
+
+	<resultMap type="com.tms.common.core.domain.entity.SysPost" id="SysPostResult">
+		<id     property="postId"     column="post_id"     />
+		<result property="postCode"   column="post_code"   />
+		<result property="postName"   column="post_name"   />
+		<result property="deptId"     column="dept_id"     />
+		<result property="postSort"   column="post_sort"   />
+		<result property="status"     column="status"      />
+		<result property="isDel"      column="is_del"      />
+		<result property="createBy"   column="create_by"   />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy"   column="update_by"   />
+		<result property="updateTime" column="update_time" />
+		<result property="remark"     column="remark"      />
+	</resultMap>
+
+	<sql id="selectPostVo">
+        select post_id, post_code, post_name, dept_id, post_sort, status, is_del, create_by, create_time, update_by, update_time, remark
+		from sys_post
+    </sql>
+
+	<select id="selectPostList" parameterType="com.tms.common.core.domain.entity.SysPost" resultMap="SysPostResult">
+	    <include refid="selectPostVo"/>
+		where is_del = '0'
+		<if test="postCode != null and postCode != ''">
+			AND post_code like concat('%', #{postCode}, '%')
+		</if>
+		<if test="postName != null and postName != ''">
+			AND post_name like concat('%', #{postName}, '%')
+		</if>
+		<if test="deptId != null">
+			AND cast(dept_id as char) = cast(#{deptId} as char)
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+		order by post_sort
+	</select>
+
+	<select id="selectPostById" parameterType="Long" resultMap="SysPostResult">
+		<include refid="selectPostVo"/>
+		where post_id = #{postId}
+	</select>
+
+	<select id="checkPostNameUnique" parameterType="String" resultMap="SysPostResult">
+		<include refid="selectPostVo"/>
+		 where post_name=#{postName} and is_del = '0' limit 1
+	</select>
+
+	<select id="checkPostCodeUnique" parameterType="String" resultMap="SysPostResult">
+		<include refid="selectPostVo"/>
+		 where post_code=#{postCode} and is_del = '0' limit 1
+	</select>
+
+ 	<insert id="insertPost" parameterType="com.tms.common.core.domain.entity.SysPost" useGeneratedKeys="true" keyProperty="postId">
+ 		insert into sys_post(
+ 			<if test="postId != null and postId != 0">post_id,</if>
+ 			<if test="postCode != null and postCode != ''">post_code,</if>
+ 			<if test="postName != null and postName != ''">post_name,</if>
+ 			<if test="deptId != null">dept_id,</if>
+ 			<if test="postSort != null">post_sort,</if>
+ 			<if test="status != null and status != ''">status,</if>
+ 			<if test="remark != null and remark != ''">remark,</if>
+ 			is_del,
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			update_by,
+ 			create_time,
+ 			update_time
+ 		)values(
+ 			<if test="postId != null and postId != 0">#{postId},</if>
+ 			<if test="postCode != null and postCode != ''">#{postCode},</if>
+ 			<if test="postName != null and postName != ''">#{postName},</if>
+ 			<if test="deptId != null">#{deptId},</if>
+ 			<if test="postSort != null">#{postSort},</if>
+ 			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="remark != null and remark != ''">#{remark},</if>
+ 			0,
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			<choose>
+ 				<when test="updateBy != null and updateBy != ''">#{updateBy},</when>
+ 				<when test="createBy != null and createBy != ''">#{createBy},</when>
+ 				<otherwise>'',</otherwise>
+ 			</choose>
+ 			sysdate(),
+ 			sysdate()
+ 		)
+	</insert>
+
+	<update id="updatePost" parameterType="com.tms.common.core.domain.entity.SysPost">
+ 		update sys_post
+ 		<set>
+ 			<if test="postCode != null and postCode != ''">post_code = #{postCode},</if>
+ 			<if test="postName != null and postName != ''">post_name = #{postName},</if>
+ 			<if test="deptId != null">dept_id = #{deptId},</if>
+ 			<if test="postSort != null">post_sort = #{postSort},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where post_id = #{postId}
+	</update>
+
+	<delete id="deletePostById" parameterType="Long">
+		update sys_post set is_del = 1, update_time = sysdate() where post_id = #{postId}
+	</delete>
+
+</mapper>

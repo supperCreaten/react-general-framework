@@ -1,0 +1,20 @@
+import type { AxiosRequestConfig } from "axios";
+import request from "@/utils/service";
+
+export default {
+  login: (data: Record<string, unknown>) => request.post("/api/login", data),
+  getAuthMenus: () => request.get("/api/authRoutes"),
+  getUserInfo: () => request.get("/api/userInfo"),
+  refreshToken: () => request.get("/api/refreshToken"),
+  logout: () => request.post("/api/logout"),
+  changePassword: (data: Record<string, unknown>) => request.post("/api/user/changePassword", data),
+  /** 个人中心：修改基本资料 */
+  updateProfile: (data: Record<string, unknown>) => request.put("/api/user/profile", data),
+  /** 个人中心：修改密码 */
+  updateProfilePassword: (data: { oldPassword: string; newPassword: string }) =>
+    request.put("/api/user/profile/updatePwd", data),
+  decryptSensitive: (data: { cipherText: string; secretKey: string }) =>
+    request.post("/api/decryptSensitive", data),
+  uploadApi: (data: FormData, config?: AxiosRequestConfig) =>
+    request.post("/api/upload", data, config),
+};
