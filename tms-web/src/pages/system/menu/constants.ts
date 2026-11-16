@@ -1,10 +1,4 @@
-/** 菜单类型：0 目录 1 菜单 2 按钮 3 页面 */
-export const MENU_TYPE = {
-  DIRECTORY: "0",
-  MENU: "1",
-  BUTTON: "2",
-  PAGE: "3",
-} as const
+import { MENU_TYPE } from "@/constants/menu"
 
 export const MENU_TYPE_OPTIONS = [
   { label: "目录", value: MENU_TYPE.DIRECTORY },
@@ -42,19 +36,19 @@ export const KEEP_ALIVE_OPTIONS = [
   { label: "不缓存", value: "0" },
 ]
 
-export function shouldShowIcon(menuType?: string) {
+export function shouldShowIcon(menuType?: number) {
   return menuType === MENU_TYPE.DIRECTORY || menuType === MENU_TYPE.MENU
 }
 
-export function shouldShowRouteFields(menuType?: string) {
+export function shouldShowRouteFields(menuType?: number) {
   return menuType !== MENU_TYPE.BUTTON
 }
 
-export function shouldShowMenuDetailFields(menuType?: string) {
+export function shouldShowMenuDetailFields(menuType?: number) {
   return menuType === MENU_TYPE.MENU || menuType === MENU_TYPE.PAGE
 }
 
-export function shouldShowFrameFields(menuType?: string) {
+export function shouldShowFrameFields(menuType?: number) {
   return menuType === MENU_TYPE.MENU
 }
 

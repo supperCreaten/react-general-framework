@@ -89,6 +89,7 @@ export default function BasicDialog(props: BasicDialogProps) {
       dialogClassName={clsx("basic-dialog", dialogClassName)}
       destroyOnClose={destroyOnClose}
       placement={placement}
+      draggable
       closeOnEscKeydown={closeOnEscKeydown}
       closeOnOverlayClick={closeOnOverlayClick}
       confirmBtn={null}

@@ -1,6 +1,16 @@
 import CreateComponent from "@/components/CreateComponent";
+import { MENU_TYPE } from "@/constants/menu";
 import { createIconifyIcon } from "@/icons";
 import type { MenuInfo, MenuItemType } from "@/interface";
+
+/**
+ * 是否为目录菜单。
+ * 目录只负责分组展开子项，路由生成时不注册自身 path（避免出现无页面的 `/system`）。
+ */
+export function isDirectoryMenu(menuType?: number) {
+  return menuType === MENU_TYPE.DIRECTORY;
+}
+
 /**
  * 递归查找第一个子菜单路径下的最深层级的第一个菜单项
  *
@@ -11,9 +21,12 @@ export function findDeepestFirstItem(splitSideNavItems: MenuItemType[]): MenuIte
   if (!splitSideNavItems || splitSideNavItems.length === 0) {
     return null;
   }
-  // 当前层级取第一个未隐藏的菜单项；若全部隐藏则回退到第一项，保持原有边界行为
-  const currentItem = splitSideNavItems.find((v) => !v?.hidden) ?? splitSideNavItems[0];
-  const children = currentItem?.children ?? [];
+  // 只取未隐藏项；全部隐藏时返回 null，由调用方回退到父菜单自身（避免跳到隐藏页面）
+  const currentItem = splitSideNavItems.find((v) => !v?.hidden);
+  if (!currentItem) {
+    return null;
+  }
+  const children = currentItem.children ?? [];
   const firstVisibleChild = children.find((v) => !v?.hidden);
 
   // children 中无未隐藏项时，返回当前项本身
@@ -75,6 +88,8 @@ export const generateMenuItemsFromMenuTree = (
       meta: item.meta,
       level: currentLevel,
       hidden: item.hidden,
+      // 透传后端数字类型，供路由按目录/菜单决定是否挂自身页
+      menuType: item.menuType,
       children: undefined,
       key,
       path: toRootRoutePath(item?.path),

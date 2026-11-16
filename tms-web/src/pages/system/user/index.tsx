@@ -142,7 +142,7 @@ export default function UserPage() {
     }
   }, [])
 
-  const onTreeLoad = useCallback(async (node: { value?: string | number }) => {
+  const onTreeLoad = useCallback<NonNullable<TreeProps["load"]>>(async (node) => {
     return loadDeptChildren(node.value as string | number)
   }, [])
 
@@ -172,7 +172,7 @@ export default function UserPage() {
   )
 
   const handleSearch = () => {
-    void tableRef.current?.refresh({ resetCurrent: true })
+     tableRef.current?.refresh({ resetCurrent: true })
   }
 
   const openAdd = useCallback(

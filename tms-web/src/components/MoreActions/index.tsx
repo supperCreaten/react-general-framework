@@ -98,7 +98,7 @@ export default function MoreActions(props: MoreActionsProps) {
   if (!visibleItems.length) return null
 
   return (
-    <div className={clsx("inline-flex flex-wrap items-center justify-center gap-1", className)}>
+    <div className={clsx("inline-flex flex-nowrap items-center justify-center gap-1 whitespace-nowrap", className)}>
       {inlineItems.map((item) => (
         <Button
           key={item.key}

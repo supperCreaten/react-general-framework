@@ -33,6 +33,11 @@ export type MenuItemType = {
   icon?: ReactNode
   path: string
   component: string
+  /**
+   * 菜单类型（与后端 Integer 一致）：0 目录 / 1 菜单 / 2 按钮 / 3 页面。
+   * 路由生成据此区分「目录不挂页」与「菜单挂自身页 + 子页面」。
+   */
+  menuType: number
   level: number
   hidden: boolean
   disabled?: boolean

@@ -1,26 +1,13 @@
 import type { AppRouteRecordRaw, MenuItemType, RouteMeta } from "@/interface";
 import { normalizeKeepAlive } from "@/router/utils/flat-route-list";
 import { flattenLayoutRouteChildren } from "@/router/utils/flatten-layout-routes";
-import type { ComponentType} from "react";
+import { isDirectoryMenu } from "@/utils/menu";
+import type { ComponentType } from "react";
 import { lazy, type LazyExoticComponent, type ReactNode } from "react";
 import CreateComponent from "@/components/CreateComponent";
 
 /** Vite glob 懒加载函数 */
 type PageModuleLoader = () => Promise<{ default: ComponentType<object> }>;
-
-/**
- * 叶子菜单补上的 index 子节点（仅保留转换所需字段）。
- * 字段名使用路由侧的 `handle`（内容仍来自菜单 `meta`）。
- */
-type IndexChildNode = {
-  index: true;
-  handle: MenuItemType["meta"];
-  component: string;
-  children?: undefined;
-};
-
-/** 递归转换时的节点：普通菜单或 index 子节点 */
-type TransformNode = (MenuItemType & { index?: boolean }) | IndexChildNode;
 
 /** 页面缺失时的兜底组件（404） */
 const NotFoundPage = lazy(() => import("@/pages/notFound/index.tsx"));
@@ -97,14 +84,14 @@ const createRouteBase = (meta: MenuItemType["meta"], component: string) => ({
   element: undefined as undefined,
 });
 
-/** 是否为 ensureIndexChild 生成的 index 子节点 */
-const isIndexChildNode = (node: TransformNode): node is IndexChildNode =>
-  !("meta" in node) && node.index === true;
-
 /**
  * 将后端菜单树转为前端路由（懒加载页面，并展平到根 Layout 下）。
  *
- * 流程：叶子菜单补 index 子节点 → 递归转路由并挂组件 → 展平叶子路由。
+ * 按 menuType 分支（展平后示例）：
+ * - 叶子菜单：直接挂组件 → `/system/user`
+ * - 目录(0)：只生成子树，不挂自身 → 无 `/system`，仅有其子路由
+ * - 菜单(1)/页面(3) 等且有子节点：挂 index + 子路由
+ *   → 「订单管理」`/order` + 「创建订单」`/order/create`
  *
  * @param menus - 菜单树 `MenuItemType[]`（通常为 store 的 `wholeMenus`）
  * @returns 展平后的路由 `AppRouteRecordRaw[]`；`menus` 为空时返回 `[]`
@@ -113,87 +100,38 @@ export function buildRoutesFromMenus(menus: Array<MenuItemType>): AppRouteRecord
   if (!menus?.length) return [];
 
   /**
-   * 单个节点 → 路由记录。
-   *
-   * 分支：
-   * - index 子节点：用 `parentPagePath` 挂组件
-   * - 叶子：按自身 path/component 挂组件
-   * - 有 children 且有父路径：先挂本层 index，再递归子菜单
-   * - 顶级有 children：只生成子树（Layout 由 baseRoutes 提供）
-   *
-   * @param menuItem - {@link TransformNode}
-   * @param parentPagePath - 父级页面模块路径 `string | undefined`
-   * @returns 路由记录 {@link AppRouteRecordRaw}
+   * 单个菜单节点 → 路由记录（可含 children，稍后统一展平）。
    */
-  const transformRoute = (menuItem: TransformNode, parentPagePath?: string): AppRouteRecordRaw => {
-    // IndexChildNode 用 handle；普通菜单用 meta。后续分支与原先一致。
-    const meta = isIndexChildNode(menuItem) ? menuItem.handle : menuItem.meta;
-    const path = isIndexChildNode(menuItem) ? undefined : menuItem.path;
-    const children = isIndexChildNode(menuItem) ? undefined : menuItem.children;
-    const isIndex = isIndexChildNode(menuItem) ? true : menuItem.index;
-    const component = menuItem.component;
-
-    const isIndexRoute = isIndex === true;
+  const transformRoute = (menuItem: MenuItemType): AppRouteRecordRaw => {
+    const { meta, path, children, component, menuType } = menuItem;
     const routeBase = createRouteBase(meta, component);
-    const route: AppRouteRecordRaw = isIndexRoute
-      ? { index: true, ...routeBase }
-      : { path: path as string, ...routeBase };
-
-    // index 子节点：组件跟父菜单
-    if (isIndexRoute && parentPagePath) {
-      loadRouteComponent(route, parentPagePath);
-      return route;
-    }
-
-    // 叶子：挂本页组件
-    if (!children?.length) {
-      loadRouteComponent(route, resolvePageModulePath(route));
-      return route;
-    }
-
+    const route: AppRouteRecordRaw = { path, ...routeBase };
     const pagePath = resolvePageModulePath(route);
 
-    // 嵌套中间层：index + 子菜单
-    if (parentPagePath) {
-      const indexRoute: AppRouteRecordRaw = {
-        index: true,
-        ...routeBase,
-      };
-      loadRouteComponent(indexRoute, resolvePageModulePath(indexRoute));
-      route.children = [indexRoute, ...children.map((child) => transformRoute(child, pagePath))];
+    // 无子节点：叶子页面，直接挂载对应 pages 组件
+    if (!children?.length) {
+      loadRouteComponent(route, pagePath);
       return route;
     }
 
-    // 顶级：只生成子树
-    route.children = children.map((child) => transformRoute(child, pagePath));
+    const childRoutes = children.map((child) => transformRoute(child));
+
+    // 目录：只负责分组，不注册自身落地页
+    if (isDirectoryMenu(menuType)) {
+      route.children = childRoutes;
+      return route;
+    }
+
+    // 菜单等：自身作为 index 路由（如 /order），子项为相对 path（如 create → /order/create）
+    const indexRoute: AppRouteRecordRaw = {
+      index: true,
+      ...routeBase,
+    };
+    loadRouteComponent(indexRoute, pagePath);
+    route.children = [indexRoute, ...childRoutes];
     return route;
   };
 
-  /**
-   * 叶子菜单（无 children）补一个 index 子节点，便于统一挂载页面。
-   * 已有 children 时原样返回。
-   * 仅保留转换用到的字段；`meta` 改名为 `handle`（内容不变）。
-   *
-   * @param menu - 菜单节点 {@link MenuItemType}
-   * @returns 标准化后的菜单
-   */
-  const ensureIndexChild = (menu: MenuItemType): MenuItemType => {
-    if (menu.children?.length) return menu;
-
-    const indexChild: IndexChildNode = {
-      index: true,
-      handle: { ...menu.meta },
-      component: menu.component,
-      children: undefined,
-    };
-
-    return {
-      ...menu,
-      children: [indexChild as unknown as MenuItemType],
-    };
-  };
-
-  const normalizedMenus = menus.map(ensureIndexChild);
-  const routes = normalizedMenus.map((menu) => transformRoute(menu));
-  return flattenLayoutRouteChildren(routes) as AppRouteRecordRaw[];
+  // 展平到 Layout 下，避免跨菜单切换时重复挂载 Layout
+  return flattenLayoutRouteChildren(menus.map(transformRoute)) as AppRouteRecordRaw[];
 }

@@ -10,7 +10,6 @@ import { markLazyChildren } from "@/utils/tree/lazy"
 import {
   FRAME_OPTIONS,
   KEEP_ALIVE_OPTIONS,
-  MENU_TYPE,
   MENU_TYPE_OPTIONS,
   STATUS_OPTIONS,
   VISIBLE_OPTIONS,
@@ -21,6 +20,7 @@ import {
   shouldShowMenuDetailFields,
   shouldShowRouteFields,
 } from "../constants"
+import { MENU_TYPE } from "@/constants/menu"
 
 export type MenuTreeNode = {
   menuId: string | number
@@ -33,7 +33,7 @@ const SELECT_SCROLL = { type: "virtual" as const }
 
 type MenuFormValues = {
   parentId?: string | number
-  menuType?: string
+  menuType?: number
   icon?: string
   menuName?: string
   orderNum?: number
@@ -47,7 +47,7 @@ type MenuFormValues = {
 
 type MenuDetail = {
   parentId?: string | number
-  menuType?: string | number
+  menuType?: number
   icon?: string
   menuName?: string
   orderNum?: number
@@ -95,7 +95,7 @@ function buildParentTreeData(list: MenuTreeNode[] = []): MenuTreeNode[] {
 function mapDetailToForm(data?: MenuDetail): MenuFormValues {
   return {
     parentId: data?.parentId != null && data.parentId !== "" ? data.parentId : "0",
-    menuType: asOptionValue(data?.menuType, MENU_TYPE.DIRECTORY),
+    menuType: data?.menuType ?? MENU_TYPE.DIRECTORY,
     icon: data?.icon || undefined,
     menuName: data?.menuName,
     orderNum: data?.orderNum ?? 0,
@@ -140,7 +140,7 @@ export type AddMenuProps = {
 export default function AddMenu(props: AddMenuProps) {
   const { visible, title, menuId, onClose } = props
   const [form] = Form.useForm()
-  const menuType = (Form.useWatch("menuType", form) as string | undefined) ?? MENU_TYPE.DIRECTORY
+  const menuType = (Form.useWatch("menuType", form) as number | undefined) ?? MENU_TYPE.DIRECTORY
   const [treeData, setTreeData] = useState<MenuTreeNode[]>([])
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
