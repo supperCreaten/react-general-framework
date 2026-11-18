@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
-import { Button, Input, type TableProps } from "tdesign-react"
+import { Button, type TableProps } from "tdesign-react"
 import { SaveIcon } from "tdesign-icons-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
@@ -7,6 +7,7 @@ import BasicTable, { type BasicTableRef } from "@/components/BasicTable"
 import SearchBox, { type SearchBoxRef } from "@/components/SearchBox"
 import type { FormConfig } from "@/interface"
 import { getParams, showMessage } from "@/utils/methods"
+import InputText from "@/components/InputText"
 
 type AuthUserRow = {
   userId: string | number
@@ -34,12 +35,12 @@ export default function AuthUser(props: AuthUserProps) {
       {
         label: "账号",
         name: "userName",
-        component: <Input clearable placeholder="请输入账号" />,
+        component: <InputText clearable placeholder="请输入账号" />,
       },
       {
         label: "昵称",
         name: "nickName",
-        component: <Input clearable placeholder="请输入昵称" />,
+        component: <InputText clearable placeholder="请输入昵称" />,
       },
     ],
     [],

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Button, Form, Input, type FormRules, type SubmitContext } from "tdesign-react";
+import { Button, Form, type FormRules, type SubmitContext } from "tdesign-react";
 import type { TdFormProps } from "tdesign-react/es/form/type";
 import { LockOnIcon, UserIcon } from "tdesign-icons-react";
 import api from "@/api";
 import { aesEncrypt } from "@/utils/auth";
 import { showMessage } from "@/utils/methods";
+import InputText from "@/components/InputText";
 import PasswordStrengthHint from "./PasswordStrengthHint";
 
 const { FormItem } = Form;
@@ -82,7 +83,7 @@ export default function ChangePasswordForm({ onBackToLogin }: ChangePasswordForm
       onSubmit={handleSubmit}
     >
       <FormItem label="账号" name="account">
-        <Input
+        <InputText
           clearable
           autocomplete="username"
           placeholder="请输入账号"
@@ -95,7 +96,7 @@ export default function ChangePasswordForm({ onBackToLogin }: ChangePasswordForm
         name="password"
         help={password ? <PasswordStrengthHint password={password} /> : null}
       >
-        <Input
+        <InputText
           type="password"
           autocomplete="new-password"
           placeholder="请输入新密码"
@@ -104,7 +105,7 @@ export default function ChangePasswordForm({ onBackToLogin }: ChangePasswordForm
       </FormItem>
 
       <FormItem label="确认密码" name="confirmPassword">
-        <Input
+        <InputText
           type="password"
           autocomplete="new-password"
           placeholder="请再次输入新密码"

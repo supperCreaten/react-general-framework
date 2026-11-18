@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react"
-import { Card, Col, Form, Input, InputNumber, Loading, Row, Switch, Tree } from "tdesign-react"
+import { Card, Col, Form, InputNumber, Loading, Row, Switch, Tree } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
 import { showMessage } from "@/utils/methods"
+import InputText from "@/components/InputText"
 
 type MenuTreeNode = {
   menuId: string | number
@@ -57,7 +58,7 @@ export default function AddRole(props: AddRoleProps) {
         name: "roleCode",
         colProps: { span: 12 },
         component: (
-          <Input disabled placeholder={isEdit ? "角色编码" : "保存后自动生成数字编号"} />
+          <InputText disabled placeholder={isEdit ? "角色编码" : "保存后自动生成数字编号"} />
         ),
       },
       {
@@ -65,14 +66,14 @@ export default function AddRole(props: AddRoleProps) {
         name: "roleKey",
         colProps: { span: 12 },
         rules: [{ required: true, message: "请输入权限字符" }],
-        component: <Input clearable placeholder="如 admin、dispatcher" />,
+        component: <InputText clearable placeholder="如 admin、dispatcher" />,
       },
       {
         label: "角色名称",
         name: "roleName",
         colProps: { span: 12 },
         rules: [{ required: true, message: "请输入角色名称" }],
-        component: <Input clearable placeholder="请输入角色名称" />,
+        component: <InputText clearable placeholder="请输入角色名称" />,
       },
       {
         label: "排序",
@@ -90,7 +91,7 @@ export default function AddRole(props: AddRoleProps) {
         label: "备注",
         name: "remark",
         colProps: { span: 12 },
-        component: <Input clearable maxlength={500} placeholder="请输入备注" />,
+        component: <InputText clearable maxlength={500} placeholder="请输入备注" />,
       },
     ],
     [isEdit],

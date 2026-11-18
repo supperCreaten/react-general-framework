@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react"
-import { Button, DialogPlugin, Input, Select, Switch, type TableProps } from "tdesign-react"
+import { Button, DialogPlugin, Select, Switch, type TableProps } from "tdesign-react"
 import { UserAddIcon } from "tdesign-icons-react"
 import api from "@/api"
 import BasicTable, { type BasicTableRef } from "@/components/BasicTable"
@@ -8,6 +8,7 @@ import SearchBox, { type SearchBoxRef } from "@/components/SearchBox"
 import TableSection from "@/components/TableSection"
 import type { FormConfig } from "@/interface"
 import { getParams, showMessage } from "@/utils/methods"
+import InputText from "@/components/InputText"
 import AddRole from "./components/AddRole"
 import AuthUser from "./components/AuthUser"
 
@@ -47,12 +48,12 @@ export default function RolePage() {
       {
         label: "角色编码",
         name: "roleCode",
-        component: <Input clearable placeholder="请输入角色编码" />,
+        component: <InputText clearable placeholder="请输入角色编码" />,
       },
       {
         label: "角色名称",
         name: "roleName",
-        component: <Input clearable placeholder="请输入角色名称" />,
+        component: <InputText clearable placeholder="请输入角色名称" />,
       },
       {
         label: "角色状态",

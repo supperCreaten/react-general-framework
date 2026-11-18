@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
-import { Form, Input, InputNumber, Radio, Textarea, TreeSelect, type TreeSelectProps } from "tdesign-react"
+import { Form, InputNumber, Radio, Textarea, TreeSelect, type TreeSelectProps } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
 import { showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
+import InputText from "@/components/InputText"
 
 type DeptTreeNode = {
   deptId: string | number
@@ -89,14 +90,14 @@ export default function AddPost(props: AddPostProps) {
         name: "postName",
         colProps: { span: 12 },
         rules: [{ required: true, message: "请输入岗位名称" }],
-        component: <Input clearable placeholder="请输入岗位名称" />,
+        component: <InputText clearable placeholder="请输入岗位名称" />,
       },
       {
         label: "岗位编码",
         name: "postCode",
         colProps: { span: 12 },
         rules: [{ required: true, message: "请输入岗位编码" }],
-        component: <Input clearable placeholder="请输入岗位编码" />,
+        component: <InputText clearable placeholder="请输入岗位编码" />,
       },
       {
         label: "归属部门",

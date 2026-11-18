@@ -4,6 +4,7 @@ import type { RootState } from "@/store";
 import { setUserInfo } from "@/store/modules/user";
 import { resolvePublicUrl } from "@/utils/image";
 import { showMessage, useAppDispatch } from "@/utils/methods";
+import InputText from "@/components/InputText";
 import {
   BuildingIcon,
   CalendarIcon,
@@ -18,7 +19,6 @@ import {
   Avatar,
   Button,
   Form,
-  Input,
   Radio,
   Tabs,
   Tag,
@@ -333,13 +333,13 @@ export default function MyProfilePage() {
                         onSubmit={handleSaveProfile}
                       >
                         <FormItem label="昵称" name="nickName">
-                          <Input clearable maxlength={30} placeholder="请输入昵称" />
+                          <InputText clearable maxlength={30} placeholder="请输入昵称" />
                         </FormItem>
                         <FormItem label="手机号码" name="phonenumber">
-                          <Input clearable maxlength={11} placeholder="请输入手机号码" />
+                          <InputText clearable maxlength={11} placeholder="请输入手机号码" />
                         </FormItem>
                         <FormItem label="邮箱" name="email">
-                          <Input clearable maxlength={50} placeholder="请输入邮箱" />
+                          <InputText clearable maxlength={50} placeholder="请输入邮箱" />
                         </FormItem>
                         <FormItem label="性别" name="sex">
                           <Radio.Group>
@@ -380,7 +380,7 @@ export default function MyProfilePage() {
                         onSubmit={handleSavePassword}
                       >
                         <FormItem label="旧密码" name="oldPassword">
-                          <Input
+                          <InputText
                             type="password"
                             clearable
                             prefixIcon={<LockOnIcon />}
@@ -389,7 +389,7 @@ export default function MyProfilePage() {
                           />
                         </FormItem>
                         <FormItem label="新密码" name="newPassword">
-                          <Input
+                          <InputText
                             type="password"
                             clearable
                             prefixIcon={<LockOnIcon />}
@@ -398,7 +398,7 @@ export default function MyProfilePage() {
                           />
                         </FormItem>
                         <FormItem label="确认密码" name="confirmPassword">
-                          <Input
+                          <InputText
                             type="password"
                             clearable
                             prefixIcon={<LockOnIcon />}

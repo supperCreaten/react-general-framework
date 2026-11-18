@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react"
-import { Form, Input, type FormRule } from "tdesign-react"
+import { Form, type FormRule } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import PasswordStrength from "@/components/PasswordStrength"
 import { validatePasswordStrength } from "@/components/PasswordStrength/validate"
 import { showMessage } from "@/utils/methods"
+import InputText from "@/components/InputText"
 
 const { FormItem } = Form
 
@@ -104,10 +105,10 @@ export default function ResetPwd(props: ResetPwdProps) {
           rules={PASSWORD_RULES}
           help={password ? <PasswordStrength password={password} /> : undefined}
         >
-          <Input type="password" clearable autocomplete="new-password" placeholder="请输入 6-20 位新密码" />
+          <InputText type="password" clearable autocomplete="new-password" placeholder="请输入 6-20 位新密码" />
         </FormItem>
         <FormItem label="确认密码" name="confirmPassword" rules={confirmRules}>
-          <Input type="password" clearable autocomplete="new-password" placeholder="请再次输入新密码" />
+          <InputText type="password" clearable autocomplete="new-password" placeholder="请再次输入新密码" />
         </FormItem>
       </Form>
     </BasicDialog>

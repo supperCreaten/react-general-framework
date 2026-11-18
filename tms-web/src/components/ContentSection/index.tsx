@@ -38,22 +38,39 @@ function ContentSection(props: ContentSectionProps) {
   const header = findSlot(children, "ContentSection.Header")
   const content = findSlot(children, "ContentSection.Content")
   const footer = findSlot(children, "ContentSection.Footer")
+  const hasChrome = Boolean(header || footer)
 
-  const contentClassName = clsx(
+  const scrollClassName = clsx(
     "overflow-x-hidden",
-    (header || footer) && "my-1",
     isFull ? "min-h-0 flex-1 overflow-y-auto" : "overflow-y-visible",
   )
 
+  /** 有 header/footer 时共用一块白底容器，三者贴合不留缝 */
+  if (hasChrome) {
+    return (
+      <div className={clsx("box-border flex flex-col p-2.5", isFull ? "h-full min-h-0" : "h-auto", className)}>
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-(--td-radius-medium) bg-td-bg-container">
+          {header ? <div className="shrink-0">{header}</div> : null}
+          <div className={scrollClassName}>{content}</div>
+          {footer ? (
+            <div className="flex shrink-0 items-center justify-center gap-3 border-t border-td-border px-4 py-3">
+              {footer}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={clsx("box-border flex flex-col p-2.5", isFull ? "h-full min-h-0" : "h-auto", className)}>
-      {header ? <div className="shrink-0">{header}</div> : null}
       {isContentFullCard ? (
-        <Card className={contentClassName}>{content}</Card>
+        <Card className={scrollClassName} bordered={false}>
+          {content}
+        </Card>
       ) : (
-        <div className={contentClassName}>{content}</div>
+        <div className={scrollClassName}>{content}</div>
       )}
-      {footer ? <div className="mt-2 shrink-0 text-center">{footer}</div> : null}
     </div>
   )
 }

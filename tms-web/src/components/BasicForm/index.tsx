@@ -5,13 +5,16 @@ import type {
   FormFieldListOperation,
   FormFieldListRow,
 } from "@/interface"
-import type { FormProps} from "tdesign-react";
+import type { ColProps, FormProps } from "tdesign-react"
 import { Button, Col, Form, Row } from "tdesign-react"
 import type { Key, ReactNode } from "react"
 import { clsx } from "clsx"
 import "./index.css"
 
 const { FormItem, FormList: FieldList } = Form
+
+/** TDesign 12 栅格默认列宽：xl≥1400 一行 3，md≥992 一行 2，更小屏一行 1 */
+export const DEFAULT_FORM_COL: ColProps = { xl: 4, md: 6, sm: 12, xs: 12 }
 
 function toReactKey(name: FormConfig["name"], index: number): Key {
   if (name == null) return index
@@ -33,16 +36,13 @@ function renderFieldListItem(
 ) {
   const { key: _key, name, ...restRow } = row
   const { colProps, component, bare, name: itemName, ...formItemProps } = item
-  const { span = 12, className, ...restColProps } = colProps ?? {}
-  const content =
-    typeof component === "function" ? component({ row, index, operation }) : component
+  const content = typeof component === "function" ? component({ row, index, operation }) : component
 
   return (
     <Col
-      {...restColProps}
-      span={span}
+      {...(colProps ?? DEFAULT_FORM_COL)}
       key={String(itemName)}
-      className={clsx("basic-form__col", className)}
+      className={clsx("basic-form__col", colProps?.className)}
     >
       {bare ? (
         content
@@ -98,20 +98,11 @@ function renderFieldList(config: FormConfig) {
                 }
 
                 return (
-                  <Row
-                    key={row.key}
-                    gutter={[16, 0]}
-                    align="middle"
-                    className={clsx("mb-2", rowClassName)}
-                  >
+                  <Row key={row.key} gutter={[16, 0]} align="middle" className={clsx("mb-2", rowClassName)}>
                     {rowFields.map((item) => renderFieldListItem(item, row, index, operation))}
                     {canRemove ? (
                       <Col span={4} className="flex items-center pb-5.5">
-                        <Button
-                          theme="danger"
-                          variant="text"
-                          onClick={() => operation.remove(row.name)}
-                        >
+                        <Button theme="danger" variant="text" onClick={() => operation.remove(row.name)}>
                           {removeText}
                         </Button>
                       </Col>
@@ -124,11 +115,7 @@ function renderFieldList(config: FormConfig) {
                 renderFooter(rows, operation)
               ) : canAdd ? (
                 <FormItem className="mb-0">
-                  <Button
-                    theme="primary"
-                    variant="dashed"
-                    onClick={() => operation.add(resolveDefaultRow(fieldList))}
-                  >
+                  <Button theme="primary" variant="dashed" onClick={() => operation.add(resolveDefaultRow(fieldList))}>
                     {addText}
                   </Button>
                 </FormItem>
@@ -143,22 +130,13 @@ function renderFieldList(config: FormConfig) {
 
 function renderFormField(config: FormConfig, index: number): ReactNode {
   const { colProps, component, bare, fieldList, ...formItemProps } = config
-  const { span = 12, className, ...restColProps } = colProps ?? {}
-
   return (
     <Col
-      {...restColProps}
-      span={span}
+      {...(colProps ?? DEFAULT_FORM_COL)}
       key={toReactKey(config.name, index)}
-      className={clsx("basic-form__col", className)}
+      className={clsx("basic-form__col", colProps?.className)}
     >
-      {fieldList ? (
-        renderFieldList(config)
-      ) : bare ? (
-        component
-      ) : (
-        <FormItem {...formItemProps}>{component}</FormItem>
-      )}
+      {fieldList ? renderFieldList(config) : bare ? component : <FormItem {...formItemProps}>{component}</FormItem>}
     </Col>
   )
 }
@@ -202,24 +180,14 @@ export default function BasicForm(props: BasicFormProps) {
       onReset={onReset}
       onSubmit={onSubmit}
       rules={rules}
-      className={clsx(
-        "basic-form",
-        reserveErrorSpace ? "basic-form--reserve-error" : "basic-form--dense",
-        className,
-      )}
+      className={clsx("basic-form", reserveErrorSpace ? "basic-form--reserve-error" : "basic-form--dense", className)}
       {...args}
     >
       <div className={clsx("flex w-full gap-3", extra ? "items-start" : undefined)}>
-        <Row
-          gutter={gutter}
-          align="top"
-          className={clsx("basic-form__row min-w-0", extra && "flex-1")}
-        >
+        <Row gutter={gutter} align="top" className={clsx("basic-form__row min-w-0", extra && "flex-1")}>
           {formConfig.map((config, index) => renderFormField(config, index))}
         </Row>
-        {extra ? (
-          <div className={clsx("flex shrink-0 items-center pt-1", extraClassName)}>{extra}</div>
-        ) : null}
+        {extra ? <div className={clsx("flex shrink-0 items-center pt-1", extraClassName)}>{extra}</div> : null}
       </div>
     </Form>
   )

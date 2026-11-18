@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Button, Form, Input, type FormRules, type SubmitContext } from "tdesign-react"
+import { Button, Form, type FormRules, type SubmitContext } from "tdesign-react"
 import type { TdFormProps } from "tdesign-react/es/form/type"
 import { LockOnIcon, UserIcon } from "tdesign-icons-react"
 import api from "@/api"
@@ -8,6 +8,7 @@ import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
 import { aesEncrypt, setAccessToken } from "@/utils/auth"
 import { showMessage } from "@/utils/methods"
+import InputText from "@/components/InputText"
 
 type LoginFormValues = {
   account: string
@@ -38,7 +39,7 @@ export default function LoginForm({ onForgotPassword }: LoginFormProps) {
       name: "account",
       colProps: { span: 12 },
       component: (
-        <Input
+        <InputText
           clearable
           size="large"
           autocomplete="username"
@@ -52,7 +53,7 @@ export default function LoginForm({ onForgotPassword }: LoginFormProps) {
       name: "password",
       colProps: { span: 12 },
       component: (
-        <Input
+        <InputText
           type="password"
           size="large"
           autocomplete="current-password"

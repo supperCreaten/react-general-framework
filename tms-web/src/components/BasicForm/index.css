@@ -20,6 +20,7 @@
 .basic-form__col .t-input-number,
 .basic-form__col .t-select__wrap,
 .basic-form__col .t-tree-select,
+.basic-form__col .t-cascader,
 .basic-form__col .t-textarea {
   width: 100%;
 }

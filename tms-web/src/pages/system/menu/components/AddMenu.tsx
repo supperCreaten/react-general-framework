@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Form, Input, InputNumber, Radio, Select, TreeSelect, type TreeSelectProps } from "tdesign-react"
+import { Form, InputNumber, Radio, Select, TreeSelect, type TreeSelectProps } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
@@ -21,6 +21,7 @@ import {
   shouldShowRouteFields,
 } from "../constants"
 import { MENU_TYPE } from "@/constants/menu"
+import InputText from "@/components/InputText"
 
 export type MenuTreeNode = {
   menuId: string | number
@@ -199,7 +200,7 @@ export default function AddMenu(props: AddMenuProps) {
       name: "menuName",
       colProps: { span: 6 },
       rules: [{ required: true, message: "请输入菜单名称" }],
-      component: <Input clearable placeholder="请输入菜单名称" />,
+      component: <InputText clearable placeholder="请输入菜单名称" />,
     })
 
     if (menuType !== MENU_TYPE.PAGE) {
@@ -227,7 +228,7 @@ export default function AddMenu(props: AddMenuProps) {
         name: "path",
         colProps: { span: 6 },
         rules: [{ required: true, message: "请输入路由地址" }],
-        component: <Input clearable placeholder="如 user；外链填完整 URL" />,
+        component: <InputText clearable placeholder="如 user；外链填完整 URL" />,
       })
     }
 
@@ -237,7 +238,7 @@ export default function AddMenu(props: AddMenuProps) {
         name: "perms",
         colProps: { span: shouldShowRouteFields(menuType) ? 6 : 12 },
         rules: menuType === MENU_TYPE.BUTTON ? [{ required: true, message: "请输入权限标识" }] : undefined,
-        component: <Input clearable placeholder="如 system:user:list" />,
+        component: <InputText clearable placeholder="如 system:user:list" />,
       })
     }
 

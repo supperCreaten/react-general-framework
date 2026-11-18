@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react"
-import { Button, DialogPlugin, Input, Select, Tag, type TableProps } from "tdesign-react"
+import { Button, DialogPlugin, Select, Tag, type TableProps } from "tdesign-react"
 import { AddIcon } from "tdesign-icons-react"
 import api from "@/api"
 import BasicTable, { type BasicTableRef } from "@/components/BasicTable"
@@ -9,6 +9,7 @@ import TableSection from "@/components/TableSection"
 import type { FormConfig } from "@/interface"
 import { getParams, showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
+import InputText from "@/components/InputText"
 import AddMenu from "./components/AddMenu"
 import { renderMenuIcon } from "./components/renderMenuIcon"
 import { MENU_TYPE_LABEL } from "./constants"
@@ -61,7 +62,7 @@ export default function MenuPage() {
       {
         label: "菜单名称",
         name: "menuName",
-        component: <Input clearable placeholder="请输入菜单名称" />,
+        component: <InputText clearable placeholder="请输入菜单名称" />,
       },
       {
         label: "状态",

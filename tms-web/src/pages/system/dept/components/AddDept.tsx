@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { Form, Input, InputNumber, Radio, TreeSelect, type TreeSelectProps } from "tdesign-react"
+import { Form, InputNumber, Radio, TreeSelect, type TreeSelectProps } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
 import { showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
+import InputText from "@/components/InputText"
 
 export type DeptTreeNode = {
   deptId: string | number
@@ -115,7 +116,7 @@ export default function AddDept(props: AddDeptProps) {
         name: "deptName",
         colProps: { span: 6 },
         rules: [{ required: true, message: "请输入部门名称" }],
-        component: <Input clearable placeholder="请输入部门名称" />,
+        component: <InputText clearable placeholder="请输入部门名称" />,
       },
       {
         label: "显示排序",
@@ -128,19 +129,19 @@ export default function AddDept(props: AddDeptProps) {
         label: "负责人",
         name: "leader",
         colProps: { span: 6 },
-        component: <Input clearable placeholder="请输入负责人" />,
+        component: <InputText clearable placeholder="请输入负责人" />,
       },
       {
         label: "联系电话",
         name: "phone",
         colProps: { span: 6 },
-        component: <Input clearable placeholder="请输入联系电话" />,
+        component: <InputText clearable placeholder="请输入联系电话" />,
       },
       {
         label: "邮箱",
         name: "email",
         colProps: { span: 6 },
-        component: <Input clearable placeholder="请输入邮箱" />,
+        component: <InputText clearable placeholder="请输入邮箱" />,
       },
       {
         label: "部门状态",

@@ -4,7 +4,6 @@ import {
   Card,
   Col,
   DialogPlugin,
-  Input,
   Row,
   Switch,
   Tree,
@@ -20,6 +19,7 @@ import TableSection from "@/components/TableSection"
 import type { FormConfig } from "@/interface"
 import { getParams, showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
+import InputText from "@/components/InputText"
 import AddUser from "./components/AddUser"
 import AuthRole from "./components/AuthRole"
 import ResetPwd from "./components/ResetPwd"
@@ -155,17 +155,17 @@ export default function UserPage() {
       {
         label: "账号",
         name: "account",
-        component: <Input clearable placeholder="请输入账号" />,
+        component: <InputText clearable placeholder="请输入账号" />,
       },
       {
         label: "昵称",
         name: "nickName",
-        component: <Input clearable placeholder="请输入昵称" />,
+        component: <InputText clearable placeholder="请输入昵称" />,
       },
       {
         label: "手机号码",
         name: "phone",
-        component: <Input clearable placeholder="请输入手机号码" />,
+        component: <InputText clearable placeholder="请输入手机号码" />,
       },
     ],
     [],
@@ -388,7 +388,7 @@ export default function UserPage() {
               style={{ height: "100%" }}
               bodyClassName="box-border flex min-h-0 flex-1 flex-col overflow-hidden p-3"
             >
-              <Input
+              <InputText
                 clearable
                 className="mb-3 shrink-0"
                 placeholder="请输入部门名称"

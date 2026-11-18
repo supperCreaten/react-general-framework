@@ -1,8 +1,5 @@
 import Cookies from "js-cookie";
 
-/** 与后端 token.expireTime（秒）对齐：accessToken Cookie 持久化时长 */
-const ACCESS_TOKEN_EXPIRE_DAYS = 1 / 24; // 1 小时
-
 /** accessToken 写入 Cookie 且值发生变化时触发（含 HTTP 401 刷新、登录等） */
 export const ACCESS_TOKEN_CHANGED = "ec:access-token-changed";
 
@@ -28,11 +25,8 @@ export function setAccessToken(token: string): void {
   if (!token) return;
   const prev = getAccessToken();
   clearAccessTokenCookies();
-  Cookies.set("accessToken", token, {
-    ...COOKIE_OPTS,
-    /** 未设 expires 时为会话 Cookie，关浏览器即丢失 */
-    expires: ACCESS_TOKEN_EXPIRE_DAYS,
-  });
+  // 会话 Cookie：不设 expires，关浏览器即丢失；有效性由服务端 401 判定后再 refresh
+  Cookies.set("accessToken", token, COOKIE_OPTS);
   if (prev !== token) {
     window.dispatchEvent(new CustomEvent(ACCESS_TOKEN_CHANGED, { detail: { token } }));
   }

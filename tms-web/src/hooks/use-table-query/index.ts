@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { PageInfo, PaginationProps, TableRowData } from "tdesign-react"
 
 /** 远程列表统一结构；total 约定为 number（非分页也需回传 total，一般为 rows.length） */
@@ -56,12 +56,22 @@ export type UseTableQueryReturn<T extends TableRowData> = {
   addRow: (row: T, position?: AddRowPosition) => void
   /** 批量追加（仅本地） */
   addRows: (rows: T[], position?: AddRowPosition) => void
+  /** 按索引局部更新一行（仅本地） */
+  updateRow: (index: number, patch: Partial<T>) => void
+  /** 按行主键局部更新（仅本地；虚拟滚动场景优先用这个） */
+  updateRowByKey: (key: string | number, patch: Partial<T>, keyField?: string) => void
+  /** 按索引删除一行（仅本地） */
+  removeRow: (index: number) => void
+  /** 按行主键删除（仅本地） */
+  removeRowByKey: (key: string | number, keyField?: string) => void
+  /** 即时读取当前表格数据（浅拷贝，避免外部直接改内部 state） */
+  getDataSource: () => T[]
 }
 
 /**
  * 表格数据与分页。
  * - 远程：传 `request`；对象型 `searchParams` 变化会重置页码并重查；函数型在每次请求时取值。
- * - 本地：用 `setTableData` / `addRow` / `addRows`。
+ * - 本地：用 `setTableData` / `addRow` / `addRows` / `updateRow(ByKey)` / `removeRow(ByKey)`。
  */
 export default function useTableQuery<T extends TableRowData>(
   options: UseTableQueryOptions<T> = {},
@@ -217,6 +227,60 @@ export default function useTableQuery<T extends TableRowData>(
   /** 追加一行（仅本地模式） */
   const addRow = useCallback((row: T, position?: AddRowPosition) => addRows([row], position), [addRows])
 
+  /** 按索引局部更新一行（仅本地模式） */
+  const updateRow = useCallback(
+    (index: number, patch: Partial<T>) => {
+      if (index < 0) return
+      patchLocalData((prev) => {
+        if (index >= prev.length) return prev
+        return prev.map((item, i) => (i === index ? { ...item, ...patch } : item))
+      })
+    },
+    [patchLocalData],
+  )
+
+  /** 按行主键局部更新（仅本地模式） */
+  const updateRowByKey = useCallback(
+    (key: string | number, patch: Partial<T>, keyField = "id") => {
+      patchLocalData((prev) => {
+        let changed = false
+        const next = prev.map((item) => {
+          if ((item as Record<string, unknown>)[keyField] !== key) return item
+          changed = true
+          return { ...item, ...patch }
+        })
+        return changed ? next : prev
+      })
+    },
+    [patchLocalData],
+  )
+
+  /** 按索引删除一行（仅本地模式） */
+  const removeRow = useCallback(
+    (index: number) => {
+      if (index < 0) return
+      patchLocalData((prev) => {
+        if (index >= prev.length) return prev
+        return prev.filter((_, i) => i !== index)
+      })
+    },
+    [patchLocalData],
+  )
+
+  /** 按行主键删除（仅本地模式） */
+  const removeRowByKey = useCallback(
+    (key: string | number, keyField = "id") => {
+      patchLocalData((prev) => {
+        const next = prev.filter((item) => (item as Record<string, unknown>)[keyField] !== key)
+        return next.length === prev.length ? prev : next
+      })
+    },
+    [patchLocalData],
+  )
+
+  /** 命令式读取当前 dataSource（走 ref，避免闭包过期） */
+  const getDataSource = useCallback(() => dataSourceRef.current.slice(), [])
+
   // 远程：函数型只做首次请求；对象型继续监听变化并重查
   const searchParamsKey = useMemo(
     () => (isSearchParamsGetter ? "" : JSON.stringify(searchParams ?? {})),
@@ -259,5 +323,10 @@ export default function useTableQuery<T extends TableRowData>(
     setTableData,
     addRow,
     addRows,
+    updateRow,
+    updateRowByKey,
+    removeRow,
+    removeRowByKey,
+    getDataSource,
   }
 }

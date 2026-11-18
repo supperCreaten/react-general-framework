@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react"
-import { Button, DialogPlugin, Input, Select, Tag, type TableProps } from "tdesign-react"
+import { Button, DialogPlugin, Select, Tag, type TableProps } from "tdesign-react"
 import { AddIcon } from "tdesign-icons-react"
 import api from "@/api"
 import BasicTable, { type BasicTableRef } from "@/components/BasicTable"
@@ -7,6 +7,7 @@ import SearchBox, { type SearchBoxRef } from "@/components/SearchBox"
 import TableSection from "@/components/TableSection"
 import type { FormConfig } from "@/interface"
 import { getParams, showMessage } from "@/utils/methods"
+import InputText from "@/components/InputText"
 import AddPost from "./components/AddPost"
 
 type PostRow = {
@@ -35,12 +36,12 @@ export default function PostPage() {
       {
         label: "岗位编码",
         name: "postCode",
-        component: <Input clearable placeholder="请输入岗位编码" />,
+        component: <InputText clearable placeholder="请输入岗位编码" />,
       },
       {
         label: "岗位名称",
         name: "postName",
-        component: <Input clearable placeholder="请输入岗位名称" />,
+        component: <InputText clearable placeholder="请输入岗位名称" />,
       },
       {
         label: "状态",
