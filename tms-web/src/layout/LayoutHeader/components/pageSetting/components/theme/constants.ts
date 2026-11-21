@@ -1,12 +1,7 @@
-import type { ThemeMode } from "@/interface"
+import type { ThemeColorPreset, ThemeModePreset } from "@/interface/preferences"
 import { MoonIcon, SunnyIcon, SystemThemeIcon } from "@/icons/local-icons"
-import type { ComponentType, SVGProps } from "react"
 
-export interface ThemeModePreset {
-  name: string
-  mode: ThemeMode
-  Icon: ComponentType<SVGProps<SVGSVGElement> & { className?: string }>
-}
+export type { ThemeColorPreset, ThemeModePreset } from "@/interface/preferences"
 
 /** 外观主题：浅色 / 深色 / 跟随系统 */
 export const THEME_MODE_PRESETS: readonly ThemeModePreset[] = [
@@ -14,12 +9,6 @@ export const THEME_MODE_PRESETS: readonly ThemeModePreset[] = [
   { name: "深色", mode: "dark", Icon: MoonIcon },
   { name: "跟随系统", mode: "system", Icon: SystemThemeIcon },
 ] as const
-
-export interface ThemeColorPreset {
-  name: string
-  color: string
-  tip: string
-}
 
 /**
  * 内置主题色：蓝 / 青 / 绿 / 橙 / 红 / 紫等色相，饱和度适中，适合后台管理系统。

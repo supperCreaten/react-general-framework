@@ -4,36 +4,13 @@ import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
+import type { DeptDetail, DeptTreeNode } from "@/interface/system/dept"
+import type { AddDeptProps, DeptFormValues } from "@/interface/system/dept"
 import { showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
 import InputText from "@/components/InputText"
 
-export type DeptTreeNode = {
-  deptId: string | number
-  deptName: string
-  hasChildren?: boolean
-  children?: DeptTreeNode[] | boolean
-}
-
-type DeptFormValues = {
-  parentId?: string | number
-  deptName?: string
-  orderNum?: number
-  leader?: string
-  phone?: string
-  email?: string
-  status?: string
-}
-
-type DeptDetail = {
-  parentId?: string | number
-  deptName?: string
-  orderNum?: number
-  leader?: string
-  phone?: string
-  email?: string
-  status?: string | number
-}
+export type { AddDeptProps }
 
 const STATUS_OPTIONS = [
   { label: "正常", value: "0" },
@@ -81,14 +58,6 @@ function mapDetailToForm(data?: DeptDetail): DeptFormValues {
     email: data?.email || undefined,
     status: asOptionValue(data?.status, "0"),
   }
-}
-
-export type AddDeptProps = {
-  visible: boolean
-  title: string
-  deptId?: string
-  parentId?: string
-  onClose: (submitted?: boolean) => void
 }
 
 export default function AddDept(props: AddDeptProps) {
@@ -209,9 +178,9 @@ export default function AddDept(props: AddDeptProps) {
         status: values.status ?? "0",
       }
       if (isEdit) {
-        await api.updateDept(payload)
+        await api.updateDept<void>(payload)
       } else {
-        await api.insertDept(payload)
+        await api.insertDept<void>(payload)
       }
       showMessage(`${title}成功`, "success")
       onClose(true)

@@ -4,8 +4,7 @@ import LoginForm from "./loginForm";
 import ChangePasswordForm from "./changePasswordForm";
 import loginLogisticsBg from "@/assets/images/login_logistics_bg.jpg";
 import brandLogo from "@/assets/svg/logo.svg";
-
-type LoginView = "login" | "changePassword";
+import type { LoginView } from "@/interface/login";
 
 const FEATURES = ["运单追踪", "智能调度", "车队管理", "司机协同", "轨迹回放", "运费结算"] as const;
 

@@ -8,11 +8,9 @@ import { headerHeight, siderTriggerHeight } from "../constants";
 import { Logo } from "../components/logo";
 import { SiderTrigger } from "../widgets/sider-trigger";
 import { useSidebarResize } from "./use-sidebar-resize";
+import type { LayoutSidebarProps } from "@/interface/layout";
 
-export interface LayoutSidebarProps {
-  children?: React.ReactNode;
-  computedSidebarWidth: number;
-}
+export type { LayoutSidebarProps } from "@/interface/layout";
 
 export default function LayoutSidebar({ children, computedSidebarWidth }: LayoutSidebarProps) {
   const { sidebarCollapsed, isMenuDark, isDark } = usePreferences();

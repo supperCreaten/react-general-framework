@@ -28,16 +28,9 @@ function isEmpty(value: unknown): boolean {
   return Number.isNaN(Number(str));
 }
 
-export type TaxPriceCalcResult = {
-  /** 含税金额（4 位） */
-  taxInclusiveAmount: string;
-  /** 不含税金额（4 位） */
-  taxExclusiveAmount: string;
-  /** 不含税单价（2 位） */
-  taxExclusiveUnitPrice: string;
-  /** 税额（4 位） */
-  taxAmount: string;
-};
+import type { TaxPriceCalcResult } from "@/interface/common";
+
+export type { TaxPriceCalcResult };
 
 const EMPTY_RESULT: TaxPriceCalcResult = {
   taxInclusiveAmount: "",

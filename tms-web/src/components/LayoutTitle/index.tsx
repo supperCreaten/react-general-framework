@@ -1,29 +1,10 @@
-import { useMemo, useState, type ReactNode } from "react"
+import type { LayoutTitleProps } from "@/interface/components"
+import { useMemo, useState } from "react"
 import { Button, Card } from "tdesign-react"
 import { ChevronDownIcon, ChevronUpIcon } from "tdesign-icons-react"
 import { cn } from "@/utils/methods"
 
-type LayoutTitleProps = {
-  title: string
-  children?: ReactNode
-  /** 是否显示展开/收起，默认 true */
-  collapsible?: boolean
-  /** 非受控：默认是否收起 */
-  defaultCollapsed?: boolean
-  /** 受控：是否收起 */
-  collapsed?: boolean
-  /** body区域是否需要 padding */
-  isbodyPPadding?: "vertical" | "horizontal" | "all" | "none"
-  /** 是否需要 border */
-  bordered?: boolean
-  onCollapsedChange?: (collapsed: boolean) => void
-  /** 标题后操作区（紧跟标题，适合放新增等按钮） */
-  actions?: ReactNode
-  /** 标题栏右侧额外内容（展开/收起左侧） */
-  extra?: ReactNode
-  className?: string
-  contentClassName?: string
-}
+export type { LayoutTitleProps }
 
 export default function LayoutTitle(props: LayoutTitleProps) {
   const {

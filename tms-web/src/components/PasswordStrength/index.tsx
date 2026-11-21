@@ -1,4 +1,7 @@
+import type { PasswordStrengthProps } from "@/interface/components"
 import { getPasswordStrength, type PasswordStrengthLevel } from "@/pages/login/passwordStrength"
+
+export type { PasswordStrengthProps }
 
 
 
@@ -27,18 +30,6 @@ const LEVEL_COLOR: Record<Exclude<PasswordStrengthLevel, "empty">, string> = {
   strong: "var(--td-success-color)",
 
 }
-
-
-
-export type PasswordStrengthProps = {
-
-  password?: string
-
-  className?: string
-
-}
-
-
 
 /** 密码强度三段指示条（输入后显示） */
 

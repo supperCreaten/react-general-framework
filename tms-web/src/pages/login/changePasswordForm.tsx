@@ -6,19 +6,10 @@ import api from "@/api";
 import { aesEncrypt } from "@/utils/auth";
 import { showMessage } from "@/utils/methods";
 import InputText from "@/components/InputText";
+import type { ChangePasswordFormProps, ChangePasswordFormValues } from "@/interface/login";
 import PasswordStrengthHint from "./PasswordStrengthHint";
 
 const { FormItem } = Form;
-
-type ChangePasswordFormValues = {
-  account: string;
-  password: string;
-  confirmPassword: string;
-};
-
-type ChangePasswordFormProps = {
-  onBackToLogin?: () => void;
-};
 
 export default function ChangePasswordForm({ onBackToLogin }: ChangePasswordFormProps) {
   const [form] = Form.useForm();
@@ -51,7 +42,7 @@ export default function ChangePasswordForm({ onBackToLogin }: ChangePasswordForm
 
     setLoading(true);
     try {
-      await api.changePassword({
+      await api.changePassword<void>({
         account: aesEncrypt(account),
         password: aesEncrypt(nextPassword),
       });

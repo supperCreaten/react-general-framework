@@ -6,18 +6,11 @@ import { LockOnIcon, UserIcon } from "tdesign-icons-react"
 import api from "@/api"
 import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
+import type { LoginResult } from "@/interface/common"
+import type { LoginFormProps, LoginFormValues } from "@/interface/login"
 import { aesEncrypt, setAccessToken } from "@/utils/auth"
 import { showMessage } from "@/utils/methods"
 import InputText from "@/components/InputText"
-
-type LoginFormValues = {
-  account: string
-  password: string
-}
-
-type LoginFormProps = {
-  onForgotPassword?: () => void
-}
 
 const rules: FormRules<LoginFormValues> = {
   account: [{ required: true, message: "请输入账号", type: "error" }],
@@ -106,7 +99,7 @@ export default function LoginForm({ onForgotPassword }: LoginFormProps) {
 
     setLoading(true)
     try {
-      const token = await api.login({
+      const token = await api.login<LoginResult>({
         account: aesEncrypt(account),
         password: aesEncrypt(password),
       })

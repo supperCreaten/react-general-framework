@@ -17,62 +17,15 @@ import MoreActions from "@/components/MoreActions"
 import SearchBox, { type SearchBoxRef } from "@/components/SearchBox"
 import TableSection from "@/components/TableSection"
 import type { FormConfig } from "@/interface"
+import type { DeptTreeNode } from "@/interface/system/dept"
+import type { UserRow } from "@/interface/system/user"
+import type { UserPageState } from "@/interface/system/user"
 import { getParams, showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
 import InputText from "@/components/InputText"
 import AddUser from "./components/AddUser"
 import AuthRole from "./components/AuthRole"
 import ResetPwd from "./components/ResetPwd"
-
-type UserRow = {
-  userId: string | number
-  userName?: string
-  account?: string
-  nickName?: string
-  deptName?: string
-  postName?: string
-  phone?: string
-  phonenumber?: string
-  status?: string | number
-  createTime?: string
-}
-
-type DeptTreeNode = {
-  deptId: string
-  deptName: string
-  hasChildren?: boolean
-  children?: DeptTreeNode[] | boolean
-}
-
-type UserDialogState = {
-  visible: boolean
-  title: string
-  userId?: string
-  defaultDeptId?: string
-}
-
-type AuthDialogState = {
-  visible: boolean
-  userId?: string
-  userName?: string
-}
-
-type ResetPwdDialogState = {
-  visible: boolean
-  userId?: string
-  userName?: string
-  account?: string
-}
-
-type UserPageState = {
-  deptKeyword: string
-  deptTree: DeptTreeNode[]
-  selectedDeptId?: string
-  selectedKeys: Array<string | number>
-  userDialog: UserDialogState
-  authDialog: AuthDialogState
-  resetPwdDialog: ResetPwdDialogState
-}
 
 const initialUserPageState: UserPageState = {
   deptKeyword: "",
@@ -89,10 +42,10 @@ function userPageReducer(state: UserPageState, patch: Partial<UserPageState>): U
 }
 
 /** 将接口部门列表规范为树节点（含嵌套 children） */
-function normalizeDeptTree(list: Array<Record<string, unknown>> = []): DeptTreeNode[] {
+function normalizeDeptTree(list: DeptTreeNode[] = []): DeptTreeNode[] {
   return list.map((item) => {
     const children = Array.isArray(item.children)
-      ? normalizeDeptTree(item.children as Array<Record<string, unknown>>)
+      ? normalizeDeptTree(item.children as DeptTreeNode[])
       : undefined
     return {
       deptId: String(item.deptId),
@@ -106,8 +59,8 @@ function normalizeDeptTree(list: Array<Record<string, unknown>> = []): DeptTreeN
  * 将部门树转为懒加载节点
  * @param list 原始部门节点
  */
-function toLazyDeptNodes(list: Array<Record<string, unknown>> = []): DeptTreeNode[] {
-  return markLazyChildren(list, { idKey: "deptId" }).map((item) => ({
+function toLazyDeptNodes(list: DeptTreeNode[] = []): DeptTreeNode[] {
+  return markLazyChildren(list as Array<Record<string, unknown>>, { idKey: "deptId" }).map((item) => ({
     ...item,
     deptName: String(item.deptName ?? ""),
   })) as DeptTreeNode[]
@@ -115,7 +68,7 @@ function toLazyDeptNodes(list: Array<Record<string, unknown>> = []): DeptTreeNod
 
 /** 按父节点懒加载子部门 */
 async function loadDeptChildren(parentId: string | number) {
-  const data = await api.getDepts<Array<Record<string, unknown>>>({ lazy: true, parentId, status: "0" })
+  const data = await api.getDepts<DeptTreeNode[]>({ lazy: true, parentId, status: "0" })
   return toLazyDeptNodes(Array.isArray(data) ? data : [])
 }
 
@@ -136,7 +89,7 @@ export default function UserPage() {
     const text = keyword.trim()
     try {
       if (text) {
-        const data = await api.getDepts<Array<Record<string, unknown>>>({ status: "0", deptName: text })
+        const data = await api.getDepts<DeptTreeNode[]>({ status: "0", deptName: text })
         dispatch({
           deptTree: normalizeDeptTree(Array.isArray(data) ? data : []),
         })
@@ -209,7 +162,7 @@ export default function UserPage() {
       onConfirm: async () => {
         try {
           for (const row of rows) {
-            await api.deleteUser({ userId: row.userId })
+            await api.deleteUser<void>({ userId: row.userId })
           }
           showMessage("删除成功", "success")
           dialogInstance.hide?.()
@@ -289,7 +242,7 @@ export default function UserPage() {
             value={String(row.status) === "0"}
             onChange={async (checked) => {
               try {
-                await api.updateUserStatus({ userId: row.userId, status: checked ? "0" : "1" })
+                await api.updateUserStatus<void>({ userId: row.userId, status: checked ? "0" : "1" })
                 showMessage("修改状态成功", "success")
                 void tableRef.current?.refresh()
               } catch {
@@ -428,7 +381,7 @@ export default function UserPage() {
                 ref={tableRef}
                 rowKey="userId"
                 columns={columns}
-                request={api.getUserList}
+                request={api.getUserList<UserRow>}
                 searchParams={() =>
                   getParams({
                     ...(searchRef.current?.getFieldsValue(true) ?? {}),

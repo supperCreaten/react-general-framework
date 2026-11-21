@@ -1,33 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import api from "@/api";
+import type { LoginUserInfo, UserInfoApiRes, UserInfoPayload } from "@/interface/system/user";
 import { logout } from "@/utils/auth";
 import { unwrapRecord } from "@/utils/service";
 
-export type UserInfoPayload = {
-  userInfo: Record<string, unknown>;
-  permissions: string[];
-  roles: string[];
-};
-
-/** 若依用户信息接口响应 */
-export type UserInfoApiRes = {
-  permissions?: string[];
-  roles?: string[];
-  user?: Record<string, unknown>;
-};
+export type { LoginUserInfo, UserInfoApiRes, UserInfoPayload };
 
 /** 兼容若依结构 { permissions, roles, user } 与旧版扁平 user */
 export function normalizeUserInfoRes(res?: unknown): UserInfoPayload {
   const data = unwrapRecord(res);
   if (data && typeof data === "object" && data.user && typeof data.user === "object") {
     return {
-      userInfo: data.user as Record<string, unknown>,
+      userInfo: data.user as LoginUserInfo,
       permissions: Array.isArray(data.permissions) ? (data.permissions as string[]) : [],
       roles: Array.isArray(data.roles) ? (data.roles as string[]) : [],
     };
   }
   return {
-    userInfo: data ?? {},
+    userInfo: (data ?? {}) as LoginUserInfo,
     permissions: [],
     roles: [],
   };
@@ -47,7 +37,7 @@ export const userLogout = createAsyncThunk("menu/userLogout", async () => {
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    userInfo: {} as Record<string, unknown>,
+    userInfo: {} as LoginUserInfo,
     permissions: [] as string[],
     roles: [] as string[],
     avatar: "https://avatars.githubusercontent.com/u/47056890",

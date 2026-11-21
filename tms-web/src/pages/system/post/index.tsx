@@ -9,22 +9,8 @@ import type { FormConfig } from "@/interface"
 import { getParams, showMessage } from "@/utils/methods"
 import InputText from "@/components/InputText"
 import AddPost from "./components/AddPost"
-
-type PostRow = {
-  postId: string | number
-  postCode: string
-  postName: string
-  postSort?: number
-  status?: string | number
-  createTime?: string
-  remark?: string
-}
-
-type PostDialogState = {
-  visible: boolean
-  title: string
-  postId?: string
-}
+import type { PostRow } from "@/interface/system/post"
+import type { PostDialogState } from "@/interface/system/post"
 
 export default function PostPage() {
   const searchRef = useRef<SearchBoxRef>(null)
@@ -145,7 +131,7 @@ export default function PostPage() {
       body: `是否确认删除岗位「${row.postName}」？`,
       onConfirm: async () => {
         try {
-          await api.deletePost({ postId: row.postId })
+          await api.deletePost<void>({ postId: row.postId })
           showMessage("删除成功", "success")
           dialogInstance.hide?.()
           void tableRef.current?.refresh()
@@ -176,7 +162,7 @@ export default function PostPage() {
           ref={tableRef}
           rowKey="postId"
           columns={columns}
-          request={api.getPostList}
+          request={api.getPostList<PostRow>}
           searchParams={() => getParams(searchRef.current?.getFieldsValue(true) ?? {})}
           tableProps={{ tableLayout: "auto" }}
         />

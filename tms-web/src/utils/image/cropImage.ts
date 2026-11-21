@@ -1,3 +1,7 @@
+import type { VisibleCropInput } from "@/interface/common";
+
+export type { VisibleCropInput };
+
 /** 加载跨域图片（导出裁剪用） */
 export function createImage(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -13,18 +17,6 @@ export function createImage(url: string): Promise<HTMLImageElement> {
 export function getRadianAngle(degreeValue: number) {
   return (degreeValue * Math.PI) / 180;
 }
-
-/** 可见区域裁剪：舞台尺寸、裁剪框与自然图缩放/旋转参数 */
-export type VisibleCropInput = {
-  imageSrc: string;
-  stageWidth: number;
-  stageHeight: number;
-  box: { x: number; y: number; size: number };
-  naturalWidth: number;
-  naturalHeight: number;
-  zoom: number;
-  rotation: number;
-};
 
 /**
  * 按舞台上的固定图片 + 可移动正方形裁剪框导出高清 Blob。

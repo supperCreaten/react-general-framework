@@ -1,0 +1,6 @@
+export type * from "./dept"
+export type * from "./loginLog"
+export type * from "./operLog"
+export type * from "./post"
+export type * from "./role"
+export type * from "./user"

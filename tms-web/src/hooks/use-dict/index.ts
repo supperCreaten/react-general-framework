@@ -1,20 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
 import api from "@/api"
+import type { DictItem, DictOption } from "@/interface/resource/dict"
 
-export type DictOption = {
-  label: string
-  value: string
-  id: string
-}
+export type { DictOption }
 
 type DictRecord = Record<string, DictOption[]>
-
-type DictItem = {
-  dictLabel?: string
-  dictValue?: string
-  id?: string | number
-  dictId?: string | number
-}
 
 /** 进程内缓存，避免同一字典编码重复请求 */
 const dictCache: DictRecord = {}

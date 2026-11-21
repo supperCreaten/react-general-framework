@@ -1,3 +1,4 @@
+import type { TableSectionProps } from "@/interface/components"
 import { Children, isValidElement, type ReactNode } from "react"
 import { Card } from "tdesign-react"
 import { clsx } from "clsx"
@@ -70,12 +71,6 @@ function parseTableSectionSlots(children: ReactNode) {
   }
 
   return { header, footer, toolbarLeft, toolbarRight, content: contentNodes }
-}
-
-type TableSectionProps = {
-  isContentFullCard?: boolean
-  children: ReactNode
-  className?: string
 }
 
 function TableSection(props: TableSectionProps) {

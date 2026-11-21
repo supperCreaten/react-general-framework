@@ -22,45 +22,13 @@ import {
 } from "../constants"
 import { MENU_TYPE } from "@/constants/menu"
 import InputText from "@/components/InputText"
+import type { MenuDetail, MenuTreeNode } from "@/interface/menu"
+import type { AddMenuProps, MenuFormValues } from "@/interface/menu"
 
-export type MenuTreeNode = {
-  menuId: string | number
-  menuName: string
-  hasChildren?: boolean
-  children?: MenuTreeNode[] | boolean
-}
+export type { MenuTreeNode } from "@/interface/menu"
+export type { AddMenuProps }
 
 const SELECT_SCROLL = { type: "virtual" as const }
-
-type MenuFormValues = {
-  parentId?: string | number
-  menuType?: number
-  icon?: string
-  menuName?: string
-  orderNum?: number
-  isFrame?: string
-  path?: string
-  perms?: string
-  keepAlive?: string
-  hidden?: string
-  status?: string
-}
-
-type MenuDetail = {
-  parentId?: string | number
-  menuType?: number
-  icon?: string
-  menuName?: string
-  orderNum?: number
-  path?: string
-  perms?: string
-  isFrame?: string | number
-  visible?: string | number
-  hidden?: string | number
-  status?: string | number
-  isCache?: string | number
-  keepAlive?: string | number
-}
 
 const ICON_OPTIONS = createIconList().map((item) => ({
   label: item.label,
@@ -138,13 +106,6 @@ function buildSubmitPayload(values?: MenuFormValues, menuId?: string) {
     isFrame: values?.isFrame ?? "1",
     ...(!isButton ? { path: values?.path ?? "" } : {}),
   }
-}
-
-export type AddMenuProps = {
-  visible: boolean
-  title: string
-  menuId?: string
-  onClose: (submitted?: boolean) => void
 }
 
 export default function AddMenu(props: AddMenuProps) {
@@ -316,9 +277,9 @@ export default function AddMenu(props: AddMenuProps) {
       const values = form.getFieldsValue(true) as MenuFormValues
       const payload = buildSubmitPayload(values, isEdit ? menuId : undefined)
       if (isEdit) {
-        await api.updateMenu(payload)
+        await api.updateMenu<void>(payload)
       } else {
-        await api.insertMenu(payload)
+        await api.insertMenu<void>(payload)
       }
       showMessage(`${title}成功`, "success")
       onClose(true)

@@ -7,48 +7,21 @@ import BasicForm from "@/components/BasicForm"
 import PasswordStrength from "@/components/PasswordStrength"
 import { validatePasswordStrength } from "@/components/PasswordStrength/validate"
 import type { FormConfig } from "@/interface"
+import type { DeptTreeNode } from "@/interface/system/dept"
+import type { PostOption } from "@/interface/system/post"
+import type { RoleOption } from "@/interface/system/role"
+import type { UserDetail } from "@/interface/system/user"
+import type {
+  AddUserProps,
+  AddUserState,
+  UserFormValues,
+} from "@/interface/system/user"
 import { showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
 
-type DeptTreeNode = {
-  deptId: string | number
-  deptName: string
-  hasChildren?: boolean
-  children?: DeptTreeNode[] | boolean
-}
+export type { AddUserProps }
 
 const SELECT_SCROLL = { type: "virtual" as const }
-
-type OptionItem = { label: string; value: string }
-
-type UserFormValues = {
-  nickName?: string
-  deptId?: string
-  phone?: string
-  email?: string
-  account?: string
-  password?: string
-  sex?: string
-  status?: string
-  postId?: string
-  roleIds?: string[]
-  remark?: string
-}
-
-type UserDetail = {
-  nickName?: string
-  deptId?: string | number
-  phone?: string
-  phonenumber?: string
-  email?: string
-  account?: string
-  userName?: string
-  sex?: string
-  status?: string | number
-  postId?: string | number
-  roleIds?: Array<string | number>
-  remark?: string
-}
 
 const SEX_OPTIONS = [
   { label: "男", value: "男" },
@@ -66,14 +39,6 @@ const initialValues: UserFormValues = {
   status: "0",
   roleIds: [],
   remark: "",
-}
-
-type AddUserState = {
-  loading: boolean
-  submitting: boolean
-  deptTree: DeptTreeNode[]
-  postOptions: OptionItem[]
-  roleOptions: OptionItem[]
 }
 
 const initialAddUserState: AddUserState = {
@@ -122,14 +87,6 @@ function mapDetailToForm(data?: UserDetail): UserFormValues {
     roleIds: (data?.roleIds ?? []).map((id) => String(id)),
     remark: data?.remark ?? "",
   }
-}
-
-export type AddUserProps = {
-  visible: boolean
-  title: string
-  userId?: string
-  defaultDeptId?: string
-  onClose: (submitted?: boolean) => void
 }
 
 export default function AddUser(props: AddUserProps) {
@@ -312,7 +269,7 @@ export default function AddUser(props: AddUserProps) {
 
         const [deptRes, roleRes] = await Promise.all([
           loadDeptChildren(0),
-          api.getRoleList<{ roleId: string | number; roleName: string }>({
+          api.getRoleList<RoleOption>({
             pageNum: 1,
             pageSize: 500,
             status: "0",
@@ -345,7 +302,7 @@ export default function AddUser(props: AddUserProps) {
     let cancelled = false
     const loadPosts = async () => {
       try {
-        const data = await api.getPostList<{ postId: string | number; postName: string }>({
+        const data = await api.getPostList<PostOption>({
           pageNum: 1,
           pageSize: 500,
           status: "0",
@@ -391,9 +348,9 @@ export default function AddUser(props: AddUserProps) {
         payload.password = values.password
       }
       if (isEdit) {
-        await api.updateUser(payload)
+        await api.updateUser<void>(payload)
       } else {
-        await api.insertUser(payload)
+        await api.insertUser<void>(payload)
       }
       showMessage(`${title}成功`, "success")
       onClose(true)

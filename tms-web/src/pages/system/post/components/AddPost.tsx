@@ -7,31 +7,11 @@ import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
 import { showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
+import type { DeptTreeNode } from "@/interface/system/dept"
+import type { PostDetail } from "@/interface/system/post"
+import type { AddPostProps, PostFormValues } from "@/interface/system/post"
 
-type DeptTreeNode = {
-  deptId: string | number
-  deptName: string
-  hasChildren?: boolean
-  children?: DeptTreeNode[] | boolean
-}
-
-type PostFormValues = {
-  postName?: string
-  postCode?: string
-  deptId?: string
-  postSort?: number
-  status?: string
-  remark?: string
-}
-
-type PostDetail = {
-  postName?: string
-  postCode?: string
-  deptId?: string | number
-  postSort?: number
-  status?: string | number
-  remark?: string
-}
+export type { AddPostProps }
 
 const STATUS_OPTIONS = [
   { label: "正常", value: "0" },
@@ -73,13 +53,6 @@ function mapDetailToForm(data?: PostDetail): PostFormValues {
     status: asOptionValue(data?.status, "0"),
     remark: data?.remark ?? "",
   }
-}
-
-export type AddPostProps = {
-  visible: boolean
-  title: string
-  postId?: string
-  onClose: (submitted?: boolean) => void
 }
 
 export default function AddPost(props: AddPostProps) {
@@ -182,9 +155,9 @@ export default function AddPost(props: AddPostProps) {
         remark: values.remark ?? "",
       }
       if (isEdit) {
-        await api.updatePost(payload)
+        await api.updatePost<void>(payload)
       } else {
-        await api.insertPost(payload)
+        await api.insertPost<void>(payload)
       }
       showMessage(`${title}成功`, "success")
       onClose(true)

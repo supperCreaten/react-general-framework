@@ -1,12 +1,9 @@
 /** 不允许输入 0 的字段，可按业务在此追加 */
 const DISALLOW_ZERO_FIELDS = new Set<string>(["quantity", "taxInclusiveUnitPrice"])
 
-export type DecimalFormatOptions = {
-  /** 字段名：在 DISALLOW_ZERO_FIELDS 中则禁止最终为 0 */
-  field?: string
-  /** 强制禁止最终为 0（正数场景） */
-  disallowZero?: boolean
-}
+import type { DecimalFormatOptions } from "@/interface/common"
+
+export type { DecimalFormatOptions }
 
 /**
  * 禁止最终值为 0（含 0、0.0、0.00）。

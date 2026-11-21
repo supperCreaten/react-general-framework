@@ -13,26 +13,9 @@ import BasicDialog from "@/components/BasicDialog"
 import { showMessage } from "@/utils/methods"
 import "./index.css"
 
-export type ImportCommitResult = {
-  totalCount?: number
-  successCount?: number
-  failCount?: number
-  message?: string
-  errorFileName?: string
-  errorFileBase64?: string
-}
+import type { ImportCommitResult, ImportDialogProps } from "@/interface/components"
 
-export type ImportDialogProps = {
-  visible: boolean
-  title?: string
-  /** 模板下载文件名 */
-  templateFileName: string
-  onClose: (imported?: boolean) => void
-  /** 下载导入模板 */
-  downloadTemplate: () => Promise<Blob>
-  /** 提交导入（FormData 含 file、partialCommit） */
-  importFile: (formData: FormData) => Promise<ImportCommitResult>
-}
+export type { ImportCommitResult, ImportDialogProps }
 
 function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob)

@@ -13,10 +13,7 @@ import { AUTH_WHITE_LIST } from "@/router/constants";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
-
-interface AuthRouteGuardProps {
-  children: React.ReactNode;
-}
+import type { AuthRouteGuardProps } from "@/interface/route";
 
 /**
  * 路由鉴权：登录态校验、用户信息/菜单拉取、白名单放行。

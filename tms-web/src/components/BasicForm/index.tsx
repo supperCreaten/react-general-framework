@@ -5,7 +5,8 @@ import type {
   FormFieldListOperation,
   FormFieldListRow,
 } from "@/interface"
-import type { ColProps, FormProps } from "tdesign-react"
+import type { BasicFormProps } from "@/interface/components"
+import type { ColProps } from "tdesign-react"
 import { Button, Col, Form, Row } from "tdesign-react"
 import type { Key, ReactNode } from "react"
 import { clsx } from "clsx"
@@ -141,22 +142,7 @@ function renderFormField(config: FormConfig, index: number): ReactNode {
   )
 }
 
-export type BasicFormProps = FormProps & {
-  formConfig: FormConfig[]
-  /** 渲染在字段区右侧，与字段同一行（如搜索操作按钮） */
-  extra?: ReactNode
-  extraClassName?: string
-  /**
-   * Row 间距。弹窗表单建议 [16, 0]，由表单项自身预留下方错误区；
-   * 搜索区常用 [16, 12]。
-   */
-  gutter?: [number, number]
-  /**
-   * 是否预留下方错误/提示高度（类似 Element FormItem），默认 true。
-   * 搜索栏等紧凑布局请传 false。
-   */
-  reserveErrorSpace?: boolean
-}
+export type { BasicFormProps }
 
 export default function BasicForm(props: BasicFormProps) {
   const {

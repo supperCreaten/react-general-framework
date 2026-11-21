@@ -1,4 +1,4 @@
-import type { TablePageResult } from "@/hooks/use-table-query";
+import type { TablePageResult } from "@/interface/hooks";
 import type { TableRowData } from "tdesign-react";
 import request from "@/utils/service";
 
@@ -12,7 +12,7 @@ export default {
   /** 批量删除操作日志 */
   deleteOperLog: <T = unknown>(data: { operIds: (number | string)[] }) =>
     request.post<T>("/api/operLog/delete", data),
-  /** 按保留天数清理历史操作日志 */
+  /** 按保留天数清理历史操作日�?*/
   cleanOperLog: <T = unknown>(data: { days: number }) =>
     request.post<T>("/api/operLog/clean", data),
 };

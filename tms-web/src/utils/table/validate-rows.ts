@@ -1,51 +1,14 @@
 import { createElement } from "react"
 import type { TableRowData } from "tdesign-react"
 import { MessagePlugin, NotificationPlugin } from "tdesign-react"
+import type {
+  TableFieldRule,
+  TableRowFieldError,
+  ValidateTableRowsOptions,
+  ValidateTableRowsResult,
+} from "@/interface/common"
 
-/** 单字段校验规则 */
-export type TableFieldRule<T extends TableRowData> = {
-  /** 字段名 */
-  field: keyof T & string
-  /** 必填；为 string 时作为错误文案 */
-  required?: boolean | string
-  /** 自定义校验，返回错误文案；返回空表示通过 */
-  validator?: (value: unknown, row: T, index: number) => string | undefined | null | false
-}
-
-export type ValidateTableRowsOptions<T extends TableRowData> = {
-  rows: T[]
-  rules: TableFieldRule<T>[]
-  /** 行主键字段，默认 id */
-  rowKey?: string
-  /** 最少行数，默认不限制 */
-  minRows?: number
-  /** 行数不足时的提示 */
-  minRowsMessage?: string
-  /**
-   * 校验失败时是否弹出通知，默认 true。
-   * 样式：标题「校验未通过」，正文按行汇总。
-   */
-  notify?: boolean
-  /** 通知标题，默认「校验未通过」 */
-  notifyTitle?: string
-  /** 通知展示时长（ms），默认 4500；传 0 则需手动关闭 */
-  notifyDuration?: number
-}
-
-export type TableRowFieldError = {
-  rowKey: string | number
-  rowIndex: number
-  field: string
-  message: string
-}
-
-export type ValidateTableRowsResult = {
-  valid: boolean
-  errors: TableRowFieldError[]
-  /** 按行汇总后的文案，如「第1行：xxx；yyy」 */
-  rowMessages: string[]
-  firstMessage?: string
-}
+export type { TableFieldRule, TableRowFieldError, ValidateTableRowsOptions, ValidateTableRowsResult }
 
 function isEmptyValue(value: unknown) {
   if (value == null) return true

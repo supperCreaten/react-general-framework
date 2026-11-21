@@ -11,29 +11,8 @@ import { getParams, showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
 import InputText from "@/components/InputText"
 import AddDept from "./components/AddDept"
-
-type DeptRow = {
-  deptId: string | number
-  parentId?: string | number
-  deptName: string
-  orderNum?: number
-  leader?: string
-  phone?: string
-  email?: string
-  status?: string | number
-  createBy?: string
-  createTime?: string
-  hasChildren?: boolean
-  /** 懒加载未展开时用 true 占位（运行时）；类型上兼容 TableRowData */
-  children?: DeptRow[]
-}
-
-type DeptDialogState = {
-  visible: boolean
-  title: string
-  deptId?: string
-  parentId?: string
-}
+import type { DeptRow } from "@/interface/system/dept"
+import type { DeptDialogState } from "@/interface/system/dept"
 
 /** 完整树（搜索场景） */
 function normalizeDeptTree(list: DeptRow[] = []): DeptRow[] {
@@ -163,7 +142,7 @@ export default function DeptPage() {
       body: `是否确认删除名称为「${row.deptName}」的数据项？`,
       onConfirm: async () => {
         try {
-          await api.deleteDept({ deptId: row.deptId })
+          await api.deleteDept<void>({ deptId: row.deptId })
           showMessage("删除成功", "success")
           dialogInstance.hide?.()
           loadingChildrenRef.current.clear()

@@ -1,8 +1,6 @@
-import type { MenuItemType, RouteMeta } from "@/interface";
+import type { FlatRouteItem, MenuItemType } from "@/interface";
 
-export interface FlatRouteItem {
-  handle: Pick<RouteMeta, "keepAlive"> & Partial<RouteMeta>;
-}
+export type { FlatRouteItem } from "@/interface/route";
 
 /** 非后端菜单的固定路由（路径需与浏览器 pathname 一致） */
 export const STATIC_FLAT_ROUTES: Record<string, FlatRouteItem> = {

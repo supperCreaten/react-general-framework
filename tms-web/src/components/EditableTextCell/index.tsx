@@ -1,25 +1,8 @@
-import InputText, { type InputFilterFn } from "@/components/InputText"
+import InputText from "@/components/InputText"
+import type { EditableTextCellProps } from "@/interface/components"
 import { memo, useEffect, useRef, useState } from "react"
-import type { TextareaProps } from "tdesign-react"
 
-export type EditableTextCommitFn = (rowId: string | number, patch: Record<string, string>) => void
-
-export type EditableTextCellProps = {
-  rowId: string | number
-  field: string
-  value?: string
-  placeholder?: string
-  inputRule?: InputFilterFn
-  decimalPlaces?: number
-  positive?: boolean
-  /** 多行文本；开启后回车换行，仅失焦写回 */
-  textarea?: boolean
-  /** 多行时是否过滤空格，默认 false（保留名称中的空格） */
-  filterSpace?: boolean
-  maxlength?: number
-  autosize?: TextareaProps["autosize"]
-  onCommit: EditableTextCommitFn
-}
+export type { EditableTextCellProps, EditableTextCommitFn } from "@/interface/components"
 
 /**
  * 可编辑文本单元格：输入用本地 state，失焦（单行还可回车）再写回表格。

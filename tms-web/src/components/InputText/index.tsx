@@ -1,9 +1,8 @@
+import type { InputFilterFn, InputTextProps } from "@/interface/components"
 import { formartDecimalPlaces, normalizeDecimalOnBlur } from "@/utils/format/decimal"
-import type { InputProps, TextareaProps } from "tdesign-react"
 import { Input, Textarea } from "tdesign-react"
 
-/** 输入过滤函数：接收当前值，返回过滤后的值（输入过程中生效） */
-export type InputFilterFn = (value: string) => string
+export type { InputFilterFn, InputTextProps }
 
 type FormatOptions = {
   /** 输入时去空格，默认 true */
@@ -21,10 +20,6 @@ type FormatOptions = {
    */
   inputRule?: InputFilterFn
 }
-
-export type InputTextProps =
-  | ({ textarea?: false } & FormatOptions & InputProps)
-  | ({ textarea: true; filterSpace?: boolean; inputRule?: InputFilterFn } & TextareaProps)
 
 /** 单行去掉全部空白；多行保留换行，去掉空格/制表等 */
 function stripSpace(raw: string, keepNewlines: boolean) {

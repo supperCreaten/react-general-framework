@@ -14,14 +14,9 @@ function clearBodyResizeStyle() {
   document.body.style.userSelect = "";
 }
 
-type UseSidebarResizeOptions = {
-  /** 当前侧栏展开宽度 */
-  sidebarWidth: number;
-  /** 折叠时不可拖拽 */
-  disabled?: boolean;
-  minWidth?: number;
-  maxWidth?: number;
-};
+import type { UseSidebarResizeOptions } from "@/interface/layout";
+
+export type { UseSidebarResizeOptions } from "@/interface/layout";
 
 /**
  * 侧边栏交界处拖拽调宽：写入 preferences.sidebarWidth，并同步 body 拖拽态样式。

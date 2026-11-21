@@ -1,7 +1,10 @@
+import type { ContentSectionProps } from "@/interface/components"
 import { Card, Loading } from "tdesign-react"
 import type { ReactNode } from "react"
 import { clsx } from "clsx"
 import { findSlot } from ".."
+
+export type { ContentSectionProps }
 
 type SlotProps = { children?: ReactNode }
 
@@ -19,21 +22,6 @@ function ContentSectionFooter({ children }: SlotProps) {
   return <>{children}</>
 }
 ContentSectionFooter.displayName = "ContentSection.Footer"
-
-type ContentSectionProps = {
-  children?: ReactNode
-  /** 内容区是否使用 Card 包裹，默认 true */
-  isContentFullCard?: boolean
-  /**
-   * 是否铺满父容器高度。
-   * true：h-full，内容区可滚动；
-   * false：高度随内容撑开（便于展示底部 padding）。
-   */
-  isFull?: boolean
-  /** 整块内容 loading 遮罩 */
-  loading?: boolean
-  className?: string
-}
 
 function ContentSection(props: ContentSectionProps) {
   const { isContentFullCard = true, isFull = true, loading = false, children, className } = props

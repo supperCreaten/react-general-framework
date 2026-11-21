@@ -7,41 +7,18 @@ import MoreActions from "@/components/MoreActions"
 import SearchBox, { type SearchBoxRef } from "@/components/SearchBox"
 import TableSection from "@/components/TableSection"
 import type { FormConfig } from "@/interface"
+import type { RoleRow } from "@/interface/system/role"
+import type { RoleAuthDialogState, RoleDialogState } from "@/interface/system/role"
 import { getParams, showMessage } from "@/utils/methods"
 import InputText from "@/components/InputText"
 import AddRole from "./components/AddRole"
 import AuthUser from "./components/AuthUser"
 
-type RoleRow = {
-  roleId: string | number
-  roleCode: string
-  roleKey: string
-  roleName: string
-  status: string | number
-  userCount?: number
-  createBy?: string
-  createTime?: string
-  updateBy?: string
-  updateTime?: string
-}
-
-type RoleDialogState = {
-  visible: boolean
-  title: string
-  roleId?: string
-}
-
-type AuthDialogState = {
-  visible: boolean
-  roleId?: string
-  roleName?: string
-}
-
 export default function RolePage() {
   const searchRef = useRef<SearchBoxRef>(null)
   const tableRef = useRef<BasicTableRef<RoleRow>>(null)
   const [roleDialog, setRoleDialog] = useState<RoleDialogState>({ visible: false, title: "" })
-  const [authDialog, setAuthDialog] = useState<AuthDialogState>({ visible: false })
+  const [authDialog, setAuthDialog] = useState<RoleAuthDialogState>({ visible: false })
 
   const formConfig = useMemo<FormConfig[]>(
     () => [
@@ -116,7 +93,7 @@ export default function RolePage() {
             value={String(row.status) === "0"}
             onChange={async (checked) => {
               try {
-                await api.updateRoleStatus({ roleId: row.roleId, status: checked ? "0" : "1" })
+                await api.updateRoleStatus<void>({ roleId: row.roleId, status: checked ? "0" : "1" })
                 showMessage("修改状态成功", "success")
                 void tableRef.current?.refresh()
               } catch {
@@ -179,7 +156,7 @@ export default function RolePage() {
       body: `确定删除角色「${row.roleName}」吗？`,
       onConfirm: async () => {
         try {
-          await api.deleteRole({ roleId: row.roleId })
+          await api.deleteRole<void>({ roleId: row.roleId })
           showMessage("删除成功", "success")
           dialogInstance.hide?.()
           void tableRef.current?.refresh()
@@ -210,7 +187,7 @@ export default function RolePage() {
           ref={tableRef}
           rowKey="roleId"
           columns={columns}
-          request={api.getRoleList}
+          request={api.getRoleList<RoleRow>}
           searchParams={() => getParams(searchRef.current?.getFieldsValue(true) ?? {})}
           tableProps={{ tableLayout: "auto" }}
         />

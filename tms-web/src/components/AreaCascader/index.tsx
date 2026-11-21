@@ -1,11 +1,8 @@
+import type { AreaCascaderProps } from "@/interface/components"
 import { regionData } from "element-china-area-data"
-import type { CascaderProps } from "tdesign-react"
 import { Cascader } from "tdesign-react"
 
-export type AreaCascaderProps = Omit<CascaderProps, "options"> & {
-  /** 自定义选项；默认省市区三级（行政区划编码） */
-  options?: CascaderProps["options"]
-}
+export type { AreaCascaderProps }
 
 /** 省 / 市 / 区县 级联选择，基于 element-china-area-data */
 export default function AreaCascader(props: AreaCascaderProps) {

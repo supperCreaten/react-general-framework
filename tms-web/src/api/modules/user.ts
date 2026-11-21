@@ -1,4 +1,4 @@
-import type { TablePageResult } from "@/hooks/use-table-query";
+import type { TablePageResult } from "@/interface/hooks";
 import type { TableRowData } from "tdesign-react";
 import request from "@/utils/service";
 
@@ -15,13 +15,13 @@ export default {
   /** 更新用户信息 */
   updateUser: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/user/update", data),
-  /** 启用或停用用户 */
+  /** 启用或停用用�?*/
   updateUserStatus: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/user/updateStatus", data),
   /** 重置用户密码 */
   resetUserPassword: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/user/resetPassword", data),
-  /** 为用户分配角色 */
+  /** 为用户分配角�?*/
   authUserRole: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/user/authRole", data),
   /** 删除用户 */

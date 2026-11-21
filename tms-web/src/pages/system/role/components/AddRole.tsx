@@ -4,40 +4,17 @@ import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
+import type { MenuTreeNode } from "@/interface/menu"
+import type { RoleDetail, RoleMenuConfig } from "@/interface/system/role"
+import type {
+  AddRoleProps,
+  AddRoleState,
+  RoleFormValues,
+} from "@/interface/system/role"
 import { showMessage } from "@/utils/methods"
 import InputText from "@/components/InputText"
 
-type MenuTreeNode = {
-  menuId: string | number
-  menuName: string
-  children?: MenuTreeNode[]
-}
-
-type RoleDetail = {
-  roleCode?: string
-  roleKey?: string
-  roleName?: string
-  status?: string | number
-  roleSort?: number
-  orderNum?: number
-  remark?: string
-}
-
-type RoleFormValues = {
-  roleCode?: string
-  roleKey?: string
-  roleName?: string
-  status?: boolean
-  roleSort?: number
-  remark?: string
-}
-
-export type AddRoleProps = {
-  visible: boolean
-  title: string
-  roleId?: string
-  onClose: (submitted?: boolean) => void
-}
+export type { AddRoleProps }
 
 /** 将树选中键规范为菜单 ID 字符串数组 */
 function toMenuIds(keys: Array<string | number>): string[] {
@@ -54,14 +31,6 @@ function mapDetailToForm(data?: RoleDetail): RoleFormValues {
     roleSort: data?.roleSort ?? data?.orderNum ?? 0,
     remark: data?.remark,
   }
-}
-
-type AddRoleState = {
-  treeData: MenuTreeNode[]
-  selectedMenuKeys: Array<string | number>
-  treeLoading: boolean
-  loading: boolean
-  submitting: boolean
 }
 
 const initialAddRoleState: AddRoleState = {
@@ -140,7 +109,7 @@ export default function AddRole(props: AddRoleProps) {
   const loadMenuConfig = useCallback(async () => {
     if (!roleId) return
     try {
-      const data = await api.getMenuConfig<{ checkedKeys?: Array<string | number> }>({ roleId })
+      const data = await api.getMenuConfig<RoleMenuConfig>({ roleId })
       const { checkedKeys = [] } = data || {}
       dispatch({ selectedMenuKeys: checkedKeys.map((id) => String(id)) })
     } catch {
@@ -195,10 +164,10 @@ export default function AddRole(props: AddRoleProps) {
       }
       if (isEdit) {
         // 编辑不改角色编码，权限字符随表单提交
-        await api.updateRole({ ...params, roleId })
+        await api.updateRole<void>({ ...params, roleId })
       } else {
         // 新增不传 roleCode，由后端自动生成数字编号
-        await api.insertRole(params)
+        await api.insertRole<void>(params)
       }
       showMessage(`${title}成功`, "success")
       onClose(true)

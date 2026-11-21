@@ -1,39 +1,11 @@
 import { useMemo, type ReactNode } from "react"
-import { Button, Dropdown, type ButtonProps, type DropdownProps } from "tdesign-react"
+import { Button, Dropdown } from "tdesign-react"
 import { ChevronDownIcon } from "tdesign-icons-react"
 import { clsx } from "clsx"
 
-export type MoreActionItem = {
-  key: string | number
-  label: ReactNode
-  disabled?: boolean
-  divider?: boolean
-  /** 下拉项主题；danger 会映射为 error */
-  theme?: "default" | "success" | "warning" | "error" | "danger"
-  prefixIcon?: ReactNode
-  /** 为 false 时不渲染 */
-  visible?: boolean
-  onClick?: () => void
-}
+import type { MoreActionItem, MoreActionsProps } from "@/interface/components"
 
-export type MoreActionsProps = {
-  /** 操作项 */
-  items: MoreActionItem[]
-  /**
-   * 直接展示的按钮数量，超出部分收入「更多」
-   * - 默认 1：外侧保留 1 个文字按钮
-   * - 传 0：全部收入「更多」
-   * - 传 N：前 N 个为文字按钮，其余进「更多」
-   */
-  maxVisible?: number
-  moreText?: string
-  /** 「更多」触发按钮样式（默认 primary text，贴合表格操作列） */
-  moreButtonProps?: Omit<ButtonProps, "children" | "suffix" | "onClick">
-  /** 外侧直接展示的文字按钮样式 */
-  actionButtonProps?: Omit<ButtonProps, "children" | "onClick" | "theme" | "disabled">
-  className?: string
-  dropdownProps?: Omit<DropdownProps, "options" | "onClick" | "children">
-}
+export type { MoreActionItem, MoreActionsProps }
 
 function mapDropdownTheme(
   theme?: MoreActionItem["theme"],

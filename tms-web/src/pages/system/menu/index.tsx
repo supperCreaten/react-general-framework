@@ -13,29 +13,8 @@ import InputText from "@/components/InputText"
 import AddMenu from "./components/AddMenu"
 import { renderMenuIcon } from "./components/renderMenuIcon"
 import { MENU_TYPE_LABEL } from "./constants"
-
-type MenuRow = {
-  menuId: string | number
-  menuName: string
-  icon?: string
-  orderNum?: number
-  perms?: string
-  menuType?: string | number
-  status?: string | number
-  createBy?: string
-  createTime?: string
-  updateBy?: string
-  updateTime?: string
-  hasChildren?: boolean
-  /** 懒加载未展开时用 true 占位（运行时）；类型上兼容 TableRowData */
-  children?: MenuRow[]
-}
-
-type MenuDialogState = {
-  visible: boolean
-  title: string
-  menuId?: string
-}
+import type { MenuRow } from "@/interface/menu"
+import type { MenuDialogState } from "@/interface/menu"
 
 /** 规范化菜单树（统一 menuId 为字符串） */
 function normalizeMenuTree(list: MenuRow[] = []): MenuRow[] {
@@ -184,7 +163,7 @@ export default function MenuPage() {
       body: `是否确认删除名称为「${row.menuName}」的数据项？`,
       onConfirm: async () => {
         try {
-          await api.deleteMenu({ menuId: row.menuId })
+          await api.deleteMenu<void>({ menuId: row.menuId })
           showMessage("删除成功", "success")
           dialogInstance.hide?.()
           loadingChildrenRef.current.clear()

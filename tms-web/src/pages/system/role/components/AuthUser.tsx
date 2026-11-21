@@ -6,22 +6,13 @@ import BasicDialog from "@/components/BasicDialog"
 import BasicTable, { type BasicTableRef } from "@/components/BasicTable"
 import SearchBox, { type SearchBoxRef } from "@/components/SearchBox"
 import type { FormConfig } from "@/interface"
+import type { RoleUserConfig } from "@/interface/system/role"
+import type { AuthUserRow } from "@/interface/system/user"
+import type { AuthUserProps } from "@/interface/system/role"
 import { getParams, showMessage } from "@/utils/methods"
 import InputText from "@/components/InputText"
 
-type AuthUserRow = {
-  userId: string | number
-  userName?: string
-  account?: string
-  nickName?: string
-}
-
-export type AuthUserProps = {
-  visible: boolean
-  roleId?: string
-  roleName?: string
-  onClose: () => void
-}
+export type { AuthUserProps }
 
 export default function AuthUser(props: AuthUserProps) {
   const { visible, roleId, roleName, onClose } = props
@@ -58,7 +49,7 @@ export default function AuthUser(props: AuthUserProps) {
   const loadSelectedUsers = useCallback(async () => {
     if (!roleId) return
     try {
-      const data = await api.getUserConfig<{ rows?: AuthUserRow[] }>({ roleId })
+      const data = await api.getUserConfig<RoleUserConfig>({ roleId })
       const { rows = [] } = data || {}
       setSelectedKeys((Array.isArray(rows) ? rows : []).map((item) => String(item.userId)))
     } catch {
@@ -79,7 +70,7 @@ export default function AuthUser(props: AuthUserProps) {
     }
     setSaving(true)
     try {
-      await api.setUserConfig({
+      await api.setUserConfig<void>({
         roleId,
         userList: selectedKeys,
       })
@@ -119,7 +110,7 @@ export default function AuthUser(props: AuthUserProps) {
             ref={tableRef}
             rowKey="userId"
             columns={columns}
-            request={api.getUserList}
+            request={api.getUserList<AuthUserRow>}
             searchParams={() => getParams(searchRef.current?.getFieldsValue(true) ?? {})}
             tableProps={{
               size: "small",

@@ -1,4 +1,4 @@
-import type { TabStateType } from "@/store/modules/tabs";
+import type { TabStateType } from "@/interface/tabs";
 import {
   removeTab,
   closeLeftTabs,

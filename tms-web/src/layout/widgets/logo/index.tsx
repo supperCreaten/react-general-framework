@@ -4,11 +4,9 @@ import { clsx } from "clsx";
 import { useNavigate } from "react-router-dom";
 
 import { headerHeight } from "../../constants";
+import type { LogoProps } from "@/interface/layout";
 
-export interface LogoProps {
-  sidebarCollapsed: boolean;
-  className?: string;
-}
+export type { LogoProps } from "@/interface/layout";
 
 /**
  * @zh 高度 48px

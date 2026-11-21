@@ -1,11 +1,6 @@
-import type { ReactNode } from "react";
+import type { FormSectionBlockProps } from "@/interface/components";
 
-type FormSectionBlockProps = {
-  title: string;
-  children?: ReactNode;
-  variant?: string;
-  className?: string;
-};
+export type { FormSectionBlockProps };
 
 /** 表单分区标题块（替代已删除的 logistics/FormSectionBlock） */
 export default function FormSectionBlock({ title, children, className }: FormSectionBlockProps) {

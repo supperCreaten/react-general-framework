@@ -1,4 +1,4 @@
-import type { TablePageResult } from "@/hooks/use-table-query";
+import type { TablePageResult } from "@/interface/hooks";
 import type { TableRowData } from "tdesign-react";
 import request from "@/utils/service";
 

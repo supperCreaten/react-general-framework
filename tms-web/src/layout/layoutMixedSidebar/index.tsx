@@ -1,21 +1,14 @@
 import { Scrollbar } from "@/components/Scrollbar";
 import { usePreferences } from "@/hooks/use-preferences";
 import { FIRST_COLUMN_WIDTH_IN_TWO_COLUMN_NAVIGATION } from "@/hooks/use-layout/constants";
-import type { MenuItemType, MenuMode } from "@/interface";
+import type { MenuItemType } from "@/interface";
 import type { CSSProperties } from "react";
 
 import { sidebarTitleHeight, siderTriggerHeight } from "../constants";
 import LayoutMenu from "../LayoutMenu";
 import { SiderTrigger } from "../widgets/sider-trigger";
 import FirstColumnMenu from "./firstColumnMenu";
-
-interface LayoutMixedSidebarProps {
-  computedSidebarWidth?: number;
-  topNavItems?: MenuItemType[];
-  sideNavItems?: MenuItemType[];
-  sideNavMenuKeyInSplitMode?: string;
-  handleMenuSelect?: (key: string, mode: MenuMode) => void;
-}
+import type { LayoutMixedSidebarProps } from "@/interface/layout";
 
 const emptyArray: MenuItemType[] = [];
 const zero = 0;

@@ -32,23 +32,16 @@ import type { TdFormProps } from "tdesign-react/es/form/type"
 import { useEffect, useMemo, useReducer } from "react"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import type {
+  AvatarUploadResult,
+  PasswordFormValues,
+  ProfileFormValues,
+  ProfileUiState,
+} from "@/interface/personal"
 import "./index.css"
 
 const { FormItem } = Form
 const { TabPanel } = Tabs
-
-type ProfileFormValues = {
-  nickName: string
-  phonenumber: string
-  email: string
-  sex: string
-}
-
-type PasswordFormValues = {
-  oldPassword: string
-  newPassword: string
-  confirmPassword: string
-}
 
 /** 将未知值转为去首尾空格的展示文本 */
 function asText(value: unknown) {
@@ -75,13 +68,6 @@ function splitRoles(roleName: unknown) {
 
 const cardClassName =
   "overflow-hidden rounded-2xl border border-[rgb(15_23_42/5%)] bg-white shadow-[0_1px_2px_rgb(15_23_42/3%),0_12px_32px_rgb(15_23_42/5%)]"
-
-type ProfileUiState = {
-  activeTab: string
-  savingProfile: boolean
-  savingPassword: boolean
-  uploadingAvatar: boolean
-}
 
 const initialProfileUiState: ProfileUiState = {
   activeTab: "basic",
@@ -168,7 +154,7 @@ export default function MyProfilePage() {
     const values = profileForm.getFieldsValue(true) as ProfileFormValues
     setUi({ savingProfile: true })
     try {
-      await api.updateProfile({
+      await api.updateProfile<void>({
         nickName: values.nickName?.trim(),
         phonenumber: values.phonenumber?.trim(),
         email: values.email?.trim(),
@@ -189,7 +175,7 @@ export default function MyProfilePage() {
     const values = passwordForm.getFieldsValue(true) as PasswordFormValues
     setUi({ savingPassword: true })
     try {
-      await api.updateProfilePassword({
+      await api.updateProfilePassword<void>({
         oldPassword: values.oldPassword,
         newPassword: values.newPassword,
       })
@@ -214,7 +200,7 @@ export default function MyProfilePage() {
     try {
       const formData = new FormData()
       formData.append("file", blob)
-      await api.uploadUserAvatar(formData)
+      await api.uploadUserAvatar<AvatarUploadResult>(formData)
       await refreshUserInfo()
       showMessage("头像更新成功", "success")
       return { status: "success", response: {} }

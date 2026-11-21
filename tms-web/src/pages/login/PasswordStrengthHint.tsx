@@ -1,8 +1,5 @@
+import type { PasswordStrengthHintProps } from "@/interface/login";
 import { getPasswordStrength } from "./passwordStrength";
-
-type PasswordStrengthHintProps = {
-  password?: string;
-};
 
 export default function PasswordStrengthHint({ password = "" }: PasswordStrengthHintProps) {
   const strength = getPasswordStrength(password);

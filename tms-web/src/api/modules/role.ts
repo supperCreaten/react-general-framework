@@ -1,4 +1,4 @@
-import type { TablePageResult } from "@/hooks/use-table-query";
+import type { TablePageResult } from "@/interface/hooks";
 import type { TableRowData } from "tdesign-react";
 import request from "@/utils/service";
 
@@ -12,7 +12,7 @@ export default {
   /** 更新角色信息 */
   updateRole: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/role/update", data),
-  /** 启用或停用角色 */
+  /** 启用或停用角�?*/
   updateRoleStatus: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/role/updateStatus", data),
   /** 根据角色 ID 获取详情 */
@@ -24,7 +24,7 @@ export default {
   /** 保存角色与菜单的关联权限 */
   saveMenuToRole: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/role/saveMenuToRole", data),
-  /** 保存角色关联的用户 */
+  /** 保存角色关联的用�?*/
   setUserConfig: <T = unknown>(data: Record<string, unknown>) =>
     request.post<T>("/api/role/saveUserToRole", data),
   /** 查询角色已关联的用户 */

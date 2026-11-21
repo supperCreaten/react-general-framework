@@ -2,27 +2,11 @@ import { useEffect, useReducer } from "react"
 import { Checkbox, Loading } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
+import type { UserDetail } from "@/interface/system/user"
+import type { AuthRoleProps, AuthRoleState } from "@/interface/system/user"
 import { showMessage } from "@/utils/methods"
 
-type RoleOption = {
-  roleId: string
-  roleName: string
-  roleKey?: string
-}
-
-export type AuthRoleProps = {
-  visible: boolean
-  userId?: string
-  userName?: string
-  onClose: (submitted?: boolean) => void
-}
-
-type AuthRoleState = {
-  loading: boolean
-  submitting: boolean
-  options: RoleOption[]
-  checked: string[]
-}
+export type { AuthRoleProps }
 
 const initialState: AuthRoleState = {
   loading: false,
@@ -46,12 +30,12 @@ export default function AuthRole(props: AuthRoleProps) {
       dispatch({ loading: true })
       try {
         const [roleRes, detail] = await Promise.all([
-          api.getRoleList<{ roleId: string | number; roleName: string; roleKey?: string }>({
+          api.getRoleList<RoleOption>({
             pageNum: 1,
             pageSize: 500,
             status: "0",
           }),
-          api.getUserDetail<{ roleIds?: Array<string | number> }>({ userId }),
+          api.getUserDetail<UserDetail>({ userId }),
         ])
         const { rows = [] } = roleRes || {}
         dispatch({
@@ -74,7 +58,7 @@ export default function AuthRole(props: AuthRoleProps) {
     if (!userId) return
     dispatch({ submitting: true })
     try {
-      await api.authUserRole({
+      await api.authUserRole<void>({
         userId,
         roleIds: checked.map((id) => Number(id)),
       })

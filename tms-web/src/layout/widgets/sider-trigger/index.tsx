@@ -5,10 +5,7 @@ import { MenuFoldIcon, MenuUnfoldIcon } from "tdesign-icons-react"
 import { Button } from "tdesign-react"
 
 import { siderTriggerHeight } from "../../constants"
-
-interface SiderTriggerProps {
-  className?: string
-}
+import type { SiderTriggerProps } from "@/interface/layout"
 
 /**
  * 侧边栏底部折叠/展开触发器
