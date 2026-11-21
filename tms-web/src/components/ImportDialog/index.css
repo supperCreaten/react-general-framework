@@ -1,0 +1,416 @@
+.import-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.import-dialog__step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.import-dialog__step-index {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--td-brand-color-light);
+  color: var(--td-brand-color);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+}
+
+.import-dialog__step-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.import-dialog__step-head {
+  margin-bottom: 10px;
+}
+
+.import-dialog__step-title {
+  color: var(--td-text-color-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.import-dialog__required {
+  margin-left: 4px;
+  color: var(--td-error-color);
+  font-weight: 600;
+}
+
+.import-dialog__step-desc {
+  margin-top: 2px;
+  color: var(--td-text-color-secondary);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.import-dialog__step-body {
+  min-width: 0;
+}
+
+.import-dialog__step-error {
+  margin-top: 8px;
+  color: var(--td-error-color);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.import-dialog__step.is-error .import-dialog__strategy-item,
+.import-dialog__step.is-error .import-dialog__dropzone,
+.import-dialog__step.is-error .import-dialog__file {
+  border-color: var(--td-error-color);
+}
+
+/* ---------- 模板下载 ---------- */
+.import-dialog__template {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--td-component-border);
+  border-radius: var(--td-radius-medium);
+  background: var(--td-bg-color-container);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.import-dialog__template:hover:not(:disabled) {
+  border-color: var(--td-brand-color);
+  background: var(--td-brand-color-light);
+}
+
+.import-dialog__template:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.import-dialog__template-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: color-mix(in srgb, #2ba471 12%, transparent);
+  color: #2ba471;
+  font-size: 20px;
+}
+
+.import-dialog__template-text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.import-dialog__template-name {
+  overflow: hidden;
+  color: var(--td-text-color-primary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-dialog__template-tip {
+  color: var(--td-text-color-placeholder);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.import-dialog__template-action {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  color: var(--td-brand-color);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ---------- 策略选择 ---------- */
+.import-dialog__strategy {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.import-dialog__strategy-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--td-component-border);
+  border-radius: var(--td-radius-medium);
+  background: var(--td-bg-color-container);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.import-dialog__strategy-item:hover {
+  border-color: var(--td-brand-color-hover);
+}
+
+.import-dialog__strategy-item.is-active {
+  border-color: var(--td-brand-color);
+  background: var(--td-brand-color-light);
+  box-shadow: inset 0 0 0 1px var(--td-brand-color);
+}
+
+.import-dialog__strategy-radio {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 3px;
+  border: 1px solid var(--td-border-level-2-color);
+  border-radius: 50%;
+  background: var(--td-bg-color-container);
+  position: relative;
+}
+
+.import-dialog__strategy-item.is-active .import-dialog__strategy-radio {
+  border-color: var(--td-brand-color);
+}
+
+.import-dialog__strategy-item.is-active .import-dialog__strategy-radio::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--td-brand-color);
+}
+
+.import-dialog__strategy-content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.import-dialog__strategy-title {
+  color: var(--td-text-color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.import-dialog__strategy-desc {
+  color: var(--td-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* ---------- 上传区 ---------- */
+.import-dialog__upload {
+  width: 100%;
+}
+
+/* 覆盖 TDesign dragger 默认固定宽高 + overflow:auto，避免出现滚动条 */
+.import-dialog__upload .t-upload__trigger,
+.import-dialog__upload .t-upload__dragger {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+}
+
+.import-dialog__dropzone {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 120px;
+  padding: 20px 16px;
+  border: 1px dashed var(--td-component-border);
+  border-radius: var(--td-radius-medium);
+  background: var(--td-bg-color-secondarycontainer);
+  color: var(--td-text-color-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.import-dialog__dropzone:hover {
+  border-color: var(--td-brand-color);
+  background: var(--td-brand-color-light);
+  color: var(--td-brand-color);
+}
+
+.import-dialog__dropzone-title {
+  color: var(--td-text-color-primary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.import-dialog__dropzone-tip {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--td-text-color-placeholder);
+}
+
+.import-dialog__file {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 12px 14px;
+  border: 1px solid var(--td-component-border);
+  border-radius: var(--td-radius-medium);
+  background: var(--td-bg-color-container);
+}
+
+.import-dialog__file-icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: color-mix(in srgb, #2ba471 12%, transparent);
+  color: #2ba471;
+  font-size: 20px;
+}
+
+.import-dialog__file-meta {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.import-dialog__file-name {
+  overflow: hidden;
+  color: var(--td-text-color-primary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-dialog__file-size {
+  color: var(--td-text-color-placeholder);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.import-dialog__file-actions {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+}
+
+.import-dialog__file-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--td-brand-color);
+  font-size: 13px;
+  line-height: 22px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.import-dialog__file-action:hover {
+  color: var(--td-brand-color-hover);
+}
+
+.import-dialog__file-action--danger {
+  color: var(--td-error-color);
+}
+
+.import-dialog__file-action--danger:hover {
+  color: var(--td-error-color-hover, var(--td-error-color));
+}
+
+/* ---------- 导入结果 ---------- */
+.import-dialog__result {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--td-radius-medium);
+}
+
+.import-dialog__result.is-success {
+  background: var(--td-success-color-1);
+  color: var(--td-success-color);
+}
+
+.import-dialog__result.is-warning {
+  background: var(--td-warning-color-1);
+  color: var(--td-warning-color);
+}
+
+.import-dialog__result.is-error {
+  background: var(--td-error-color-1);
+  color: var(--td-error-color);
+}
+
+.import-dialog__result-icon {
+  flex: none;
+  margin-top: 2px;
+  font-size: 18px;
+}
+
+.import-dialog__result-main {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.import-dialog__result-msg {
+  color: var(--td-text-color-primary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.import-dialog__result-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--td-text-color-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+@media (max-width: 640px) {
+  .import-dialog__strategy {
+    grid-template-columns: 1fr;
+  }
+}

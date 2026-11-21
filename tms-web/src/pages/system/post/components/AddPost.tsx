@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
-import { Form, InputNumber, Radio, Textarea, TreeSelect, type TreeSelectProps } from "tdesign-react"
+import InputText from "@/components/InputText"
+import { Form, InputNumber, Radio, TreeSelect, type TreeSelectProps } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
 import type { FormConfig } from "@/interface"
 import { showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
-import InputText from "@/components/InputText"
 
 type DeptTreeNode = {
   deptId: string | number
@@ -134,7 +134,7 @@ export default function AddPost(props: AddPostProps) {
         label: "备注",
         name: "remark",
         colProps: { span: 12 },
-        component: <Textarea maxlength={200} placeholder="备注" autosize={{ minRows: 3, maxRows: 5 }} />,
+        component: <InputText textarea maxlength={200} placeholder="备注" autosize={{ minRows: 3, maxRows: 5 }} />,
       },
     ],
     [deptTree],

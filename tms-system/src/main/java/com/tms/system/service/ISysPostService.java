@@ -1,7 +1,9 @@
 package com.tms.system.service;
 
 import java.util.List;
-import com.tms.common.core.domain.entity.SysPost;
+import com.tms.system.domain.dto.SysPostQuery;
+import com.tms.system.domain.dto.SysPostSaveReq;
+import com.tms.system.domain.vo.SysPostVo;
 
 /**
  * 岗位信息 服务层
@@ -12,18 +14,18 @@ public interface ISysPostService {
     /**
      * 查询岗位信息集合
      *
-     * @param post 岗位信息
+     * @param query 岗位查询条件
      * @return 岗位列表
      */
-    List<SysPost> selectPostList(SysPost post);
+    List<SysPostVo> selectPostList(SysPostQuery query);
 
     /**
      * 通过岗位ID查询岗位信息
      *
      * @param postId 岗位ID
-     * @return 角色对象信息
+     * @return 岗位信息
      */
-    SysPost selectPostById(Long postId);
+    SysPostVo selectPostById(Long postId);
 
     /**
      * 校验岗位名称
@@ -31,7 +33,7 @@ public interface ISysPostService {
      * @param post 岗位信息
      * @return 结果
      */
-    boolean checkPostNameUnique(SysPost post);
+    boolean checkPostNameUnique(SysPostSaveReq post);
 
     /**
      * 校验岗位编码
@@ -39,7 +41,7 @@ public interface ISysPostService {
      * @param post 岗位信息
      * @return 结果
      */
-    boolean checkPostCodeUnique(SysPost post);
+    boolean checkPostCodeUnique(SysPostSaveReq post);
 
     /**
      * 新增保存岗位信息
@@ -47,7 +49,7 @@ public interface ISysPostService {
      * @param post 岗位信息
      * @return 结果
      */
-    int insertPost(SysPost post);
+    int insertPost(SysPostSaveReq post);
 
     /**
      * 修改保存岗位信息
@@ -55,7 +57,7 @@ public interface ISysPostService {
      * @param post 岗位信息
      * @return 结果
      */
-    int updatePost(SysPost post);
+    int updatePost(SysPostSaveReq post);
 
     /**
      * 删除岗位信息

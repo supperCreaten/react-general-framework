@@ -37,6 +37,12 @@ function buildInitialDict(codes: string[]): DictRecord {
   }, {})
 }
 
+/** 按字典选项把 value 转成 label；找不到则回退原值 */
+export function getDictLabel(options: DictOption[] | undefined, value?: string | null, fallback = "-") {
+  if (value == null || value === "") return fallback
+  return options?.find((item) => item.value === value)?.label ?? value
+}
+
 /**
  * 按字典编码批量加载选项，返回形如 { sys_document_type: [...] } 的对象，可直接解构使用。
  */

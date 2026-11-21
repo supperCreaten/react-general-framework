@@ -803,6 +803,16 @@ svg.app-menu-themed-icon [stroke]:not([stroke="none"]),
   }
 }
 
+/* 表格校验失败通知：覆盖 TDesign 默认 3 行截断，允许内容区滚动 */
+.t-notification__content:has(.table-validate-fail-content) {
+  max-height: 300px;
+  overflow: auto;
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  text-overflow: unset;
+}
+
 /* 主布局全屏 overflow:hidden；避免弹层开关导致 body 宽度抖动 */
 html body {
   width: 100% !important;
@@ -812,4 +822,9 @@ html body {
 /* 拖拽调整侧栏宽度时关闭主区 padding 过渡 */
 body.sidebar-resizing .layout-main-section {
   transition: none !important;
+}
+
+/* Loading 包裹层铺满父级高度，便于遮罩垂直居中 */
+.t-loading__parent {
+  height: 100%;
 }

@@ -46,4 +46,7 @@ public class SysDeptSaveReq extends BaseEntity {
 
     /** 部门状态（0正常 1停用） */
     private String status;
+
+    /** 祖级列表（服务端维护） */
+    private String ancestors;
 }

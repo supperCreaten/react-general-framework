@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from "react"
-import { Button } from "tdesign-react"
+import { useMemo, useState, type ReactNode } from "react"
+import { Button, Card } from "tdesign-react"
 import { ChevronDownIcon, ChevronUpIcon } from "tdesign-icons-react"
 import { cn } from "@/utils/methods"
 
@@ -12,6 +12,10 @@ type LayoutTitleProps = {
   defaultCollapsed?: boolean
   /** 受控：是否收起 */
   collapsed?: boolean
+  /** body区域是否需要 padding */
+  isbodyPPadding?: "vertical" | "horizontal" | "all" | "none"
+  /** 是否需要 border */
+  bordered?: boolean
   onCollapsedChange?: (collapsed: boolean) => void
   /** 标题后操作区（紧跟标题，适合放新增等按钮） */
   actions?: ReactNode
@@ -26,6 +30,8 @@ export default function LayoutTitle(props: LayoutTitleProps) {
     title,
     children,
     collapsible = true,
+    bordered = false,
+    isbodyPPadding = "all",
     defaultCollapsed = false,
     collapsed: controlledCollapsed,
     onCollapsedChange,
@@ -37,7 +43,12 @@ export default function LayoutTitle(props: LayoutTitleProps) {
 
   const [innerCollapsed, setInnerCollapsed] = useState(defaultCollapsed)
   const collapsed = controlledCollapsed ?? innerCollapsed
-
+  const bodyClassName = useMemo(() => {
+    if (isbodyPPadding === "all") return
+    if (isbodyPPadding === "vertical") return "px-0"
+    if (isbodyPPadding === "horizontal") return "py-0"
+    return "p-0"
+  }, [isbodyPPadding])
   const handleToggle = () => {
     const next = !collapsed
     if (controlledCollapsed === undefined) {
@@ -47,13 +58,17 @@ export default function LayoutTitle(props: LayoutTitleProps) {
   }
 
   return (
-    <div
+    <Card
       className={cn(
         "overflow-hidden rounded-(--td-radius-medium) bg-td-bg-container text-(length:--td-font-size-body-medium) text-td-text",
         className,
       )}
+      bordered={bordered}
+      bodyClassName={cn(bodyClassName)}
     >
-      <div className="flex items-center justify-between gap-3 border-b border-td-border px-(--td-comp-paddingLR-xl) py-(--td-comp-paddingTB-l)">
+      <div
+        className={cn("flex items-center justify-between gap-3 px-(--td-comp-paddingLR-xl) py-(--td-comp-paddingTB-l)")}
+      >
         <div className="flex min-w-0 items-center gap-2">
           <span className="h-4 w-0.75 shrink-0 rounded-sm bg-td-brand" aria-hidden />
           <span className="truncate font-(--td-font-title-medium) text-td-text">{title}</span>
@@ -76,16 +91,8 @@ export default function LayoutTitle(props: LayoutTitleProps) {
       </div>
 
       {children ? (
-        <div
-          className={cn(
-            "px-(--td-comp-paddingLR-xl) py-(--td-comp-paddingTB-l)",
-            collapsed && "hidden",
-            contentClassName,
-          )}
-        >
-          {children}
-        </div>
+        <div className={cn("py-(--td-comp-paddingTB-l)", collapsed && "hidden", contentClassName)}>{children}</div>
       ) : null}
-    </div>
+    </Card>
   )
 }

@@ -1,10 +1,29 @@
-/* 去掉整框内边距，让 header / body / footer 各自铺满并分区 */
+/*
+ * TDesign 会给 .t-dialog 写内联 display:block，必须 !important 才能用 flex 布局，
+ * 否则 .t-dialog__body 的 flex:1 不生效，滚动也会失效。
+ */
 .t-dialog.basic-dialog.t-dialog--default,
 .t-dialog.basic-dialog {
   padding: 0;
   overflow: hidden;
-  display: flex;
+  display: flex !important;
   flex-direction: column;
+  /* 扣除 position 上下 padding(48*2)，弹窗随窗口变化且不超出视口 */
+  max-height: calc(100vh - 96px);
+}
+
+/*
+ * TDesign 默认 .t-dialog__wrap { overflow: auto }，内容过高时会「整体滚动」。
+ * basic-dialog 只允许 .t-dialog__body 滚动。
+ */
+.t-dialog__ctx:has(.basic-dialog) .t-dialog__wrap {
+  overflow: hidden;
+}
+
+.t-dialog__ctx:has(.basic-dialog) .t-dialog__position {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 /* ---------- Header ---------- */
@@ -38,9 +57,12 @@
 .basic-dialog .t-dialog__body {
   margin: 0;
   padding: 20px;
-  flex: 1 1 auto;
+  box-sizing: border-box;
+  flex: 1;
   min-height: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   color: var(--td-text-color-primary);
   background: var(--td-bg-color-container);
 }

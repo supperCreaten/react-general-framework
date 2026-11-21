@@ -39,6 +39,9 @@ public class SysDeptVo {
     /** 部门状态（0正常 1停用） */
     private String status;
 
+    /** 删除标志（0存在 1删除） */
+    private String isDel;
+
     /** 创建者 */
     private String createBy;
 

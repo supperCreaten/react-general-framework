@@ -69,10 +69,10 @@ export default function LayoutMenu({ mode = "vertical", handleMenuSelect, menus 
   const isVerticalCollapsed = mode !== "horizontal" && !isMobile && sidebarCollapsed
 
   const activeValue = useMemo(
-    () => resolveActiveMenuValue(menus, getSelectedKeys, pathname),
+    () => resolveActiveMenuValue(menus, getSelectedKeys, pathname) ?? "__none__",
     [menus, getSelectedKeys, pathname],
   )
-
+  
   const updateScrollState = useCallback(() => {
     setScrollState(syncScrollState(scrollRef.current))
   }, [])

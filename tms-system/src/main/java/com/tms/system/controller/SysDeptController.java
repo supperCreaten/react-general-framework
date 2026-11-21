@@ -15,9 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.tms.common.annotation.Log;
 import com.tms.common.core.controller.BaseController;
 import com.tms.common.core.domain.AjaxResult;
-import com.tms.common.core.domain.entity.SysDept;
 import com.tms.common.enums.BusinessType;
-import com.tms.system.domain.convert.SysDeptConvert;
 import com.tms.system.domain.dto.SysDeptQuery;
 import com.tms.system.domain.dto.SysDeptSaveReq;
 import com.tms.system.domain.vo.SysDeptVo;
@@ -43,18 +41,16 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "部门列表")
     @PostMapping("/pageQuery")
     public AjaxResult pageQuery(@RequestBody(required = false) SysDeptQuery query) {
-        SysDept entity = SysDeptConvert.toEntity(query);
-        boolean lazy = query != null && Boolean.TRUE.equals(query.getLazy());
+        SysDeptQuery q = query == null ? new SysDeptQuery() : query;
+        boolean lazy = Boolean.TRUE.equals(q.getLazy());
         if (lazy) {
-            if (entity.getParentId() == null) {
-                entity.setParentId(0L);
+            if (q.getParentId() == null) {
+                q.setParentId(0L);
             }
-            List<SysDept> children = deptService.selectDeptList(entity);
-            return success(SysDeptConvert.toVoList(children));
+            return success(deptService.selectDeptList(q));
         }
-        List<SysDept> depts = deptService.selectDeptList(entity);
-        List<SysDeptVo> tree = SysDeptConvert.toVoList(deptService.buildDeptTree(depts));
-        return success(tree);
+        List<SysDeptVo> depts = deptService.selectDeptList(q);
+        return success(deptService.buildDeptTree(depts));
     }
 
     /**
@@ -65,11 +61,10 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "新增部门")
     @PostMapping("/insert")
     public AjaxResult insert(@Validated @RequestBody SysDeptSaveReq req) {
-        SysDept dept = SysDeptConvert.toEntity(req);
-        if (!deptService.checkDeptNameUnique(dept)) {
-            return error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+        if (!deptService.checkDeptNameUnique(req)) {
+            return error("新增部门'" + req.getDeptName() + "'失败，部门名称已存在");
         }
-        return toAjax(deptService.insertDept(dept));
+        return toAjax(deptService.insertDept(req));
     }
 
     /**
@@ -80,15 +75,14 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "修改部门")
     @PostMapping("/update")
     public AjaxResult update(@Validated @RequestBody SysDeptSaveReq req) {
-        SysDept dept = SysDeptConvert.toEntity(req);
-        Long deptId = dept.getDeptId();
-        if (!deptService.checkDeptNameUnique(dept)) {
-            return error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+        Long deptId = req.getDeptId();
+        if (!deptService.checkDeptNameUnique(req)) {
+            return error("修改部门'" + req.getDeptName() + "'失败，部门名称已存在");
         }
-        if (dept.getParentId() != null && dept.getParentId().equals(deptId)) {
-            return error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
+        if (req.getParentId() != null && req.getParentId().equals(deptId)) {
+            return error("修改部门'" + req.getDeptName() + "'失败，上级部门不能是自己");
         }
-        return toAjax(deptService.updateDept(dept));
+        return toAjax(deptService.updateDept(req));
     }
 
     /**
@@ -98,7 +92,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "部门详情")
     @GetMapping("/detail")
     public AjaxResult detail(@RequestParam Long deptId) {
-        return success(SysDeptConvert.toVo(deptService.selectDeptById(deptId)));
+        return success(deptService.selectDeptById(deptId));
     }
 
     /**

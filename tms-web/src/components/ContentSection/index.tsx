@@ -1,4 +1,4 @@
-import { Card } from "tdesign-react"
+import { Card, Loading } from "tdesign-react"
 import type { ReactNode } from "react"
 import { clsx } from "clsx"
 import { findSlot } from ".."
@@ -30,11 +30,13 @@ type ContentSectionProps = {
    * false：高度随内容撑开（便于展示底部 padding）。
    */
   isFull?: boolean
+  /** 整块内容 loading 遮罩 */
+  loading?: boolean
   className?: string
 }
 
 function ContentSection(props: ContentSectionProps) {
-  const { isContentFullCard = true, isFull = true, children, className } = props
+  const { isContentFullCard = true, isFull = true, loading = false, children, className } = props
   const header = findSlot(children, "ContentSection.Header")
   const content = findSlot(children, "ContentSection.Content")
   const footer = findSlot(children, "ContentSection.Footer")
@@ -48,30 +50,34 @@ function ContentSection(props: ContentSectionProps) {
   /** 有 header/footer 时共用一块白底容器，三者贴合不留缝 */
   if (hasChrome) {
     return (
-      <div className={clsx("box-border flex flex-col p-2.5", isFull ? "h-full min-h-0" : "h-auto", className)}>
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-(--td-radius-medium) bg-td-bg-container">
-          {header ? <div className="shrink-0">{header}</div> : null}
-          <div className={scrollClassName}>{content}</div>
-          {footer ? (
-            <div className="flex shrink-0 items-center justify-center gap-3 border-t border-td-border px-4 py-3">
-              {footer}
-            </div>
-          ) : null}
+      <Loading loading={loading} showOverlay className={clsx(isFull ? "h-full min-h-0" : undefined)}>
+        <div className={clsx("box-border flex flex-col p-2.5", isFull ? "h-full min-h-0" : "h-auto", className)}>
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-(--td-radius-medium) bg-td-bg-container">
+            {header ? <div className="shrink-0">{header}</div> : null}
+            <div className={scrollClassName}>{content}</div>
+            {footer ? (
+              <div className="flex shrink-0 items-center justify-center gap-3 border-t border-td-border px-4 py-3">
+                {footer}
+              </div>
+            ) : null}
+          </div>
         </div>
-      </div>
+      </Loading>
     )
   }
 
   return (
-    <div className={clsx("box-border flex flex-col p-2.5", isFull ? "h-full min-h-0" : "h-auto", className)}>
-      {isContentFullCard ? (
-        <Card className={scrollClassName} bordered={false}>
-          {content}
-        </Card>
-      ) : (
-        <div className={scrollClassName}>{content}</div>
-      )}
-    </div>
+    <Loading loading={loading} showOverlay className={clsx(isFull ? "h-full min-h-0" : undefined)}>
+      <div className={clsx("box-border flex flex-col p-2.5", isFull ? "h-full min-h-0" : "h-auto", className)}>
+        {isContentFullCard ? (
+          <Card className={scrollClassName} bordered={false}>
+            {content}
+          </Card>
+        ) : (
+          <div className={scrollClassName}>{content}</div>
+        )}
+      </div>
+    </Loading>
   )
 }
 

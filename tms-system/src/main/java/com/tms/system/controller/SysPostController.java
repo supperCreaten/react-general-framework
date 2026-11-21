@@ -16,9 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.tms.common.annotation.Log;
 import com.tms.common.core.controller.BaseController;
 import com.tms.common.core.domain.AjaxResult;
-import com.tms.common.core.domain.entity.SysPost;
 import com.tms.common.enums.BusinessType;
-import com.tms.system.domain.convert.SysPostConvert;
 import com.tms.system.domain.dto.SysPostQuery;
 import com.tms.system.domain.dto.SysPostSaveReq;
 import com.tms.system.domain.vo.SysPostVo;
@@ -44,10 +42,9 @@ public class SysPostController extends BaseController {
     @PostMapping("/pageQuery")
     public AjaxResult pageQuery(@RequestBody(required = false) SysPostQuery query) {
         startPage();
-        List<SysPost> list = postService.selectPostList(SysPostConvert.toEntity(query));
-        PageInfo<SysPost> pageInfo = new PageInfo<>(list);
-        List<SysPostVo> rows = SysPostConvert.toVoList(list);
-        return getDataTable(rows, pageInfo);
+        List<SysPostVo> list = postService.selectPostList(query);
+        PageInfo<SysPostVo> pageInfo = new PageInfo<>(list);
+        return getDataTable(list, pageInfo);
     }
 
     /**
@@ -58,14 +55,13 @@ public class SysPostController extends BaseController {
     @Operation(summary = "新增岗位")
     @PostMapping("/insert")
     public AjaxResult insert(@Validated @RequestBody SysPostSaveReq req) {
-        SysPost post = SysPostConvert.toEntity(req);
-        if (!postService.checkPostNameUnique(post)) {
-            return error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+        if (!postService.checkPostNameUnique(req)) {
+            return error("新增岗位'" + req.getPostName() + "'失败，岗位名称已存在");
         }
-        if (!postService.checkPostCodeUnique(post)) {
-            return error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+        if (!postService.checkPostCodeUnique(req)) {
+            return error("新增岗位'" + req.getPostName() + "'失败，岗位编码已存在");
         }
-        return toAjax(postService.insertPost(post));
+        return toAjax(postService.insertPost(req));
     }
 
     /**
@@ -76,14 +72,13 @@ public class SysPostController extends BaseController {
     @Operation(summary = "修改岗位")
     @PostMapping("/update")
     public AjaxResult update(@Validated @RequestBody SysPostSaveReq req) {
-        SysPost post = SysPostConvert.toEntity(req);
-        if (!postService.checkPostNameUnique(post)) {
-            return error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+        if (!postService.checkPostNameUnique(req)) {
+            return error("修改岗位'" + req.getPostName() + "'失败，岗位名称已存在");
         }
-        if (!postService.checkPostCodeUnique(post)) {
-            return error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+        if (!postService.checkPostCodeUnique(req)) {
+            return error("修改岗位'" + req.getPostName() + "'失败，岗位编码已存在");
         }
-        return toAjax(postService.updatePost(post));
+        return toAjax(postService.updatePost(req));
     }
 
     /**
@@ -93,7 +88,7 @@ public class SysPostController extends BaseController {
     @Operation(summary = "岗位详情")
     @GetMapping("/detail")
     public AjaxResult detail(@RequestParam Long postId) {
-        return success(SysPostConvert.toVo(postService.selectPostById(postId)));
+        return success(postService.selectPostById(postId));
     }
 
     /**

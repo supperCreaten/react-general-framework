@@ -113,7 +113,7 @@ export default function AuthUser(props: AuthUserProps) {
           fieldsPerRow={2}
           onSearch={() => void tableRef.current?.refresh({ resetCurrent: true })}
         />
-        <div className="h-[420px]">
+        <div className="h-105">
           <BasicTable<AuthUserRow>
             ref={tableRef}
             rowKey="userId"

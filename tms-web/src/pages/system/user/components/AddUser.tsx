@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useReducer } from "react"
-import { Form, Radio, Select, Textarea, TreeSelect, type TreeSelectProps } from "tdesign-react"
+import InputText from "@/components/InputText"
+import { Form, Radio, Select, TreeSelect, type TreeSelectProps } from "tdesign-react"
 import api from "@/api"
 import BasicDialog from "@/components/BasicDialog"
 import BasicForm from "@/components/BasicForm"
@@ -8,7 +9,6 @@ import { validatePasswordStrength } from "@/components/PasswordStrength/validate
 import type { FormConfig } from "@/interface"
 import { showMessage } from "@/utils/methods"
 import { markLazyChildren } from "@/utils/tree/lazy"
-import InputText from "@/components/InputText"
 
 type DeptTreeNode = {
   deptId: string | number
@@ -274,7 +274,7 @@ export default function AddUser(props: AddUserProps) {
         name: "remark",
         colProps: { span: 12 },
         component: (
-          <Textarea maxlength={200} placeholder="请输入内容" autosize={{ minRows: 3, maxRows: 5 }} />
+          <InputText textarea maxlength={200} placeholder="请输入内容" autosize={{ minRows: 3, maxRows: 5 }} />
         ),
       },
     ],

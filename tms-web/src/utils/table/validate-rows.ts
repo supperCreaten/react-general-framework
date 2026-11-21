@@ -1,6 +1,6 @@
 import { createElement } from "react"
 import type { TableRowData } from "tdesign-react"
-import { NotificationPlugin } from "tdesign-react"
+import { MessagePlugin, NotificationPlugin } from "tdesign-react"
 
 /** 单字段校验规则 */
 export type TableFieldRule<T extends TableRowData> = {
@@ -77,11 +77,14 @@ export function notifyTableValidateFail(rowMessages: string[], options?: { title
   if (!rowMessages.length) return
   const title = options?.title ?? "校验未通过"
   const duration = options?.duration ?? 4500
-  void NotificationPlugin.error({
+  NotificationPlugin.error({
     title,
     content: createElement(
       "div",
-      { style: { color: "var(--td-error-color)", lineHeight: "22px" } },
+      {
+        className: "table-validate-fail-content",
+        style: { color: "var(--td-error-color)", lineHeight: "22px" },
+      },
       rowMessages.map((msg) => createElement("div", { key: msg }, msg)),
     ),
     duration,
@@ -149,7 +152,6 @@ export function validateTableRows<T extends TableRowData>(
       }
     }
   })
-
   const rowMessages = formatTableRowMessages(errors)
   const valid = errors.length === 0
   if (!valid && notify) {
@@ -171,7 +173,11 @@ export function validateTableRows<T extends TableRowData>(
 export function validateTableDataSource<T extends TableRowData>(
   getDataSource: (() => T[]) | undefined | null,
   options: Omit<ValidateTableRowsOptions<T>, "rows">,
-): ValidateTableRowsResult {
+): ValidateTableRowsResult | undefined {
   const rows = getDataSource?.() ?? []
+  if (!rows?.length) {
+    MessagePlugin.warning("请至少添加一条数据", 30 * 1000)
+    return
+  }
   return validateTableRows({ ...options, rows })
 }

@@ -4,8 +4,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.tms.common.constant.UserConstants;
-import com.tms.common.core.domain.entity.SysPost;
 import com.tms.common.utils.StringUtils;
+import com.tms.system.domain.dto.SysPostQuery;
+import com.tms.system.domain.dto.SysPostSaveReq;
+import com.tms.system.domain.vo.SysPostVo;
 import com.tms.system.mapper.SysPostMapper;
 import com.tms.system.service.ISysPostService;
 
@@ -20,19 +22,19 @@ public class SysPostServiceImpl implements ISysPostService {
     private SysPostMapper postMapper;
 
     @Override
-    public List<SysPost> selectPostList(SysPost post) {
-        return postMapper.selectPostList(post == null ? new SysPost() : post);
+    public List<SysPostVo> selectPostList(SysPostQuery query) {
+        return postMapper.selectPostList(query == null ? new SysPostQuery() : query);
     }
 
     @Override
-    public SysPost selectPostById(Long postId) {
+    public SysPostVo selectPostById(Long postId) {
         return postMapper.selectPostById(postId);
     }
 
     @Override
-    public boolean checkPostNameUnique(SysPost post) {
+    public boolean checkPostNameUnique(SysPostSaveReq post) {
         long postId = StringUtils.isNull(post.getPostId()) ? -1L : post.getPostId();
-        SysPost info = postMapper.checkPostNameUnique(post.getPostName());
+        SysPostVo info = postMapper.checkPostNameUnique(post.getPostName());
         if (StringUtils.isNotNull(info) && info.getPostId() != postId) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -40,9 +42,9 @@ public class SysPostServiceImpl implements ISysPostService {
     }
 
     @Override
-    public boolean checkPostCodeUnique(SysPost post) {
+    public boolean checkPostCodeUnique(SysPostSaveReq post) {
         long postId = StringUtils.isNull(post.getPostId()) ? -1L : post.getPostId();
-        SysPost info = postMapper.checkPostCodeUnique(post.getPostCode());
+        SysPostVo info = postMapper.checkPostCodeUnique(post.getPostCode());
         if (StringUtils.isNotNull(info) && info.getPostId() != postId) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -50,7 +52,7 @@ public class SysPostServiceImpl implements ISysPostService {
     }
 
     @Override
-    public int insertPost(SysPost post) {
+    public int insertPost(SysPostSaveReq post) {
         if (StringUtils.isEmpty(post.getStatus())) {
             post.setStatus(UserConstants.NORMAL);
         }
@@ -58,7 +60,7 @@ public class SysPostServiceImpl implements ISysPostService {
     }
 
     @Override
-    public int updatePost(SysPost post) {
+    public int updatePost(SysPostSaveReq post) {
         return postMapper.updatePost(post);
     }
 

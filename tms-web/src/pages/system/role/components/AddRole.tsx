@@ -203,7 +203,7 @@ export default function AddRole(props: AddRoleProps) {
           <Col span={7}>
             <Card title="菜单权限" bordered className="h-full">
               <Loading loading={treeLoading}>
-                <div className="h-80 overflow-auto rounded border border-[var(--td-component-border)] bg-[var(--td-bg-color-container)] p-2">
+                <div className="h-80 overflow-auto rounded border border-(--td-component-border) bg-(--td-bg-color-container) p-2">
                   <Tree
                     data={treeData}
                     checkable
