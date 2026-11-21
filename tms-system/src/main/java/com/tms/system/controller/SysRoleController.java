@@ -205,6 +205,7 @@ public class SysRoleController extends BaseController
         return toAjax(roleService.deleteRoleByIds(new Long[] { roleId }));
     }
 
+    /** 刷新当前登录用户缓存（角色变更后同步权限） */
     private void refreshLoginUserCache()
     {
         LoginUser loginUser = getLoginUser();
@@ -216,6 +217,7 @@ public class SysRoleController extends BaseController
         }
     }
 
+    /** 将请求参数转为 Long */
     private Long toLong(Object value)
     {
         if (value == null)
@@ -229,6 +231,7 @@ public class SysRoleController extends BaseController
         return Long.parseLong(String.valueOf(value));
     }
 
+    /** 将请求参数转为 Long 数组 */
     private Long[] toLongArray(Object value)
     {
         if (value == null)

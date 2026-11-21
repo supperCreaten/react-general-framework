@@ -46,23 +46,31 @@ const initialValues: DeptFormValues = {
   status: "0",
 }
 
+/** 将选项值转为字符串，空值用 fallback */
 function asOptionValue(value?: string | number, fallback = "0") {
   return value == null || value === "" ? fallback : `${value}`
 }
 
+/**
+ * 将部门树转为懒加载节点
+ * @param list 原始部门节点
+ */
 function toLazyDeptNodes(list: DeptTreeNode[] = []): DeptTreeNode[] {
   return markLazyChildren(list as Array<Record<string, unknown>>, { idKey: "deptId" }) as DeptTreeNode[]
 }
 
+/** 按父节点懒加载子部门 */
 async function loadDeptChildren(parentId: string | number) {
-  const data = await api.getDepts({ lazy: true, parentId })
-  return toLazyDeptNodes(Array.isArray(data) ? (data as DeptTreeNode[]) : [])
+  const data = await api.getDepts<DeptTreeNode[]>({ lazy: true, parentId })
+  return toLazyDeptNodes(Array.isArray(data) ? data : [])
 }
 
+/** 在部门树根上插入「主类目」节点 */
 function buildParentTreeData(list: DeptTreeNode[] = []): DeptTreeNode[] {
   return [{ deptId: "0", deptName: "主类目", children: list.length ? list : true }]
 }
 
+/** 将部门详情映射为表单初始值 */
 function mapDetailToForm(data?: DeptDetail): DeptFormValues {
   return {
     parentId: data?.parentId != null && data.parentId !== "" ? String(data.parentId) : "0",
@@ -174,8 +182,8 @@ export default function AddDept(props: AddDeptProps) {
           form.setFieldsValue({ parentId })
         }
         if (!isEdit || !deptId) return
-        const data = (await api.getDeptDetail({ deptId })) as DeptDetail
-        form.setFieldsValue(mapDetailToForm(data))
+        const data = await api.getDeptDetail<DeptDetail>({ deptId })
+        form.setFieldsValue(mapDetailToForm(data || {}))
       } finally {
         setLoading(false)
       }
@@ -183,6 +191,7 @@ export default function AddDept(props: AddDeptProps) {
     void init()
   }, [visible, deptId, parentId, title, isEdit, form, loadTreeData])
 
+  /** 校验并提交新增/修改部门 */
   const handleSubmit = async () => {
     const validate = await form.validate()
     if (validate !== true) return

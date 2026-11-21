@@ -76,23 +76,31 @@ const initialValues: MenuFormValues = {
   orderNum: 0,
 }
 
+/** 将选项值转为字符串，空值用 fallback */
 function asOptionValue(value?: string | number, fallback = "0") {
   return value == null || value === "" ? fallback : `${value}`
 }
 
+/**
+ * 将菜单树转为懒加载节点
+ * @param list 原始菜单节点
+ */
 function toLazyMenuNodes(list: MenuTreeNode[] = []): MenuTreeNode[] {
   return markLazyChildren(list as Array<Record<string, unknown>>, { idKey: "menuId" }) as MenuTreeNode[]
 }
 
+/** 按父节点懒加载子菜单 */
 async function loadMenuChildren(parentId: string | number) {
-  const data = await api.getMenus({ lazy: true, parentId })
-  return toLazyMenuNodes(Array.isArray(data) ? (data as MenuTreeNode[]) : [])
+  const data = await api.getMenus<MenuTreeNode[]>({ lazy: true, parentId })
+  return toLazyMenuNodes(Array.isArray(data) ? data : [])
 }
 
+/** 在菜单树根上插入「主类目」节点 */
 function buildParentTreeData(list: MenuTreeNode[] = []): MenuTreeNode[] {
   return [{ menuId: "0", menuName: "主类目", children: list.length ? list : true }]
 }
 
+/** 将菜单详情映射为表单初始值 */
 function mapDetailToForm(data?: MenuDetail): MenuFormValues {
   return {
     parentId: data?.parentId != null && data.parentId !== "" ? data.parentId : "0",
@@ -109,6 +117,7 @@ function mapDetailToForm(data?: MenuDetail): MenuFormValues {
   }
 }
 
+/** 按菜单类型组装提交给后端的 payload */
 function buildSubmitPayload(values?: MenuFormValues, menuId?: string) {
   const menuType = values?.menuType ?? MENU_TYPE.DIRECTORY
   const isMenuLike = menuType === MENU_TYPE.MENU || menuType === MENU_TYPE.PAGE
@@ -289,8 +298,8 @@ export default function AddMenu(props: AddMenuProps) {
           form.setFieldsValue({ parentId: menuId })
         }
         if (!isEdit || !menuId) return
-        const data = (await api.getMenuDetail({ menuId })) as MenuDetail
-        form.setFieldsValue(mapDetailToForm(data))
+        const data = await api.getMenuDetail<MenuDetail>({ menuId })
+        form.setFieldsValue(mapDetailToForm(data || {}))
       } finally {
         setLoading(false)
       }
@@ -298,6 +307,7 @@ export default function AddMenu(props: AddMenuProps) {
     init()
   }, [visible, menuId, title, isEdit, form, loadTreeData])
 
+  /** 校验并提交新增/修改菜单 */
   const handleSubmit = async () => {
     const validate = await form.validate()
     if (validate !== true) return

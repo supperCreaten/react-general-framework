@@ -26,6 +26,12 @@ public class SysPermissionService {
     @Autowired
     private ISysMenuService menuService;
 
+    /**
+     * 获取用户角色权限标识集合
+     *
+     * @param user 用户信息
+     * @return 角色权限标识集合
+     */
     public Set<String> getRolePermission(SysUser user) {
         Set<String> roles = new HashSet<String>();
         if (user.isAdmin()) {
@@ -36,6 +42,12 @@ public class SysPermissionService {
         return roles;
     }
 
+    /**
+     * 获取用户菜单权限标识集合
+     *
+     * @param user 用户信息
+     * @return 菜单权限标识集合
+     */
     public Set<String> getMenuPermission(SysUser user) {
         Set<String> perms = new HashSet<String>();
         if (user.isAdmin()) {

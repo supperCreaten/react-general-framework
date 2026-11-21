@@ -29,6 +29,7 @@ public class SysLoginLogController extends BaseController
     @Autowired
     private ISysLogininforService logininforService;
 
+    /** 登录日志分页 */
     @PreAuthorize("@ss.hasPermi('system:loginLog:list')")
     @Operation(summary = "登录日志分页")
     @PostMapping("/pageQuery")
@@ -38,6 +39,7 @@ public class SysLoginLogController extends BaseController
         return getDataTable(logininforService.selectLogininforList(query == null ? new SysLogininfor() : query));
     }
 
+    /** 登录日志详情 */
     @PreAuthorize("@ss.hasPermi('system:loginLog:query')")
     @Operation(summary = "登录日志详情")
     @GetMapping("/detail")
@@ -46,6 +48,7 @@ public class SysLoginLogController extends BaseController
         return success(logininforService.selectLogininforById(infoId));
     }
 
+    /** 删除登录日志 */
     @PreAuthorize("@ss.hasPermi('system:loginLog:remove')")
     @Log(title = "登录日志", businessType = BusinessType.DELETE, bizId = "#body['infoIds']")
     @Operation(summary = "删除登录日志")
@@ -61,6 +64,7 @@ public class SysLoginLogController extends BaseController
         return error("参数不正确");
     }
 
+    /** 清空登录日志 */
     @PreAuthorize("@ss.hasPermi('system:loginLog:remove')")
     @Log(title = "登录日志", businessType = BusinessType.CLEAN)
     @Operation(summary = "清空登录日志")

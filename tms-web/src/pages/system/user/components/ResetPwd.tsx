@@ -57,6 +57,7 @@ export default function ResetPwd(props: ResetPwdProps) {
     queueMicrotask(() => form.clearValidate?.())
   }, [visible, form])
 
+  /** 校验并提交重置密码 */
   const handleSubmit = async () => {
     const validate = await form.validate()
     if (validate !== true) return

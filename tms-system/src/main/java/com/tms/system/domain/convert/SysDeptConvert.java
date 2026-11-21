@@ -15,6 +15,12 @@ public final class SysDeptConvert {
     private SysDeptConvert() {
     }
 
+    /**
+     * 查询条件转部门实体（用于列表筛选）
+     *
+     * @param query 部门查询条件
+     * @return 部门实体
+     */
     public static SysDept toEntity(SysDeptQuery query) {
         SysDept dept = new SysDept();
         if (query == null) {
@@ -26,6 +32,12 @@ public final class SysDeptConvert {
         return dept;
     }
 
+    /**
+     * 保存请求转部门实体
+     *
+     * @param req 部门保存请求
+     * @return 部门实体
+     */
     public static SysDept toEntity(SysDeptSaveReq req) {
         SysDept dept = new SysDept();
         if (req == null) {
@@ -43,6 +55,12 @@ public final class SysDeptConvert {
         return dept;
     }
 
+    /**
+     * 部门实体转展示 VO（含子节点递归转换）
+     *
+     * @param dept 部门实体
+     * @return 部门 VO，入参为 null 时返回 null
+     */
     public static SysDeptVo toVo(SysDept dept) {
         if (dept == null) {
             return null;
@@ -65,6 +83,12 @@ public final class SysDeptConvert {
         return vo;
     }
 
+    /**
+     * 部门实体列表转 VO 列表
+     *
+     * @param list 实体或混合列表（仅处理 {@link SysDept} 元素）
+     * @return VO 列表
+     */
     @SuppressWarnings("unchecked")
     public static List<SysDeptVo> toVoList(List<?> list) {
         if (list == null || list.isEmpty()) {

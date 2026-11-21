@@ -9,6 +9,13 @@ export type UserInfoPayload = {
   roles: string[];
 };
 
+/** 若依用户信息接口响应 */
+export type UserInfoApiRes = {
+  permissions?: string[];
+  roles?: string[];
+  user?: Record<string, unknown>;
+};
+
 /** 兼容若依结构 { permissions, roles, user } 与旧版扁平 user */
 export function normalizeUserInfoRes(res?: unknown): UserInfoPayload {
   const data = unwrapRecord(res);
@@ -26,8 +33,9 @@ export function normalizeUserInfoRes(res?: unknown): UserInfoPayload {
   };
 }
 
+/** 拉取当前登录用户信息并规范化 permissions/roles */
 export const getUserInfo = createAsyncThunk("menu/getUserInfo", async () => {
-  const res = await api.getUserInfo();
+  const res = await api.getUserInfo<UserInfoApiRes>();
   return normalizeUserInfoRes(res);
 });
 
@@ -45,6 +53,7 @@ const userSlice = createSlice({
     avatar: "https://avatars.githubusercontent.com/u/47056890",
   },
   reducers: {
+    /** 手动写入用户信息（如个人中心保存后同步） */
     setUserInfo(state, action) {
       const payload = normalizeUserInfoRes(action.payload);
       state.userInfo = payload.userInfo;

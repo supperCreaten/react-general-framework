@@ -182,12 +182,12 @@ export default function DeptPage() {
     loadingChildrenRef.current.add(key)
     try {
       const search = getParams(searchRef.current?.getFieldsValue(true) ?? {})
-      const data = await api.getDepts({
+      const data = await api.getDepts<DeptRow[]>({
         ...search,
         lazy: true,
         parentId: row.deptId,
       })
-      const children = toLazyDeptRows(Array.isArray(data) ? (data as DeptRow[]) : [])
+      const children = toLazyDeptRows(Array.isArray(data) ? data : [])
       tableRef.current?.getTable()?.appendTo(row.deptId, children as never)
     } finally {
       loadingChildrenRef.current.delete(key)
@@ -217,12 +217,12 @@ export default function DeptPage() {
           request={async (params) => {
             const keyword = String(params.deptName ?? "").trim()
             if (keyword) {
-              const data = await api.getDepts(params)
-              const rows = normalizeDeptTree(Array.isArray(data) ? (data as DeptRow[]) : [])
+              const data = await api.getDepts<DeptRow[]>(params)
+              const rows = normalizeDeptTree(Array.isArray(data) ? data : [])
               return { rows, total: rows.length }
             }
-            const data = await api.getDepts({ ...params, lazy: true, parentId: 0 })
-            const rows = toLazyDeptRows(Array.isArray(data) ? (data as DeptRow[]) : [])
+            const data = await api.getDepts<DeptRow[]>({ ...params, lazy: true, parentId: 0 })
+            const rows = toLazyDeptRows(Array.isArray(data) ? data : [])
             return { rows, total: rows.length }
           }}
           searchParams={() => getParams(searchRef.current?.getFieldsValue(true) ?? {})}

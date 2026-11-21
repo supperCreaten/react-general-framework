@@ -1,7 +1,7 @@
 import api from "@/api"
 import ContentSection from "@/components/ContentSection"
 import type { RootState } from "@/store"
-import { setUserInfo } from "@/store/modules/user"
+import { setUserInfo, type UserInfoApiRes } from "@/store/modules/user"
 import { resolvePublicUrl } from "@/utils/image"
 import { showMessage, useAppDispatch } from "@/utils/methods"
 import InputText from "@/components/InputText"
@@ -50,10 +50,12 @@ type PasswordFormValues = {
   confirmPassword: string
 }
 
+/** 将未知值转为去首尾空格的展示文本 */
 function asText(value: unknown) {
   return typeof value === "string" ? value.trim() : value == null ? "" : String(value).trim()
 }
 
+/** 将接口时间格式化为本地 `YYYY-MM-DD HH:mm:ss` */
 function formatDateTime(value: unknown) {
   const text = asText(value)
   if (!text) return ""
@@ -63,6 +65,7 @@ function formatDateTime(value: unknown) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
 }
 
+/** 按中英文逗号拆分角色名称列表 */
 function splitRoles(roleName: unknown) {
   return asText(roleName)
     .split(/[,，]/)
@@ -124,7 +127,7 @@ export default function MyProfilePage() {
   }, [profileForm, userInfo])
 
   const refreshUserInfo = async () => {
-    const next = await api.getUserInfo()
+    const next = await api.getUserInfo<UserInfoApiRes>()
     dispatch(setUserInfo(next))
   }
 
@@ -159,6 +162,7 @@ export default function MyProfilePage() {
     ],
   }
 
+  /** 保存基本资料并刷新全局用户信息 */
   const handleSaveProfile: TdFormProps["onSubmit"] = async (context: SubmitContext) => {
     if (context.validateResult !== true) return
     const values = profileForm.getFieldsValue(true) as ProfileFormValues
@@ -179,6 +183,7 @@ export default function MyProfilePage() {
     }
   }
 
+  /** 校验并提交修改登录密码 */
   const handleSavePassword: TdFormProps["onSubmit"] = async (context: SubmitContext) => {
     if (context.validateResult !== true) return
     const values = passwordForm.getFieldsValue(true) as PasswordFormValues
@@ -197,6 +202,7 @@ export default function MyProfilePage() {
     }
   }
 
+  /** 自定义头像上传并更新用户头像 */
   const handleAvatarRequest: UploadProps["requestMethod"] = async (file) => {
     const raw = Array.isArray(file) ? file[0] : file
     const uploadFile = raw as UploadFile

@@ -36,18 +36,22 @@ export const KEEP_ALIVE_OPTIONS = [
   { label: "不缓存", value: "0" },
 ]
 
+/** 目录/菜单类型是否展示图标字段 */
 export function shouldShowIcon(menuType?: number) {
   return menuType === MENU_TYPE.DIRECTORY || menuType === MENU_TYPE.MENU
 }
 
+/** 非按钮类型是否展示路由相关字段 */
 export function shouldShowRouteFields(menuType?: number) {
   return menuType !== MENU_TYPE.BUTTON
 }
 
+/** 菜单/页面类型是否展示缓存等详情字段 */
 export function shouldShowMenuDetailFields(menuType?: number) {
   return menuType === MENU_TYPE.MENU || menuType === MENU_TYPE.PAGE
 }
 
+/** 菜单类型是否展示是否外链字段 */
 export function shouldShowFrameFields(menuType?: number) {
   return menuType === MENU_TYPE.MENU
 }

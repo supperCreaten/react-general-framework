@@ -19,7 +19,7 @@ type DictItem = {
 /** 进程内缓存，避免同一字典编码重复请求 */
 const dictCache: DictRecord = {}
 
-function normalizeDictList(response: unknown): DictOption[] {
+function normalizeDictList(response: DictItem[] | unknown): DictOption[] {
   if (!Array.isArray(response)) return []
   return response.map((item: DictItem) => ({
     label: item?.dictLabel ?? "",
@@ -71,7 +71,7 @@ export default function useDict(codes: string[]) {
           if (dictCache[code]) {
             return [code, dictCache[code]] as const
           }
-          const response = await api.getDictByCode({ dictCode: code })
+          const response = await api.getDictByCode<DictItem[]>({ dictCode: code })
           const options = normalizeDictList(response)
           dictCache[code] = options
           return [code, options] as const

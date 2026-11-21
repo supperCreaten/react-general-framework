@@ -13,6 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * 字典 业务层处理
+ *
+ * @author tms
+ */
 @Service
 public class SysDictServiceImpl implements SysDictService {
     @Autowired
@@ -21,6 +26,11 @@ public class SysDictServiceImpl implements SysDictService {
     @Autowired
     private SysDictDataMapper dictDataMapper;
 
+    /**
+     * 校验字典编码是否唯一
+     *
+     * @param dict 字典信息
+     */
     private void selectDictByCode(SysDictSaveReq dict) {
         String dictCode = dict.getDictCode();
         Long dictId = dict.getDictId();
@@ -36,6 +46,12 @@ public class SysDictServiceImpl implements SysDictService {
         }
     }
 
+    /**
+     * 查询系统字典列表
+     *
+     * @param query 字典查询条件
+     * @return 字典列表
+     */
     @Override
     public List<SysDictSaveReq> selectDictList(SysDictQuery query) {
         SysDictSaveReq dict = new SysDictSaveReq();
@@ -45,6 +61,11 @@ public class SysDictServiceImpl implements SysDictService {
         return dictMapper.selectDictList(dict);
     }
 
+    /**
+     * 新增保存菜单信息
+     *
+     * @param req 字典信息
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertDict(SysDictSaveReq req) {
@@ -61,6 +82,11 @@ public class SysDictServiceImpl implements SysDictService {
         });
     }
 
+    /**
+     * 新增保存菜单信息
+     *
+     * @param req 字典信息
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateDict(SysDictSaveReq req) {
@@ -76,6 +102,12 @@ public class SysDictServiceImpl implements SysDictService {
         dictData.forEach(dictDataMapper::updateDictData);
     }
 
+    /**
+     * 根据主键id查询字典列表
+     *
+     * @param id 主键ID
+     * @return 字典详情
+     */
     @Override
     public SysDictSaveReq selectDictByDictId(Long id) {
         SysDictSaveReq dict = dictMapper.selectDictById(id);
@@ -84,6 +116,12 @@ public class SysDictServiceImpl implements SysDictService {
         return dict;
     }
 
+    /**
+     * 根据字典编码查询字典列表
+     *
+     * @param dictCode 字典编码
+     * @return 字典列表
+     */
     @Override
     public List<SysDictDataSaveReq> selectDictDataByCode(String dictCode) {
         SysDictSaveReq row = dictMapper.selectDictByCode(dictCode);
@@ -94,6 +132,11 @@ public class SysDictServiceImpl implements SysDictService {
         return dictDataMapper.selectDictDataByDictId(dictId);
     }
 
+    /**
+     * 根据主键id删除字典列表
+     *
+     * @param ids 主键ID集合
+     */
     @Override
     public void deleteDictById(List<Long> ids) {
         for (Long id : ids) {

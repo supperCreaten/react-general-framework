@@ -19,6 +19,11 @@ public interface SysMenuMapper {
      */
     public List<SysMenu> selectMenuList(SysMenu menu);
 
+    /**
+     * 查询全部菜单列表（不限用户）
+     *
+     * @return 菜单列表
+     */
     public List<SysMenu> selectMenuAllList();
 
     /**

@@ -47,12 +47,15 @@ const preferencesSlice = createSlice({
   name: "preferences",
   initialState,
   reducers: {
+    /** 设置侧边栏折叠状态 */
     setSidebarCollapsed(state, action) {
       state.sidebarCollapsed = action.payload;
     },
+    /** 切换导航布局样式（侧栏/顶栏/混合等） */
     setNavigationStyle(state, action) {
       state.navigationStyle = action.payload;
     },
+    /** 批量合并偏好配置（偏好面板保存） */
     setPreferences(state, action) {
       Object.assign(state, action.payload);
     },

@@ -88,19 +88,26 @@ function addUserReducer(state: AddUserState, patch: Partial<AddUserState>): AddU
   return { ...state, ...patch }
 }
 
+/** 将选项值转为字符串，空值用 fallback */
 function asOptionValue(value?: string | number, fallback = "") {
   return value == null || value === "" ? fallback : `${value}`
 }
 
+/**
+ * 将部门树转为懒加载节点
+ * @param list 原始部门节点
+ */
 function toLazyDeptNodes(list: DeptTreeNode[] = []): DeptTreeNode[] {
   return markLazyChildren(list as Array<Record<string, unknown>>, { idKey: "deptId" }) as DeptTreeNode[]
 }
 
+/** 按父节点懒加载子部门 */
 const loadDeptChildren = async (parentId: string | number) => {
-  const data = await api.getDepts({ lazy: true, parentId, status: "0" })
-  return toLazyDeptNodes(Array.isArray(data) ? (data as DeptTreeNode[]) : [])
+  const data = await api.getDepts<DeptTreeNode[]>({ lazy: true, parentId, status: "0" })
+  return toLazyDeptNodes(Array.isArray(data) ? data : [])
 }
 
+/** 将用户详情映射为表单初始值 */
 function mapDetailToForm(data?: UserDetail): UserFormValues {
   return {
     nickName: data?.nickName,
@@ -311,16 +318,16 @@ export default function AddUser(props: AddUserProps) {
             status: "0",
           }),
         ])
+        const { rows: roles = [] } = roleRes || {}
 
-        const roles = Array.isArray(roleRes?.rows) ? roleRes.rows : []
         dispatch({
           deptTree: deptRes,
           roleOptions: roles.map((item) => ({ label: item.roleName, value: String(item.roleId) })),
         })
 
         if (!isEdit || !userId) return
-        const detail = (await api.getUserDetail({ userId })) as UserDetail
-        form.setFieldsValue(mapDetailToForm(detail))
+        const detail = await api.getUserDetail<UserDetail>({ userId })
+        form.setFieldsValue(mapDetailToForm(detail || {}))
       } finally {
         dispatch({ loading: false })
       }
@@ -338,14 +345,14 @@ export default function AddUser(props: AddUserProps) {
     let cancelled = false
     const loadPosts = async () => {
       try {
-        const postRes = await api.getPostList<{ postId: string | number; postName: string }>({
+        const data = await api.getPostList<{ postId: string | number; postName: string }>({
           pageNum: 1,
           pageSize: 500,
           status: "0",
           deptId,
         })
+        const { rows: posts = [] } = data || {}
         if (cancelled) return
-        const posts = Array.isArray(postRes?.rows) ? postRes.rows : []
         dispatch({
           postOptions: posts.map((item) => ({ label: item.postName, value: String(item.postId) })),
         })
@@ -359,6 +366,7 @@ export default function AddUser(props: AddUserProps) {
     }
   }, [visible, selectedDeptId])
 
+  /** 校验并提交新增/修改用户 */
   const handleSubmit = async () => {
     const validate = await form.validate()
     if (validate !== true) return

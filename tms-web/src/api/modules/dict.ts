@@ -1,9 +1,24 @@
+import type { TablePageResult } from "@/hooks/use-table-query";
+import type { TableRowData } from "tdesign-react";
 import request from "@/utils/service";
+
 export default {
-  getDictPageQuery: (data: Record<string, unknown>) => request.post("/api/dict/pageQuery", data),
-  getDictByCode: (data: { dictCode: string }) => request.post("/api/dict/allDict", data),
-  insertDict: (data: Record<string, unknown>) => request.post("/api/dict/insert", data),
-  updateDict: (data: Record<string, unknown>) => request.post("/api/dict/update", data),
-  getDictDetail: (id: string) => request.post(`/api/dict/queryById/${id}`),
-  deleteDict: (data: Record<string, unknown>) => request.post("/api/dict/delete", data),
+  /** 字典分页查询 */
+  getDictPageQuery: <T extends TableRowData>(data: Record<string, unknown>) =>
+    request.post<TablePageResult<T>>("/api/dict/pageQuery", data),
+  /** 按字典编码获取全部字典项 */
+  getDictByCode: <T = unknown>(data: { dictCode: string }) =>
+    request.post<T>("/api/dict/allDict", data),
+  /** 新增字典 */
+  insertDict: <T = unknown>(data: Record<string, unknown>) =>
+    request.post<T>("/api/dict/insert", data),
+  /** 更新字典 */
+  updateDict: <T = unknown>(data: Record<string, unknown>) =>
+    request.post<T>("/api/dict/update", data),
+  /** 根据字典 ID 查询详情 */
+  getDictDetail: <T = unknown>(id: string) =>
+    request.post<T>(`/api/dict/queryById/${id}`),
+  /** 删除字典 */
+  deleteDict: <T = unknown>(data: Record<string, unknown>) =>
+    request.post<T>("/api/dict/delete", data),
 };

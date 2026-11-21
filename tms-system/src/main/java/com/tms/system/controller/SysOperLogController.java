@@ -29,6 +29,7 @@ public class SysOperLogController extends BaseController
     @Autowired
     private ISysOperLogService operLogService;
 
+    /** 操作日志分页 */
     @PreAuthorize("@ss.hasPermi('system:operLog:list')")
     @Operation(summary = "操作日志分页")
     @PostMapping("/pageQuery")
@@ -38,6 +39,7 @@ public class SysOperLogController extends BaseController
         return getDataTable(operLogService.selectOperLogList(query == null ? new SysOperLog() : query));
     }
 
+    /** 操作日志详情 */
     @PreAuthorize("@ss.hasPermi('system:operLog:query')")
     @Operation(summary = "操作日志详情")
     @GetMapping("/detail")
@@ -46,6 +48,7 @@ public class SysOperLogController extends BaseController
         return success(operLogService.selectOperLogById(operId));
     }
 
+    /** 删除操作日志 */
     @PreAuthorize("@ss.hasPermi('system:operLog:remove')")
     @Log(title = "操作日志", businessType = BusinessType.DELETE, bizId = "#body['operIds']")
     @Operation(summary = "删除操作日志")
@@ -61,6 +64,7 @@ public class SysOperLogController extends BaseController
         return error("参数不正确");
     }
 
+    /** 清空操作日志 */
     @PreAuthorize("@ss.hasPermi('system:operLog:remove')")
     @Log(title = "操作日志", businessType = BusinessType.CLEAN)
     @Operation(summary = "清空操作日志")

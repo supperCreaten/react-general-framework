@@ -5,8 +5,10 @@ import dayjs from "dayjs";
 import { MessagePlugin } from "tdesign-react";
 import type { AppDispatch } from "@/interface";
 
+/** 带类型的 Redux dispatch 钩子 */
 export const useAppDispatch: () => AppDispatch = useDispatch;
 
+/** 统一弹出 TDesign 全局消息 */
 export const showMessage = (
   msg: string,
   type: "success" | "error" | "warning" | "info" = "error",
@@ -19,6 +21,7 @@ export const showMessage = (
   else MessagePlugin.error(text);
 };
 
+/** 过滤对象中的空值，生成查询参数 */
 export function getParams(data = {}) {
   const params: Record<string, unknown> = {};
   for (const [key, val] of Object.entries(data)) {
@@ -29,10 +32,12 @@ export function getParams(data = {}) {
   return params;
 }
 
+/** 合并 className（clsx 封装） */
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);
 }
 
+/** 根据出生日期计算周岁年龄 */
 export const getBirthdayToAge = (birthday: string) => {
   const birthdayDate = birthday ?? 0;
   return dayjs().diff(birthdayDate, "year");

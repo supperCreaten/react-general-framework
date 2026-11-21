@@ -17,6 +17,7 @@ const LEVEL_META: Record<
   strong: { label: "强", percent: 100 },
 };
 
+/** 根据规则计算密码强度等级、得分与改进提示 */
 export function getPasswordStrength(password: string): PasswordStrengthResult {
   const value = password ?? "";
   if (!value) {

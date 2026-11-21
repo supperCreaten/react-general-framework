@@ -8,6 +8,7 @@ import CreateComponent from "@/components/CreateComponent"
 import { createIconifyIcon } from "@/icons"
 import { useLayout } from "../use-layout"
 
+/** 侧栏/顶栏菜单数据、选中项与点击跳转（含混合导航拆分逻辑） */
 export default function useMenu() {
   const { wholeMenus } = useSelector(menuDaTa)
   const { pathname } = useLocation()

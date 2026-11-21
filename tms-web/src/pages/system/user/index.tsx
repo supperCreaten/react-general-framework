@@ -88,6 +88,7 @@ function userPageReducer(state: UserPageState, patch: Partial<UserPageState>): U
   return { ...state, ...patch }
 }
 
+/** 将接口部门列表规范为树节点（含嵌套 children） */
 function normalizeDeptTree(list: Array<Record<string, unknown>> = []): DeptTreeNode[] {
   return list.map((item) => {
     const children = Array.isArray(item.children)
@@ -101,6 +102,10 @@ function normalizeDeptTree(list: Array<Record<string, unknown>> = []): DeptTreeN
   })
 }
 
+/**
+ * 将部门树转为懒加载节点
+ * @param list 原始部门节点
+ */
 function toLazyDeptNodes(list: Array<Record<string, unknown>> = []): DeptTreeNode[] {
   return markLazyChildren(list, { idKey: "deptId" }).map((item) => ({
     ...item,
@@ -108,9 +113,10 @@ function toLazyDeptNodes(list: Array<Record<string, unknown>> = []): DeptTreeNod
   })) as DeptTreeNode[]
 }
 
+/** 按父节点懒加载子部门 */
 async function loadDeptChildren(parentId: string | number) {
-  const data = await api.getDepts({ lazy: true, parentId, status: "0" })
-  return toLazyDeptNodes(Array.isArray(data) ? (data as Array<Record<string, unknown>>) : [])
+  const data = await api.getDepts<Array<Record<string, unknown>>>({ lazy: true, parentId, status: "0" })
+  return toLazyDeptNodes(Array.isArray(data) ? data : [])
 }
 
 export default function UserPage() {
@@ -130,9 +136,9 @@ export default function UserPage() {
     const text = keyword.trim()
     try {
       if (text) {
-        const data = await api.getDepts({ status: "0", deptName: text })
+        const data = await api.getDepts<Array<Record<string, unknown>>>({ status: "0", deptName: text })
         dispatch({
-          deptTree: normalizeDeptTree(Array.isArray(data) ? (data as Array<Record<string, unknown>>) : []),
+          deptTree: normalizeDeptTree(Array.isArray(data) ? data : []),
         })
         return
       }
@@ -171,6 +177,7 @@ export default function UserPage() {
     [],
   )
 
+  /** 按搜索条件刷新用户表格 */
   const handleSearch = () => {
      tableRef.current?.refresh({ resetCurrent: true })
   }
@@ -189,6 +196,7 @@ export default function UserPage() {
     [selectedDeptId],
   )
 
+  /** 批量删除用户（含确认框） */
   const handleDelete = useCallback((rows: UserRow[]) => {
     if (!rows.length) {
       showMessage("请选择要删除的用户", "warning")
@@ -215,6 +223,7 @@ export default function UserPage() {
     })
   }, [])
 
+  /** 删除工具栏选中的用户 */
   const handleToolbarDelete = () => {
     const rows = selectedKeys.map((id) => ({ userId: id })) as UserRow[]
     handleDelete(rows)

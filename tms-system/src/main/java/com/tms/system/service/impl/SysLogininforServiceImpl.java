@@ -40,6 +40,12 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
         return logininforMapper.selectLogininforList(logininfor);
     }
 
+    /**
+     * 查询登录日志详情
+     *
+     * @param infoId 访问ID
+     * @return 登录日志对象
+     */
     @Override
     public SysLogininfor selectLogininforById(Long infoId) {
         return logininforMapper.selectLogininforById(infoId);
@@ -64,6 +70,11 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
         logininforMapper.cleanLogininfor();
     }
 
+    /**
+     * 按天数清理登录日志
+     *
+     * @param days 保留最近天数
+     */
     @Override
     public void cleanLogininforByDays(int days) {
         logininforMapper.cleanLogininforByDays(days);

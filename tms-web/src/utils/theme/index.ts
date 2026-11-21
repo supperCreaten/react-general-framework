@@ -119,6 +119,7 @@ export function applyThemeRadius(radius: number): void {
   root.style.setProperty("--td-radius-extraLarge", `${Math.round(base * 2)}px`)
 }
 
+/** 一次性应用深浅色、品牌色与圆角主题配置 */
 export function applyTheme(options: { color?: string; radius?: number; isDark?: boolean }): void {
   if (typeof options.isDark === "boolean") applyThemeMode(options.isDark)
   if (options.color) applyThemeColor(options.color, Boolean(options.isDark))

@@ -192,6 +192,12 @@ public class SysMenuServiceImpl implements ISysMenuService {
         return result;
     }
 
+    /**
+     * 将菜单类型解析为整数
+     *
+     * @param menuType 菜单类型
+     * @return 菜单类型数值，无法解析时返回 0
+     */
     private Integer parseMenuType(String menuType) {
         if (StringUtils.isEmpty(menuType)) {
             return 0;

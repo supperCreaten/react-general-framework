@@ -9,10 +9,12 @@ export function createImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
+/** 将角度转换为弧度（供 Canvas 旋转使用） */
 export function getRadianAngle(degreeValue: number) {
   return (degreeValue * Math.PI) / 180;
 }
 
+/** 可见区域裁剪：舞台尺寸、裁剪框与自然图缩放/旋转参数 */
 export type VisibleCropInput = {
   imageSrc: string;
   stageWidth: number;

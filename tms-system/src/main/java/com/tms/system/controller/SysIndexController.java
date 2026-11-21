@@ -83,6 +83,7 @@ public class SysIndexController {
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
 
+    /** 刷新 accessToken */
     @Operation(summary = "刷新 accessToken")
     @GetMapping("/refreshToken")
     public AjaxResult refreshToken(HttpServletRequest request) {
@@ -90,6 +91,7 @@ public class SysIndexController {
         return AjaxResult.success("操作成功", tokenService.refreshAccessToken(refreshToken));
     }
 
+    /** 获取授权路由 */
     @Operation(summary = "获取授权路由")
     @GetMapping("/authRoutes")
     public AjaxResult authRoutes() {
@@ -277,6 +279,7 @@ public class SysIndexController {
         }
     }
 
+    /** 构建上传成功返回数据 */
     private static Map<String, Object> buildUploadData(SysFileInfo saved) {
         Map<String, Object> data = new HashMap<>(8);
         data.put("fileId", saved.getFileId());
@@ -308,6 +311,7 @@ public class SysIndexController {
         }
     }
 
+    /** 获取当前请求的服务根 URL */
     private static String getServerUrl() {
         HttpServletRequest request = ServletUtils.getRequest();
         StringBuffer url = request.getRequestURL();
@@ -315,6 +319,7 @@ public class SysIndexController {
         return url.delete(url.length() - request.getRequestURI().length(), url.length()).append(contextPath).toString();
     }
 
+    /** 读取指定名称的 Cookie 值 */
     private static String readCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
@@ -328,6 +333,7 @@ public class SysIndexController {
         return null;
     }
 
+    /** 生成随机验证码字符串 */
     private static String randomCode(int size) {
         StringBuilder sb = new StringBuilder(size);
         ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -337,6 +343,7 @@ public class SysIndexController {
         return sb.toString();
     }
 
+    /** 将验证码文本渲染为 SVG 字符串 */
     private static String buildSvgCaptcha(String code) {
         StringBuilder texts = new StringBuilder();
         ThreadLocalRandom random = ThreadLocalRandom.current();

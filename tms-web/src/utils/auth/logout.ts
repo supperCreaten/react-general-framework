@@ -1,6 +1,7 @@
 import store from "@/store";
 import { removeToken } from "./token";
 
+/** 退出登录并清理本地状态 */
 export async function logout() {
   try {
     const { default: api } = await import("@/api");

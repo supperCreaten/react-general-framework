@@ -150,6 +150,12 @@ public class SysRoleServiceImpl implements ISysRoleService {
         return UserConstants.UNIQUE;
     }
 
+    /**
+     * 校验角色编码是否唯一
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
     @Override
     public boolean checkRoleCodeUnique(SysRole role) {
         Long roleId = StringUtils.isNull(role.getRoleId()) ? -1L : role.getRoleId();

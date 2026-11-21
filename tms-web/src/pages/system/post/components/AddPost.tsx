@@ -44,19 +44,26 @@ const initialValues: PostFormValues = {
   remark: "",
 }
 
+/** 将选项值转为字符串，空值用 fallback */
 function asOptionValue(value?: string | number, fallback = "0") {
   return value == null || value === "" ? fallback : `${value}`
 }
 
+/**
+ * 将部门树转为懒加载节点
+ * @param list 原始部门节点
+ */
 function toLazyDeptNodes(list: DeptTreeNode[] = []): DeptTreeNode[] {
   return markLazyChildren(list as Array<Record<string, unknown>>, { idKey: "deptId" }) as DeptTreeNode[]
 }
 
+/** 按父节点懒加载子部门 */
 async function loadDeptChildren(parentId: string | number) {
-  const data = await api.getDepts({ lazy: true, parentId, status: "0" })
-  return toLazyDeptNodes(Array.isArray(data) ? (data as DeptTreeNode[]) : [])
+  const data = await api.getDepts<DeptTreeNode[]>({ lazy: true, parentId, status: "0" })
+  return toLazyDeptNodes(Array.isArray(data) ? data : [])
 }
 
+/** 将岗位详情映射为表单初始值 */
 function mapDetailToForm(data?: PostDetail): PostFormValues {
   return {
     postName: data?.postName,
@@ -149,8 +156,8 @@ export default function AddPost(props: AddPostProps) {
         form.setFieldsValue({ ...initialValues })
         setDeptTree(await loadDeptChildren(0))
         if (!isEdit || !postId) return
-        const data = (await api.getPostDetail({ postId })) as PostDetail
-        form.setFieldsValue(mapDetailToForm(data))
+        const data = await api.getPostDetail<PostDetail>({ postId })
+        form.setFieldsValue(mapDetailToForm(data || {}))
       } finally {
         setLoading(false)
       }
@@ -158,6 +165,7 @@ export default function AddPost(props: AddPostProps) {
     void init()
   }, [visible, postId, isEdit, form])
 
+  /** 校验并提交新增/修改岗位 */
   const handleSubmit = async () => {
     const validate = await form.validate()
     if (validate !== true) return

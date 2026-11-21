@@ -9,6 +9,7 @@ const Layout = lazy(() => import("@/layout"))
 const MyProfile = lazy(() => import("@/pages/personal-center/my-profile"))
 const NotFound = lazy(() => import("@/pages/notFound"))
 
+/** 组装登录页与 Layout 下的静态/动态路由配置 */
 export function useAppRoutes(): RouteObject[] {
   const dynamicRoutes = useDynamicRoutes()
   return useMemo(() => {

@@ -167,10 +167,12 @@ export default function RolePage() {
     [],
   )
 
+  /** 按搜索条件刷新角色表格 */
   const handleSearch = () => {
     void tableRef.current?.refresh({ resetCurrent: true })
   }
 
+  /** 删除单条角色（含确认框） */
   const handleDelete = (row: RoleRow) => {
     const dialogInstance = DialogPlugin.confirm({
       header: "提示",

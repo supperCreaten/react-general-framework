@@ -2,19 +2,33 @@ import type { AxiosRequestConfig } from "axios";
 import request from "@/utils/service";
 
 export default {
-  login: (data: Record<string, unknown>) => request.post("/api/login", data),
-  getAuthMenus: () => request.get("/api/authRoutes"),
-  getUserInfo: () => request.get("/api/userInfo"),
-  refreshToken: () => request.get("/api/refreshToken"),
-  logout: () => request.post("/api/logout"),
-  changePassword: (data: Record<string, unknown>) => request.post("/api/user/changePassword", data),
+  /** 用户登录 */
+  login: <T = unknown>(data: Record<string, unknown>) =>
+    request.post<T>("/api/login", data),
+  /** 获取当前用户有权限的路由菜单 */
+  getAuthMenus: <T = unknown>() => request.get<T>("/api/authRoutes"),
+  /** 获取当前登录用户信息 */
+  getUserInfo: <T = unknown>() => request.get<T>("/api/userInfo"),
+  /** 刷新访问令牌 */
+  refreshToken: <T = unknown>() => request.get<T>("/api/refreshToken"),
+  /** 退出登录 */
+  logout: <T = unknown>() => request.post<T>("/api/logout"),
+  /** 修改登录密码 */
+  changePassword: <T = unknown>(data: Record<string, unknown>) =>
+    request.post<T>("/api/user/changePassword", data),
   /** 个人中心：修改基本资料 */
-  updateProfile: (data: Record<string, unknown>) => request.put("/api/user/profile", data),
+  updateProfile: <T = unknown>(data: Record<string, unknown>) =>
+    request.put<T>("/api/user/profile", data),
   /** 个人中心：修改密码 */
-  updateProfilePassword: (data: { oldPassword: string; newPassword: string }) =>
-    request.put("/api/user/profile/updatePwd", data),
-  decryptSensitive: (data: { cipherText: string; secretKey: string }) =>
-    request.post("/api/decryptSensitive", data),
-  uploadApi: (data: FormData, config?: AxiosRequestConfig) =>
-    request.post("/api/upload", data, config),
+  updateProfilePassword: <T = unknown>(data: { oldPassword: string; newPassword: string }) =>
+    request.put<T>("/api/user/profile/updatePwd", data),
+  /** 解密后端返回的敏感字段密文 */
+  decryptSensitive: <T = unknown>(data: { cipherText: string; secretKey: string }) =>
+    request.post<T>("/api/decryptSensitive", data),
+  /**
+   * 通用文件上传
+   * @param data FormData
+   */
+  uploadApi: <T = unknown>(data: FormData, config?: AxiosRequestConfig) =>
+    request.post<T>("/api/upload", data, config),
 };

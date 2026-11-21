@@ -37,6 +37,7 @@ type MenuDialogState = {
   menuId?: string
 }
 
+/** 规范化菜单树（统一 menuId 为字符串） */
 function normalizeMenuTree(list: MenuRow[] = []): MenuRow[] {
   return list.map((item) => {
     const children = Array.isArray(item.children) && item.children.length ? normalizeMenuTree(item.children) : undefined
@@ -48,6 +49,7 @@ function normalizeMenuTree(list: MenuRow[] = []): MenuRow[] {
   })
 }
 
+/** 将菜单行转为懒加载子节点占位 */
 function toLazyMenuRows(list: MenuRow[] = []): MenuRow[] {
   return markLazyChildren(list as Array<Record<string, unknown>>, { idKey: "menuId" }) as unknown as MenuRow[]
 }
@@ -169,11 +171,13 @@ export default function MenuPage() {
     [],
   )
 
+  /** 按搜索条件刷新菜单表格 */
   const handleSearch = () => {
     loadingChildrenRef.current.clear()
     void tableRef.current?.refresh({ resetCurrent: true })
   }
 
+  /** 删除菜单项（含确认框） */
   const handleDelete = (row: MenuRow) => {
     const dialogInstance = DialogPlugin.confirm({
       header: "提示",
@@ -199,12 +203,12 @@ export default function MenuPage() {
     loadingChildrenRef.current.add(key)
     try {
       const search = getParams(searchRef.current?.getFieldsValue(true) ?? {})
-      const data = await api.getMenus({
+      const data = await api.getMenus<MenuRow[]>({
         ...search,
         lazy: true,
         parentId: row.menuId,
       })
-      const children = toLazyMenuRows(Array.isArray(data) ? (data as MenuRow[]) : [])
+      const children = toLazyMenuRows(Array.isArray(data) ? data : [])
       tableRef.current?.getTable()?.appendTo(row.menuId, children as never)
     } finally {
       loadingChildrenRef.current.delete(key)
@@ -236,12 +240,12 @@ export default function MenuPage() {
           request={async (params) => {
             const keyword = String(params.menuName ?? "").trim()
             if (keyword) {
-              const data = await api.getMenus(params)
-              const rows = normalizeMenuTree(Array.isArray(data) ? (data as MenuRow[]) : [])
+              const data = await api.getMenus<MenuRow[]>(params)
+              const rows = normalizeMenuTree(Array.isArray(data) ? data : [])
               return { rows, total: rows.length }
             }
-            const data = await api.getMenus({ ...params, lazy: true, parentId: 0 })
-            const rows = toLazyMenuRows(Array.isArray(data) ? (data as MenuRow[]) : [])
+            const data = await api.getMenus<MenuRow[]>({ ...params, lazy: true, parentId: 0 })
+            const rows = toLazyMenuRows(Array.isArray(data) ? data : [])
             return { rows, total: rows.length }
           }}
           searchParams={() => getParams(searchRef.current?.getFieldsValue(true) ?? {})}

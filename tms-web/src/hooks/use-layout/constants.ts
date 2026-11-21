@@ -1,6 +1,10 @@
+/** 侧边导航布局标识 */
 export const SIDE_NAVIGATION = "side-navigation"
+/** 顶部导航布局标识 */
 export const TOP_NAVIGATION = "top-navigation"
+/** 双列导航布局标识 */
 export const TWO_COLUMN_NAVIGATION = "two-column-navigation"
+/** 混合导航（顶栏 + 侧栏）布局标识 */
 export const MIXED_NAVIGATION = "mixed-navigation"
 
 /** 侧边栏展开宽度（默认） */

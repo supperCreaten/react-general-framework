@@ -13,6 +13,25 @@ type MenuTreeNode = {
   children?: MenuTreeNode[]
 }
 
+type RoleDetail = {
+  roleCode?: string
+  roleKey?: string
+  roleName?: string
+  status?: string | number
+  roleSort?: number
+  orderNum?: number
+  remark?: string
+}
+
+type RoleFormValues = {
+  roleCode?: string
+  roleKey?: string
+  roleName?: string
+  status?: boolean
+  roleSort?: number
+  remark?: string
+}
+
 export type AddRoleProps = {
   visible: boolean
   title: string
@@ -20,8 +39,21 @@ export type AddRoleProps = {
   onClose: (submitted?: boolean) => void
 }
 
+/** 将树选中键规范为菜单 ID 字符串数组 */
 function toMenuIds(keys: Array<string | number>): string[] {
   return keys.map((k) => String(k)).filter(Boolean)
+}
+
+/** 将角色详情映射为表单初始值 */
+function mapDetailToForm(data?: RoleDetail): RoleFormValues {
+  return {
+    roleCode: data?.roleCode,
+    roleKey: data?.roleKey,
+    roleName: data?.roleName,
+    status: data?.status === 0 || data?.status === "0",
+    roleSort: data?.roleSort ?? data?.orderNum ?? 0,
+    remark: data?.remark,
+  }
 }
 
 type AddRoleState = {
@@ -57,9 +89,7 @@ export default function AddRole(props: AddRoleProps) {
         label: "角色编码",
         name: "roleCode",
         colProps: { span: 12 },
-        component: (
-          <InputText disabled placeholder={isEdit ? "角色编码" : "保存后自动生成数字编号"} />
-        ),
+        component: <InputText disabled placeholder={isEdit ? "角色编码" : "保存后自动生成数字编号"} />,
       },
       {
         label: "权限字符",
@@ -100,8 +130,8 @@ export default function AddRole(props: AddRoleProps) {
   const loadMenuTree = useCallback(async () => {
     dispatch({ treeLoading: true })
     try {
-      const res = await api.getMenus()
-      dispatch({ treeData: Array.isArray(res) ? (res as MenuTreeNode[]) : [] })
+      const res = await api.getMenus<MenuTreeNode[]>()
+      dispatch({ treeData: Array.isArray(res) ? res : [] })
     } finally {
       dispatch({ treeLoading: false })
     }
@@ -110,10 +140,9 @@ export default function AddRole(props: AddRoleProps) {
   const loadMenuConfig = useCallback(async () => {
     if (!roleId) return
     try {
-      const res = (await api.getMenuConfig({ roleId })) as {
-        checkedKeys?: Array<string | number>
-      }
-      dispatch({ selectedMenuKeys: (res?.checkedKeys ?? []).map((id) => String(id)) })
+      const data = await api.getMenuConfig<{ checkedKeys?: Array<string | number> }>({ roleId })
+      const { checkedKeys = [] } = data || {}
+      dispatch({ selectedMenuKeys: checkedKeys.map((id) => String(id)) })
     } catch {
       dispatch({ selectedMenuKeys: [] })
     }
@@ -128,15 +157,8 @@ export default function AddRole(props: AddRoleProps) {
         form.reset()
         form.setFieldsValue({ status: true, roleSort: 0 })
         if (!isEdit || !roleId) return
-        const data = (await api.getRoleDetail({ roleId })) as Record<string, unknown>
-        form.setFieldsValue({
-          roleCode: data.roleCode,
-          roleKey: data.roleKey,
-          roleName: data.roleName,
-          status: data.status === 0 || data.status === "0",
-          roleSort: data.roleSort ?? data.orderNum ?? 0,
-          remark: data.remark,
-        })
+        const data = await api.getRoleDetail<RoleDetail>({ roleId })
+        form.setFieldsValue(mapDetailToForm(data || {}))
         await loadMenuConfig()
       } finally {
         dispatch({ loading: false })
@@ -145,6 +167,7 @@ export default function AddRole(props: AddRoleProps) {
     void init()
   }, [visible, roleId, isEdit, form, loadMenuTree, loadMenuConfig])
 
+  /** 校验并提交新增/修改角色及菜单权限 */
   const handleSubmit = async () => {
     const validate = await form.validate()
     if (validate !== true) return

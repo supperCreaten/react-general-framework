@@ -11,6 +11,7 @@ function parseMaxConcurrent() {
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : DEFAULT_MAX_CONCURRENT;
 }
 
+/** 判断是否为 axios 取消类错误 */
 export function isCanceledError(error: unknown) {
   return (
     axios.isCancel(error) ||
@@ -19,12 +20,14 @@ export function isCanceledError(error: unknown) {
   );
 }
 
+/** 是否不参与路由切换时的批量取消 */
 export function shouldSkipRouteCancel(config: InternalAxiosRequestConfig) {
   if (config.skipRouteCancel) return true;
   const url = config.url ?? "";
   return url.includes(REFRESH_URL);
 }
 
+/** 是否不参与全局并发限制 */
 export function shouldSkipConcurrency(config: InternalAxiosRequestConfig) {
   if (config.skipConcurrency) return true;
   const url = config.url ?? "";
@@ -124,6 +127,7 @@ function mergeAbortSignal(config: InternalAxiosRequestConfig, controller: AbortC
   config.signal = controller.signal;
 }
 
+/** 为请求挂载 AbortController 并视情况进入并发队列 */
 export async function prepareRequestControl(config: InternalAxiosRequestConfig) {
   const controller = new AbortController();
   config._abortController = controller;
@@ -140,6 +144,7 @@ export async function prepareRequestControl(config: InternalAxiosRequestConfig) 
   }
 }
 
+/** 请求结束后释放并发槽位并注销 AbortController */
 export function finalizeRequestControl(config?: InternalAxiosRequestConfig) {
   if (!config) return;
   config._concurrencyRelease?.();

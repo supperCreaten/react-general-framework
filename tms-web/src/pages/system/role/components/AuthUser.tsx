@@ -58,9 +58,9 @@ export default function AuthUser(props: AuthUserProps) {
   const loadSelectedUsers = useCallback(async () => {
     if (!roleId) return
     try {
-      const res = (await api.getUserConfig({ roleId })) as { rows?: AuthUserRow[] } | AuthUserRow[]
-      const rows = Array.isArray(res) ? res : Array.isArray(res?.rows) ? res.rows : []
-      setSelectedKeys(rows.map((item) => String(item.userId)))
+      const data = await api.getUserConfig<{ rows?: AuthUserRow[] }>({ roleId })
+      const { rows = [] } = data || {}
+      setSelectedKeys((Array.isArray(rows) ? rows : []).map((item) => String(item.userId)))
     } catch {
       setSelectedKeys([])
     }
@@ -71,6 +71,7 @@ export default function AuthUser(props: AuthUserProps) {
     void loadSelectedUsers()
   }, [visible, loadSelectedUsers])
 
+  /** 保存角色与用户的关联关系 */
   const handleSave = async () => {
     if (!selectedKeys.length) {
       showMessage("请选择用户", "warning")

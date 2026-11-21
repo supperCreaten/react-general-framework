@@ -17,6 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 字典管理
+ *
+ * @author tms
+ */
 @RestController
 @Tag(name = "字典管理")
 @RequestMapping("/dict")

@@ -2,7 +2,7 @@ import api from "@/api";
 import { unwrapArray } from "@/utils/service";
 import LoadingScreen from "@/plugins/LoadingScreen";
 import { setMenuList } from "@/store/modules/menu";
-import { normalizeUserInfoRes, setUserInfo } from "@/store/modules/user";
+import { normalizeUserInfoRes, setUserInfo, type UserInfoApiRes } from "@/store/modules/user";
 import type { MenuInfo } from "@/interface";
 import { generateMenuItemsFromMenuTree } from "@/utils/menu";
 import type { RootState } from "@/store";
@@ -34,9 +34,9 @@ export default function AuthRouteGuard({ children }: AuthRouteGuardProps) {
     let cancelled = false;
 
     async function fetchUserInfoAndRoutes() {
-      let userInfoRes: Awaited<ReturnType<typeof api.getUserInfo>> | undefined;
+      let userInfoRes: UserInfoApiRes | undefined;
       try {
-        userInfoRes = await api.getUserInfo();
+        userInfoRes = await api.getUserInfo<UserInfoApiRes>();
       } catch {
         userInfoRes = undefined;
       }
@@ -56,9 +56,9 @@ export default function AuthRouteGuard({ children }: AuthRouteGuardProps) {
 
       /** 与菜单请求并行预取 Layout，鉴权结束即可直接渲染壳层 */
       const layoutPrefetch = import("@/layout");
-      let menuRes: Awaited<ReturnType<typeof api.getAuthMenus>> | undefined;
+      let menuRes: MenuInfo[] | undefined;
       try {
-        menuRes = await api.getAuthMenus();
+        menuRes = await api.getAuthMenus<MenuInfo[]>();
       } catch {
         menuRes = undefined;
       }

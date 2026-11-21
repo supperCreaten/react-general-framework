@@ -73,6 +73,7 @@ const tabSlice = createSlice({
   name: "tab",
   initialState,
   reducers: {
+    /** 标记当前页是否处于 keep-alive 刷新中 */
     setIsRefresh: (state, action) => {
       state.isRefresh = action.payload;
     },

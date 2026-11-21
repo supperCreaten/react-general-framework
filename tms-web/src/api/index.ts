@@ -15,10 +15,7 @@ export type Api = typeof import("./modules/user").default &
   typeof import("./modules/common").default &
   typeof import("./modules/dict").default &
   typeof import("./modules/user_profile").default &
-  typeof import("./modules/customer").default &
-  typeof import("./modules/carrier").default &
-  typeof import("./modules/house").default&
-  typeof import("./modules/order").default;
+  typeof import("./modules/house").default;
 
 const api = Object.values(modules).reduce<Api>((acc, cur) => {
   return Object.assign(acc, cur as Partial<Api>);

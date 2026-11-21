@@ -30,6 +30,11 @@ public interface ISysMenuService {
      */
      List<SysMenu> selectMenuList(SysMenu menu, Long userId);
 
+    /**
+     * 查询全部菜单列表（不限用户）
+     *
+     * @return 菜单列表
+     */
     List<SysMenu> selectAllMenuList();
 
     /**

@@ -11,6 +11,7 @@ const COOKIE_OPTS = {
   // 不设置 domain：避免 localhost / IP 下会话 Cookie 写入异常
 } as const;
 
+/** 从 Cookie 读取当前 accessToken */
 export function getAccessToken(): string {
   return Cookies.get("accessToken") || "";
 }
@@ -21,6 +22,7 @@ function clearAccessTokenCookies() {
   Cookies.remove("accessToken", { path: "/", domain: window.location.hostname });
 }
 
+/** 写入 accessToken 并在变更时派发 ACCESS_TOKEN_CHANGED */
 export function setAccessToken(token: string): void {
   if (!token) return;
   const prev = getAccessToken();
@@ -32,6 +34,7 @@ export function setAccessToken(token: string): void {
   }
 }
 
+/** 清除 accessToken 并在曾有 token 时派发 ACCESS_TOKEN_CLEARED */
 export function removeToken(): void {
   const hadToken = !!getAccessToken();
   clearAccessTokenCookies();

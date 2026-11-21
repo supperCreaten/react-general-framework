@@ -133,10 +133,12 @@ export default function PostPage() {
     [],
   )
 
+  /** 按搜索条件刷新岗位表格 */
   const handleSearch = () => {
     void tableRef.current?.refresh({ resetCurrent: true })
   }
 
+  /** 删除单条岗位（含确认框） */
   const handleDelete = (row: PostRow) => {
     const dialogInstance = DialogPlugin.confirm({
       header: "提示",

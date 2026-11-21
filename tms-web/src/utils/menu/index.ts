@@ -173,6 +173,7 @@ export function findRootMenuByPath(
     rootMenuPath,
   };
 }
+/** 为可见菜单项递归挂载 Iconify 图标节点 */
 export function addMenuIcon(data: MenuItemType[]): MenuItemType[] | undefined {
   const menuList = data?.filter((v) => !v.hidden) || [];
   if (!menuList?.length) return;
@@ -185,6 +186,11 @@ export function addMenuIcon(data: MenuItemType[]): MenuItemType[] | undefined {
     return temp;
   });
 }
+/**
+ * 按路径在菜单树中查找对应标题
+ * @param menuList 菜单树
+ * @param url 完整路由 path
+ */
 export function getPathToMenuTitle(menuList: MenuItemType[], url: string): string | undefined {
   if (!menuList.length) return;
   return menuList.reduce((pre, cur) => {

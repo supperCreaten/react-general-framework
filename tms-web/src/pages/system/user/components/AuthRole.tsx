@@ -51,16 +51,16 @@ export default function AuthRole(props: AuthRoleProps) {
             pageSize: 500,
             status: "0",
           }),
-          api.getUserDetail({ userId }),
+          api.getUserDetail<{ roleIds?: Array<string | number> }>({ userId }),
         ])
-        const rows = Array.isArray(roleRes?.rows) ? roleRes.rows : []
+        const { rows = [] } = roleRes || {}
         dispatch({
           options: rows.map((item) => ({
             roleId: String(item.roleId),
             roleName: item.roleName,
             roleKey: item.roleKey,
           })),
-          checked: ((detail as { roleIds?: Array<string | number> })?.roleIds ?? []).map(String),
+          checked: (detail?.roleIds ?? []).map(String),
         })
       } finally {
         dispatch({ loading: false })
@@ -69,6 +69,7 @@ export default function AuthRole(props: AuthRoleProps) {
     void init()
   }, [visible, userId])
 
+  /** 保存用户角色授权 */
   const handleSubmit = async () => {
     if (!userId) return
     dispatch({ submitting: true })

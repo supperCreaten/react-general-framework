@@ -15,6 +15,12 @@ public final class SysPostConvert {
     private SysPostConvert() {
     }
 
+    /**
+     * 查询条件转岗位实体（用于列表筛选）
+     *
+     * @param query 岗位查询条件
+     * @return 岗位实体
+     */
     public static SysPost toEntity(SysPostQuery query) {
         SysPost post = new SysPost();
         if (query == null) {
@@ -27,6 +33,12 @@ public final class SysPostConvert {
         return post;
     }
 
+    /**
+     * 保存请求转岗位实体
+     *
+     * @param req 岗位保存请求
+     * @return 岗位实体
+     */
     public static SysPost toEntity(SysPostSaveReq req) {
         SysPost post = new SysPost();
         if (req == null) {
@@ -42,6 +54,12 @@ public final class SysPostConvert {
         return post;
     }
 
+    /**
+     * 岗位实体转展示 VO
+     *
+     * @param post 岗位实体
+     * @return 岗位 VO，入参为 null 时返回 null
+     */
     public static SysPostVo toVo(SysPost post) {
         if (post == null) {
             return null;
@@ -59,6 +77,12 @@ public final class SysPostConvert {
         return vo;
     }
 
+    /**
+     * 岗位实体列表转 VO 列表
+     *
+     * @param list 岗位实体列表
+     * @return VO 列表
+     */
     public static List<SysPostVo> toVoList(List<SysPost> list) {
         if (list == null || list.isEmpty()) {
             return Collections.emptyList();
