@@ -1,6 +1,10 @@
 import type { FormConfig } from "@/interface/form"
-import type { UseTableQueryOptions, UseTableQueryReturn } from "@/interface/hooks"
-import type { CSSProperties, ReactNode } from "react"
+import type { PasswordStrengthLevel } from "@/interface/login"
+import type {
+  UseTableQueryOptions,
+  UseTableQueryReturn,
+} from "@/interface/common"
+import type { ReactNode } from "react"
 import type {
   ButtonProps,
   CascaderProps,
@@ -15,7 +19,7 @@ import type {
   TextareaProps,
 } from "tdesign-react"
 
-/** BasicTable 命令式句柄（供父组件调用 refresh / 本地改数 / 树表懒加载） */
+/** BasicTable 命令式句柄 */
 export type BasicTableRef<T extends TableRowData> = Pick<
   UseTableQueryReturn<T>,
   | "refresh"
@@ -32,7 +36,7 @@ export type BasicTableRef<T extends TableRowData> = Pick<
   getTable: () => EnhancedTableRef | null
 }
 
-export type BasicTableProps<T extends TableRowData> = {
+export interface BasicTableProps<T extends TableRowData> {
   columns: EnhancedTableProps<T>["columns"]
   rowKey?: string
   /** 远程请求；不传则为本地模式 */
@@ -53,6 +57,20 @@ export type BasicTableProps<T extends TableRowData> = {
     EnhancedTableProps<T>,
     "columns" | "data" | "pagination" | "cellEmptyContent" | "rowKey" | "loading" | "loadingProps"
   >
+}
+
+export type SearchBoxRef = FormInstanceFunctions
+
+export interface SearchBoxProps {
+  formConfig: FormConfig[]
+  onSearch: () => void | Promise<void>
+  /** 重置后、查询前钩子（如清除树选中） */
+  onReset?: () => void
+  formProps?: Omit<FormProps, "children" | "form" | "onSubmit" | "onReset">
+  extra?: ReactNode
+  collapsedVisibleCount?: number
+  fieldsPerRow?: number
+  searchButtonText?: string
 }
 
 export type BasicFormProps = FormProps & {
@@ -80,21 +98,7 @@ export type BasicDialogProps = Omit<DialogProps, "onConfirm"> & {
   cancelText?: string
 }
 
-export type SearchBoxRef = FormInstanceFunctions
-
-export type SearchBoxProps = {
-  formConfig: FormConfig[]
-  onSearch: () => void | Promise<void>
-  /** 重置后、查询前钩子（如清除树选中） */
-  onReset?: () => void
-  formProps?: Omit<FormProps, "children" | "form" | "onSubmit" | "onReset">
-  extra?: ReactNode
-  collapsedVisibleCount?: number
-  fieldsPerRow?: number
-  searchButtonText?: string
-}
-
-export type ImportCommitResult = {
+export interface ImportCommitResult {
   totalCount?: number
   successCount?: number
   failCount?: number
@@ -103,7 +107,7 @@ export type ImportCommitResult = {
   errorFileBase64?: string
 }
 
-export type ImportDialogProps = {
+export interface ImportDialogProps {
   visible: boolean
   title?: string
   /** 模板下载文件名 */
@@ -115,7 +119,29 @@ export type ImportDialogProps = {
   importFile: (formData: FormData) => Promise<ImportCommitResult>
 }
 
-export type MoreActionItem = {
+export type EditableTextCommitFn = (rowId: string | number, patch: Record<string, string>) => void
+
+/** 输入过滤函数：接收当前值，返回过滤后的值（输入过程中生效） */
+export type InputFilterFn = (value: string) => string
+
+export interface EditableTextCellProps {
+  rowId: string | number
+  field: string
+  value?: string
+  placeholder?: string
+  inputRule?: InputFilterFn
+  decimalPlaces?: number
+  positive?: boolean
+  /** 多行文本；开启后回车换行，仅失焦写回 */
+  textarea?: boolean
+  /** 多行时是否过滤空格，默认 false（保留名称中的空格） */
+  filterSpace?: boolean
+  maxlength?: number
+  autosize?: TextareaProps["autosize"]
+  onCommit: EditableTextCommitFn
+}
+
+export interface MoreActionItem {
   key: string | number
   label: ReactNode
   disabled?: boolean
@@ -128,7 +154,7 @@ export type MoreActionItem = {
   onClick?: () => void
 }
 
-export type MoreActionsProps = {
+export interface MoreActionsProps {
   /** 操作项 */
   items: MoreActionItem[]
   /**
@@ -147,110 +173,30 @@ export type MoreActionsProps = {
   dropdownProps?: Omit<DropdownProps, "options" | "onClick" | "children">
 }
 
-/** 输入过滤函数：接收当前值，返回过滤后的值（输入过程中生效） */
-export type InputFilterFn = (value: string) => string
-
-export type InputTextProps =
-  | ({
-      textarea?: false
-      /** 输入时去空格，默认 true */
-      filterSpace?: boolean
-      /**
-       * 小数位数。未传 `inputRule` 时默认走 formartDecimalPlaces；
-       * 传了 `inputRule` 则不再套用小数位过滤。
-       */
-      decimalPlaces?: number
-      /** 配合 formartDecimalPlaces：仅正数 */
-      positive?: boolean
-      /**
-       * 自定义输入过滤。传入后优先使用；
-       * 不传且设置了 decimalPlaces 时，默认使用 formartDecimalPlaces。
-       */
-      inputRule?: InputFilterFn
-    } & InputProps)
-  | ({ textarea: true; filterSpace?: boolean; inputRule?: InputFilterFn } & TextareaProps)
-
-export type EditableTextCommitFn = (rowId: string | number, patch: Record<string, string>) => void
-
-export type EditableTextCellProps = {
-  rowId: string | number
-  field: string
-  value?: string
-  placeholder?: string
-  inputRule?: InputFilterFn
-  decimalPlaces?: number
-  positive?: boolean
-  /** 多行文本；开启后回车换行，仅失焦写回 */
-  textarea?: boolean
-  /** 多行时是否过滤空格，默认 false（保留名称中的空格） */
-  filterSpace?: boolean
-  maxlength?: number
-  autosize?: TextareaProps["autosize"]
-  onCommit: EditableTextCommitFn
-}
-
 export type AreaCascaderProps = Omit<CascaderProps, "options"> & {
   /** 自定义选项；默认省市区三级（行政区划编码） */
   options?: CascaderProps["options"]
 }
 
-export type PasswordStrengthProps = {
+export type InputTextProps =
+  | ({
+      textarea?: false
+      filterSpace?: boolean
+      decimalPlaces?: number
+      positive?: boolean
+      inputRule?: InputFilterFn
+    } & InputProps)
+  | ({ textarea: true; filterSpace?: boolean; inputRule?: InputFilterFn } & TextareaProps)
+
+export interface PasswordStrengthProps {
   password?: string
   className?: string
+  /** 可选：外部已计算的强度等级 */
+  level?: PasswordStrengthLevel
 }
 
-export type ContentSectionProps = {
-  children?: ReactNode
-  /** 内容区是否使用 Card 包裹，默认 true */
-  isContentFullCard?: boolean
-  /**
-   * 是否铺满父容器高度。
-   * true：h-full，内容区可滚动；
-   * false：高度随内容撑开（便于展示底部 padding）。
-   */
-  isFull?: boolean
-  /** 整块内容 loading 遮罩 */
-  loading?: boolean
-  className?: string
-}
-
-export type TableSectionProps = {
+export interface TableSectionProps {
   isContentFullCard?: boolean
   children: ReactNode
   className?: string
-}
-
-export type FormSectionBlockProps = {
-  title: string
-  children?: ReactNode
-  variant?: string
-  className?: string
-}
-
-export type LayoutTitleProps = {
-  title: string
-  children?: ReactNode
-  /** 是否显示展开/收起，默认 true */
-  collapsible?: boolean
-  /** 非受控：默认是否收起 */
-  defaultCollapsed?: boolean
-  /** 受控：是否收起 */
-  collapsed?: boolean
-  /** body区域是否需要 padding */
-  isbodyPPadding?: "vertical" | "horizontal" | "all" | "none"
-  /** 是否需要 border */
-  bordered?: boolean
-  onCollapsedChange?: (collapsed: boolean) => void
-  /** 标题后操作区（紧跟标题，适合放新增等按钮） */
-  actions?: ReactNode
-  /** 标题栏右侧额外内容（展开/收起左侧） */
-  extra?: ReactNode
-  className?: string
-  contentClassName?: string
-}
-
-export type BasicContentProps = {
-  style?: CSSProperties
-  className?: string
-  children: ReactNode
 }

@@ -7,7 +7,12 @@ import type { CSSProperties, ReactNode } from "react";
 
 import { headerHeight } from "../constants";
 import { Logo } from "../widgets/logo";
-import type { FirstColumnMenuProps } from "@/interface/layout";
+
+interface FirstColumnMenuProps {
+  menus?: MenuItemType[];
+  sideNavMenuKeyInSplitMode?: string;
+  handleMenuSelect?: (key: string, mode: MenuMode) => void;
+}
 
 const emptyArray: MenuItemType[] = [];
 

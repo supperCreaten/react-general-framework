@@ -1,14 +1,6 @@
 import type { ReactNode } from "react"
 import type { IndexRouteObject, NonIndexRouteObject } from "react-router-dom"
 
-export interface FlatRouteItem {
-  handle: Pick<RouteMeta, "keepAlive"> & Partial<RouteMeta>
-}
-
-export interface AuthRouteGuardProps {
-  children: ReactNode
-}
-
 export interface RouteMeta {
   /**
    * 路由标题，通常用于页面标题或者侧边栏菜单显示
@@ -85,3 +77,7 @@ export interface NonIndexRouteMeta extends Omit<NonIndexRouteObject, "id" | "Com
 }
 
 export type AppRouteRecordRaw = IndexRouteMeta | NonIndexRouteMeta
+
+export interface FlatRouteItem {
+  handle: Pick<RouteMeta, "keepAlive"> & Partial<RouteMeta>
+}

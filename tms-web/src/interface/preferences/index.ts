@@ -5,7 +5,6 @@ import type {
   TWO_COLUMN_NAVIGATION,
 } from "@/hooks/use-layout/constants"
 import type { MenuTheme } from "@/interface/menu"
-import type { ComponentType, SVGProps } from "react"
 
 /**
  * @zh 登录页面布局
@@ -19,7 +18,7 @@ export type LanguageType = "zh-CN" | "en-US"
  * @zh 动画类型
  * @en Animation type
  */
-interface AnimationState {
+export interface AnimationState {
   /**
    * @zh 是否启用过渡动画
    * @en Whether to enable transition animation
@@ -46,7 +45,25 @@ interface AnimationState {
   transitionName: string
 }
 
-interface LayoutState {
+/**
+ * @zh 标签栏风格
+ * @en Tabbar style
+ */
+export type TabsStyleType = "brisk" | "card" | "chrome" | "plain"
+
+/**
+ * @zh 导航类型
+ */
+export type NavigationType =
+  | typeof SIDE_NAVIGATION
+  | typeof TOP_NAVIGATION
+  | typeof TWO_COLUMN_NAVIGATION
+  | typeof MIXED_NAVIGATION
+
+/** 外观主题模式 */
+export type ThemeMode = "light" | "dark" | "system"
+
+export interface LayoutState {
   navigationStyle: NavigationType
 }
 
@@ -122,36 +139,6 @@ export interface SidebarState {
   sidebarTheme: MenuTheme
 }
 
-/**
- * @zh 标签栏风格
- * @en Tabbar style
- */
-export type TabsStyleType = "brisk" | "card" | "chrome" | "plain"
-
-/**
- * @zh 导航类型
- */
-export type NavigationType =
-  | typeof SIDE_NAVIGATION
-  | typeof TOP_NAVIGATION
-  | typeof TWO_COLUMN_NAVIGATION
-  | typeof MIXED_NAVIGATION
-
-/** 外观主题模式 */
-export type ThemeMode = "light" | "dark" | "system"
-
-export interface ThemeModePreset {
-  name: string
-  mode: ThemeMode
-  Icon: ComponentType<SVGProps<SVGSVGElement> & { className?: string }>
-}
-
-export interface ThemeColorPreset {
-  name: string
-  color: string
-  tip: string
-}
-
 export interface PreferencesState extends AnimationState, LayoutState, GeneralState, SidebarState {
   /* ================== Theme ================== */
   /**
@@ -213,4 +200,16 @@ export interface PreferencesState extends AnimationState, LayoutState, GeneralSt
    */
   isSendRoutingRequest: boolean
   /* ================== Tabbar ================== */
+}
+
+export interface ThemeModePreset {
+  key: ThemeMode
+  label: string
+  color?: string
+}
+
+export interface ThemeColorPreset {
+  key: string
+  color: string
+  label?: string
 }

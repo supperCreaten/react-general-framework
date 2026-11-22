@@ -1,7 +1,9 @@
 import { useMemo, type ReactNode } from "react";
-import type { TabRenderItem, TabStateType } from "@/interface/tabs";
+import type { TabStateType } from "@/store/modules/tabs";
 
-export type { TabRenderItem } from "@/interface/tabs";
+export type TabRenderItem = TabStateType & {
+  icon?: ReactNode;
+};
 
 /**
  * 将 openTabs 转为标签栏渲染数据

@@ -8,10 +8,10 @@ import { headerHeight } from "../constants"
 import { Button, Drawer, Space } from "tdesign-react"
 import { Setting1Icon } from "tdesign-icons-react"
 import PageSetting from "./components/pageSetting"
+import type { LayoutHeaderProps } from "@/interface"
 import UserDropdown from "./components/user-dropdown"
-import type { LayoutHeaderProps } from "@/interface/layout"
 
-export type { LayoutHeaderProps } from "@/interface/layout"
+export type { LayoutHeaderProps } from "@/interface"
 
 export default function LayoutHeader({ className, children }: LayoutHeaderProps) {
   const { sidebarCollapsed, isMenuDark, isDark } = usePreferences()

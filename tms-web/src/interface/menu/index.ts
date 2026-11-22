@@ -3,7 +3,22 @@ import type { ReactNode } from "react"
 export type MenuMode = "horizontal" | "vertical"
 export type MenuTheme = "light" | "dark"
 
-export type MenuItemType = {
+export interface MenuInfo {
+  path: string
+  component: string
+  hidden: boolean
+  menuId: string
+  menuType: number
+  meta: {
+    title: string
+    icon: string
+    keepAlive?: boolean | number
+  }
+  parentId: string | number
+  children?: MenuInfo[] | null
+}
+
+export interface MenuItemType {
   key: string
   label?: ReactNode
   icon?: ReactNode
@@ -26,7 +41,7 @@ export type MenuItemType = {
 }
 
 /** 递归菜单项所需的最小字段约束 */
-export type MenuNode = {
+export interface MenuNode {
   key: string
   label?: ReactNode
   icon?: ReactNode
@@ -35,96 +50,25 @@ export type MenuNode = {
   children?: MenuNode[]
 }
 
-export interface MenuInitialState {
-  wholeMenus: MenuItemType[]
-  isAccessChecked: boolean
+export interface LayoutMenuItemProps<T extends MenuNode = MenuItemType> {
+  menus?: T[] | null
+  /** 当前激活菜单 value；用于已激活项再次点击时仍能触发导航 */
+  activeValue?: string
+  /** 菜单项点击（含已激活再点） */
+  onItemClick?: (key: string) => void
 }
 
-/** 鉴权路由菜单（/api/authRoutes 返回） */
-export type MenuInfo = {
-  path: string
-  component: string
-  hidden: boolean
-  menuId: string
-  menuType: number
-  meta: {
-    title: string
-    icon: string
-    keepAlive?: boolean | number
-  }
-  parentId: string | number
-  children?: MenuInfo[] | null
-}
-
-/** 菜单树节点（懒加载 / 下拉树 / 权限树） */
-export type MenuTreeNode = {
-  menuId: string | number
-  menuName: string
-  hasChildren?: boolean
-  children?: MenuTreeNode[] | boolean
-}
-
-/** 菜单详情 */
-export type MenuDetail = {
-  parentId?: string | number
-  menuType?: number
-  icon?: string
-  menuName?: string
-  orderNum?: number
-  path?: string
-  perms?: string
-  isFrame?: string | number
-  visible?: string | number
-  hidden?: string | number
-  status?: string | number
-  isCache?: string | number
-  keepAlive?: string | number
-}
-
-/** 菜单列表/树表行 */
-export type MenuRow = {
-  menuId: string | number
-  menuName: string
-  icon?: string
-  orderNum?: number
-  perms?: string
-  menuType?: string | number
-  status?: string | number
-  createBy?: string
-  createTime?: string
-  updateBy?: string
-  updateTime?: string
-  hasChildren?: boolean
-  /** 懒加载未展开时用 true 占位（运行时）；类型上兼容 TableRowData */
-  children?: MenuRow[] | boolean
-}
-
-/** 菜单表单值 */
-export type MenuFormValues = {
-  parentId?: string | number
-  menuType?: number
-  icon?: string
-  menuName?: string
-  orderNum?: number
-  isFrame?: string
-  path?: string
-  perms?: string
-  keepAlive?: string
-  hidden?: string
-  status?: string
-}
-
-/** 新增/编辑菜单弹窗 Props */
-export type AddMenuProps = {
-  visible: boolean
-  title: string
-  menuId?: string
-  onClose: (submitted?: boolean) => void
-}
-
-/** 菜单列表页弹窗状态 */
-export type MenuDialogState = {
-  visible: boolean
-  title: string
-  menuId?: string
+export interface LayoutMenuProps {
+  mode?: MenuMode
+  /**
+   * 控制是否自动展开当前路由对应的菜单项
+   *
+   * Why?
+   * 注意：当菜单模式为顶部导航模式，菜单 mode 为 horizontal，初次进入页面时，菜单不应自动展开，可以指定 autoExpandCurrentMenu 为 false 关闭自动展开功能
+   * @see https://github.com/user-attachments/assets/705ae01d-db7f-4f42-b4dd-66adba0dd68f
+   */
+  autoExpandCurrentMenu?: boolean
+  menus?: MenuItemType[]
+  wholeMenus?: MenuItemType[]
+  handleMenuSelect?: (key: string, mode: MenuMode) => void
 }

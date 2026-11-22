@@ -3,10 +3,10 @@ import logo from "@/assets/svg/logo.svg?url";
 import { clsx } from "clsx";
 import { useNavigate } from "react-router-dom";
 
+import type { LogoProps } from "@/interface";
 import { headerHeight } from "../../constants";
-import type { LogoProps } from "@/interface/layout";
 
-export type { LogoProps } from "@/interface/layout";
+export type { LogoProps } from "@/interface";
 
 /**
  * @zh 高度 48px

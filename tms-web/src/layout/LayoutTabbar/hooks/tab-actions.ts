@@ -1,1 +1,2 @@
-export { TabActionKeys, type TabActionKey, type TabMenuItem } from "@/interface/tabs";
+export { TabActionKeys } from "@/interface"
+export type { TabActionKey, TabMenuItem } from "@/interface"

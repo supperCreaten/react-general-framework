@@ -94,6 +94,14 @@ export default function LayoutMenu({ mode = "vertical", handleMenuSelect, menus 
     [handleMenuSelect, mode],
   )
 
+  /** 已激活菜单再点（如 /order/create 再点「订单管理」）时 onChange 不会触发，由 MenuItem onClick 补一次 */
+  const onActiveMenuClick = useCallback(
+    (key: string) => {
+      handleMenuSelect?.(key, mode as MenuMode)
+    },
+    [handleMenuSelect, mode],
+  )
+
   const scrollByDir = useCallback(
     (dir: -1 | 1) => {
       const el = scrollRef.current
@@ -146,7 +154,7 @@ export default function LayoutMenu({ mode = "vertical", handleMenuSelect, menus 
           expandType={isVerticalCollapsed ? "popup" : "normal"}
           width={["100%", SIDE_COLLAPSED_WIDTH]}
         >
-          <LayoutMenuItem menus={menus} />
+          <LayoutMenuItem menus={menus} activeValue={activeValue} onItemClick={onActiveMenuClick} />
         </Menu>
       </div>
     )
@@ -183,7 +191,7 @@ export default function LayoutMenu({ mode = "vertical", handleMenuSelect, menus 
             .join(" ")}
         >
           <HeadMenu expandType="popup" value={activeValue} onChange={onMenuChange}>
-            <LayoutMenuItem menus={menus} />
+            <LayoutMenuItem menus={menus} activeValue={activeValue} onItemClick={onActiveMenuClick} />
           </HeadMenu>
         </div>
 
