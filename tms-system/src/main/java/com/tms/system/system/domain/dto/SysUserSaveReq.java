@@ -2,7 +2,6 @@ package com.tms.system.system.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.tms.common.core.domain.BaseEntity;
-import com.tms.system.system.domain.vo.SysUserVo;
 import com.tms.common.xss.Xss;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -78,24 +77,30 @@ public class SysUserSaveReq extends BaseEntity {
     /** 角色组 */
     private Long[] roleIds;
 
-    /** 转成持久化使用的用户对象。登录账号同时写入 account 与 userName */
-    public SysUserVo toEntity() {
-        SysUserVo user = new SysUserVo();
-        user.setUserId(userId);
-        user.setNickName(nickName);
-        user.setDeptId(deptId);
-        user.setPhonenumber(phone);
-        user.setEmail(email);
-        user.setAccount(account);
-        user.setUserName(account);
-        user.setPassword(password);
-        user.setSex(sex);
-        user.setStatus(status);
-        user.setPostId(postId);
-        user.setRoleIds(roleIds);
-        user.setRemark(getRemark());
-        user.setCreateBy(getCreateBy());
-        user.setUpdateBy(getUpdateBy());
-        return user;
-    }
+    /** 年龄（服务端补默认值） */
+    private Integer age;
+
+    /** 地址（服务端补默认值） */
+    private String address;
+
+    /** 员工工号 */
+    private String employeeNo;
+
+    /** 学历 */
+    private String education;
+
+    /** 身份证号 */
+    private String idCard;
+
+    /** 手机号密文（服务端生成） */
+    private String phoneCipher;
+
+    /** 手机号密钥（服务端生成） */
+    private String phoneSecretKey;
+
+    /** 身份证密文（服务端生成） */
+    private String idCardCipher;
+
+    /** 身份证密钥（服务端生成） */
+    private String idCardSecretKey;
 }

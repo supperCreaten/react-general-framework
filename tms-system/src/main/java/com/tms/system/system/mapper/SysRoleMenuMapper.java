@@ -2,7 +2,7 @@ package com.tms.system.system.mapper;
 
 import java.util.List;
 
-import com.tms.system.system.domain.SysRoleMenu;
+import com.tms.system.system.domain.dto.SysRoleMenuSaveReq;
 
 /**
  * 角色与菜单关联表 数据层
@@ -40,5 +40,5 @@ public interface SysRoleMenuMapper {
      * @param roleMenuList 角色菜单列表
      * @return 结果
      */
-    int batchRoleMenu(List<SysRoleMenu> roleMenuList);
+    int batchRoleMenu(List<SysRoleMenuSaveReq> roleMenuList);
 }

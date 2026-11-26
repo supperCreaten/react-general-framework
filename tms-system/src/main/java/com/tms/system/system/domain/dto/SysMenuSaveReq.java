@@ -1,7 +1,6 @@
 package com.tms.system.system.domain.dto;
 
 import com.tms.common.core.domain.BaseEntity;
-import com.tms.system.system.domain.vo.SysMenuVo;
 import com.tms.common.utils.StringUtils;
 import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
@@ -84,26 +83,6 @@ public class SysMenuSaveReq extends BaseEntity {
 
     /** 菜单状态（0正常 1停用） */
     private String status;
-
-    /** 转成持久化使用的菜单对象。排序缺省为 0，外链缺省为否 */
-    public SysMenuVo toEntity() {
-        SysMenuVo menu = new SysMenuVo();
-        menu.setMenuId(menuId);
-        menu.setParentId(parentId);
-        menu.setMenuType(menuType);
-        menu.setIcon(icon);
-        menu.setMenuName(menuName);
-        menu.setOrderNum(orderNum == null ? 0 : orderNum);
-        menu.setIsFrame(StringUtils.isEmpty(isFrame) ? "1" : isFrame);
-        menu.setPath(path);
-        menu.setPerms(perms);
-        menu.setIsCache(isCache);
-        menu.setVisible(visible);
-        menu.setStatus(status);
-        menu.setCreateBy(getCreateBy());
-        menu.setUpdateBy(getUpdateBy());
-        return menu;
-    }
 
     /**
      * 按菜单类型校验前端条件必填项

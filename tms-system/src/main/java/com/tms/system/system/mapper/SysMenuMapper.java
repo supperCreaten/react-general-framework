@@ -2,6 +2,7 @@ package com.tms.system.system.mapper;
 
 import java.util.List;
 
+import com.tms.system.system.domain.dto.SysMenuSaveReq;
 import org.apache.ibatis.annotations.Param;
 import com.tms.system.system.domain.vo.SysMenuVo;
 import com.tms.system.system.domain.dto.SysMenuQuery;
@@ -102,7 +103,7 @@ public interface SysMenuMapper {
      * @param menu 菜单信息
      * @return 结果
      */
-    public int insertMenu(SysMenuVo menu);
+    public int insertMenu(SysMenuSaveReq menu);
 
     /**
      * 修改菜单信息
@@ -110,14 +111,14 @@ public interface SysMenuMapper {
      * @param menu 菜单信息
      * @return 结果
      */
-    public int updateMenu(SysMenuVo menu);
+    public int updateMenu(SysMenuSaveReq menu);
 
     /**
      * 保存菜单排序
      *
      * @param menu 菜单信息
      */
-    public void updateMenuSort(SysMenuVo menu);
+    public void updateMenuSort(SysMenuSaveReq menu);
 
     /**
      * 删除菜单管理信息

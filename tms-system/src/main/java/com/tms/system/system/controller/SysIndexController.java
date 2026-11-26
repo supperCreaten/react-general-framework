@@ -30,7 +30,7 @@ import com.tms.common.utils.file.FileUploadUtils;
 import com.tms.common.utils.file.FileUtils;
 import com.tms.common.utils.sign.Base64;
 import com.tms.common.utils.uuid.IdUtils;
-import com.tms.system.system.domain.SysFileInfo;
+import com.tms.system.system.domain.vo.SysFileInfoVo;
 import com.tms.system.system.service.ISysFileInfoService;
 import com.tms.system.system.service.ISysMenuService;
 import com.tms.system.system.service.ISysUserService;
@@ -246,7 +246,7 @@ public class SysIndexController {
             String filePath = TmsConfig.getUploadPath();
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = getServerUrl() + fileName;
-            SysFileInfo saved = fileInfoService.saveUploadFile(file, fileName, url);
+            SysFileInfoVo saved = fileInfoService.saveUploadFile(file, fileName, url);
             return AjaxResult.success("操作成功", buildUploadData(saved));
         } catch (Exception e) {
             return AjaxResult.error(e.getMessage());
@@ -271,7 +271,7 @@ public class SysIndexController {
                 }
                 String fileName = FileUploadUtils.upload(filePath, file);
                 String url = getServerUrl() + fileName;
-                SysFileInfo saved = fileInfoService.saveUploadFile(file, fileName, url);
+                SysFileInfoVo saved = fileInfoService.saveUploadFile(file, fileName, url);
                 list.add(buildUploadData(saved));
             }
             if (list.isEmpty()) {
@@ -283,7 +283,7 @@ public class SysIndexController {
         }
     }
 
-    private static Map<String, Object> buildUploadData(SysFileInfo saved) {
+    private static Map<String, Object> buildUploadData(SysFileInfoVo saved) {
         Map<String, Object> data = new HashMap<>(8);
         data.put("fileId", saved.getFileId());
         data.put("url", saved.getUrl());

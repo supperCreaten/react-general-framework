@@ -2,7 +2,6 @@ package com.tms.system.system.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.tms.common.core.domain.BaseEntity;
-import com.tms.system.system.domain.vo.SysUserVo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -48,21 +47,4 @@ public class SysUserQuery extends BaseEntity {
 
     /** 身份证号 */
     private String idCard;
-
-    /** 转成查询用的用户对象。未传 userName 时用登录账号 */
-    public SysUserVo toEntity() {
-        SysUserVo user = new SysUserVo();
-        user.setUserId(userId);
-        user.setAccount(account);
-        user.setUserName(userName != null ? userName : account);
-        user.setNickName(nickName);
-        user.setPhonenumber(phonenumber);
-        user.setDeptId(deptId);
-        user.setStatus(status);
-        user.setRoleId(roleId);
-        user.setEmployeeNo(employeeNo);
-        user.setEducation(education);
-        user.setIdCard(idCard);
-        return user;
-    }
 }

@@ -166,11 +166,15 @@ public class SysDeptServiceImpl implements ISysDeptService {
      */
     public void updateDeptChildren(Long deptId, String newAncestors, String oldAncestors) {
         List<SysDeptVo> children = deptMapper.selectChildrenDeptById(deptId);
+        List<SysDeptSaveReq> updates = new ArrayList<>();
         for (SysDeptVo child : children) {
-            child.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
+            SysDeptSaveReq item = new SysDeptSaveReq();
+            item.setDeptId(child.getDeptId());
+            item.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
+            updates.add(item);
         }
-        if (!children.isEmpty()) {
-            deptMapper.updateDeptChildren(children);
+        if (!updates.isEmpty()) {
+            deptMapper.updateDeptChildren(updates);
         }
     }
 

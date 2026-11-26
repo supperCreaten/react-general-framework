@@ -11,8 +11,8 @@ import com.tms.common.utils.http.UserAgentUtils;
 import com.tms.common.utils.ip.AddressUtils;
 import com.tms.common.utils.ip.IpUtils;
 import com.tms.common.utils.spring.SpringUtils;
-import com.tms.system.system.domain.SysLogininfor;
-import com.tms.system.system.domain.SysOperLog;
+import com.tms.system.system.domain.dto.SysLogininforSaveReq;
+import com.tms.system.system.domain.dto.SysOperLogSaveReq;
 import com.tms.system.system.service.ISysLogininforService;
 import com.tms.system.system.service.ISysOperLogService;
 
@@ -58,7 +58,7 @@ public class AsyncFactory
                 // 获取客户端浏览器
                 String browser = UserAgentUtils.getBrowser(userAgent);
                 // 封装对象
-                SysLogininfor logininfor = new SysLogininfor();
+                SysLogininforSaveReq logininfor = new SysLogininforSaveReq();
                 logininfor.setUserName(username);
                 logininfor.setIpaddr(ip);
                 logininfor.setLoginLocation(address);
@@ -92,7 +92,7 @@ public class AsyncFactory
     /**
      * 操作日志记录
      */
-    public static TimerTask recordOper(final SysOperLog operLog)
+    public static TimerTask recordOper(final SysOperLogSaveReq operLog)
     {
         return new TimerTask()
         {

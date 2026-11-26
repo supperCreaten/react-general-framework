@@ -1,7 +1,7 @@
 package com.tms.system.system.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import com.tms.system.system.domain.SysFileInfo;
+import com.tms.system.system.domain.vo.SysFileInfoVo;
 
 /**
  * 上传文件元数据 服务层
@@ -17,10 +17,10 @@ public interface ISysFileInfoService {
      * @param url 完整访问 URL
      * @return 已落库记录（含 fileId）
      */
-    SysFileInfo saveUploadFile(MultipartFile file, String storedPath, String url);
+    SysFileInfoVo saveUploadFile(MultipartFile file, String storedPath, String url);
 
     /**
      * 按主键查询
      */
-    SysFileInfo selectFileById(Long fileId);
+    SysFileInfoVo selectFileById(Long fileId);
 }

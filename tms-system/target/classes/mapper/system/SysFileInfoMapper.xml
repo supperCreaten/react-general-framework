@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tms.system.system.mapper.SysFileInfoMapper">
 
-    <resultMap type="com.tms.system.system.domain.SysFileInfo" id="SysFileInfoResult">
+    <resultMap type="com.tms.system.system.domain.vo.SysFileInfoVo" id="SysFileInfoResult">
         <id     property="fileId"            column="file_id" />
         <result property="originalFilename"  column="original_filename" />
         <result property="fileName"          column="file_name" />
@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"            column="remark" />
     </resultMap>
 
-    <insert id="insertFile" parameterType="com.tms.system.system.domain.SysFileInfo"
+    <insert id="insertFile" parameterType="com.tms.system.system.domain.dto.SysFileInfoSaveReq"
             useGeneratedKeys="true" keyProperty="fileId" keyColumn="file_id">
         insert into sys_file (
             original_filename, file_name, new_file_name, url,

@@ -46,7 +46,7 @@ import com.tms.common.utils.log.OperChangeItem;
 import com.tms.common.utils.log.OperDiffUtils;
 import com.tms.framework.manager.AsyncManager;
 import com.tms.framework.manager.factory.AsyncFactory;
-import com.tms.system.system.domain.SysOperLog;
+import com.tms.system.system.domain.dto.SysOperLogSaveReq;
 
 /**
  * 操作日志记录处理（含字段级修改项）
@@ -155,7 +155,7 @@ public class LogAspect {
             }
             String changeDiff = OperDiffUtils.toJson(changeItems);
 
-            SysOperLog operLog = new SysOperLog();
+            SysOperLogSaveReq operLog = new SysOperLogSaveReq();
             operLog.setTitle(controllerLog.title());
             operLog.setBusinessType(controllerLog.businessType().ordinal());
             operLog.setMethod(method);

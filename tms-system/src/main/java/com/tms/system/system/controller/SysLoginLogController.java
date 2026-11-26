@@ -15,7 +15,7 @@ import com.tms.common.annotation.Log;
 import com.tms.common.core.controller.BaseController;
 import com.tms.common.core.domain.AjaxResult;
 import com.tms.common.enums.BusinessType;
-import com.tms.system.system.domain.SysLogininfor;
+import com.tms.system.system.domain.dto.SysLogininforQuery;
 import com.tms.system.system.service.ISysLogininforService;
 
 /**
@@ -35,10 +35,10 @@ public class SysLoginLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:loginLog:list')")
     @Operation(summary = "登录日志分页")
     @PostMapping("/pageQuery")
-    public AjaxResult pageQuery(@RequestBody(required = false) SysLogininfor query)
+    public AjaxResult pageQuery(@RequestBody(required = false) SysLogininforQuery query)
     {
         startPage();
-        return getDataTable(logininforService.selectLogininforList(query == null ? new SysLogininfor() : query));
+        return getDataTable(logininforService.selectLogininforList(query));
     }
 
     /**

@@ -1,7 +1,9 @@
 package com.tms.system.system.service;
 
 import java.util.List;
-import com.tms.system.system.domain.SysOperLog;
+import com.tms.system.system.domain.dto.SysOperLogQuery;
+import com.tms.system.system.domain.dto.SysOperLogSaveReq;
+import com.tms.system.system.domain.vo.SysOperLogVo;
 
 /**
  * 操作日志 业务层
@@ -12,15 +14,15 @@ public interface ISysOperLogService {
      *
      * @param operLog 操作日志
      */
-    void insertOperlog(SysOperLog operLog);
+    void insertOperlog(SysOperLogSaveReq operLog);
 
     /**
      * 查询操作日志列表
      *
-     * @param operLog 查询条件
+     * @param query 查询条件
      * @return 操作日志列表
      */
-    List<SysOperLog> selectOperLogList(SysOperLog operLog);
+    List<SysOperLogVo> selectOperLogList(SysOperLogQuery query);
 
     /**
      * 按主键查询操作日志
@@ -28,7 +30,7 @@ public interface ISysOperLogService {
      * @param operId 日志ID
      * @return 操作日志
      */
-    SysOperLog selectOperLogById(Long operId);
+    SysOperLogVo selectOperLogById(Long operId);
 
     /**
      * 批量删除操作日志

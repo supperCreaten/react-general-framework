@@ -1,6 +1,7 @@
 package com.tms.system.system.mapper;
 
-import com.tms.system.system.domain.SysFileInfo;
+import com.tms.system.system.domain.dto.SysFileInfoSaveReq;
+import com.tms.system.system.domain.vo.SysFileInfoVo;
 
 /**
  * 上传文件元数据 数据层
@@ -11,10 +12,10 @@ public interface SysFileInfoMapper {
     /**
      * 新增文件记录
      */
-    int insertFile(SysFileInfo fileInfo);
+    int insertFile(SysFileInfoSaveReq fileInfo);
 
     /**
      * 按主键查询
      */
-    SysFileInfo selectFileById(Long fileId);
+    SysFileInfoVo selectFileById(Long fileId);
 }

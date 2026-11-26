@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import com.tms.common.utils.StringUtils;
 import com.tms.common.utils.file.FileUtils;
-import com.tms.system.system.domain.SysFileInfo;
+import com.tms.system.system.domain.dto.SysFileInfoSaveReq;
+import com.tms.system.system.domain.vo.SysFileInfoVo;
 import com.tms.system.system.mapper.SysFileInfoMapper;
 import com.tms.system.system.service.ISysFileInfoService;
 
@@ -24,8 +25,8 @@ public class SysFileInfoServiceImpl implements ISysFileInfoService {
      * 保存上传文件
      */
     @Override
-    public SysFileInfo saveUploadFile(MultipartFile file, String storedPath, String url) {
-        SysFileInfo info = new SysFileInfo();
+    public SysFileInfoVo saveUploadFile(MultipartFile file, String storedPath, String url) {
+        SysFileInfoSaveReq info = new SysFileInfoSaveReq();
         info.setOriginalFilename(file.getOriginalFilename());
         info.setFileName(storedPath);
         info.setNewFileName(FileUtils.getName(storedPath));
@@ -34,15 +35,23 @@ public class SysFileInfoServiceImpl implements ISysFileInfoService {
         info.setFileType(FilenameUtils.getExtension(file.getOriginalFilename()));
         info.setContentType(StringUtils.nvl(file.getContentType(), ""));
         fileInfoMapper.insertFile(info);
-        return info;
+        SysFileInfoVo saved = new SysFileInfoVo();
+        saved.setFileId(info.getFileId());
+        saved.setOriginalFilename(info.getOriginalFilename());
+        saved.setFileName(info.getFileName());
+        saved.setNewFileName(info.getNewFileName());
+        saved.setUrl(info.getUrl());
+        saved.setFileSize(info.getFileSize());
+        saved.setFileType(info.getFileType());
+        saved.setContentType(info.getContentType());
+        return saved;
     }
 
     /**
      * 根据ID查询文件
      */
     @Override
-    public SysFileInfo selectFileById(Long fileId) {
+    public SysFileInfoVo selectFileById(Long fileId) {
         return fileInfoMapper.selectFileById(fileId);
     }
 }
-

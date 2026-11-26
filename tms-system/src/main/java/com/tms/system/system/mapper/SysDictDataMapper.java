@@ -1,6 +1,7 @@
 package com.tms.system.system.mapper;
 
 import com.tms.system.system.domain.dto.SysDictDataSaveReq;
+import com.tms.system.system.domain.vo.SysDictDataVo;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface SysDictDataMapper {
      * @param dictData 查询条件
      * @return 字典数据列表
      */
-    List<SysDictDataSaveReq> selectDictDataList(SysDictDataSaveReq dictData);
+    List<SysDictDataVo> selectDictDataList(SysDictDataSaveReq dictData);
 
     /**
      * 新增字典配置
@@ -29,7 +30,7 @@ public interface SysDictDataMapper {
      * @param id 主表id
      * @return 字典列表
      */
-    List<SysDictDataSaveReq> selectDictDataByDictId(Long id);
+    List<SysDictDataVo> selectDictDataByDictId(Long id);
 
     /**
      * 更新字典配置
@@ -44,6 +45,7 @@ public interface SysDictDataMapper {
      * @param id 主键id
      */
     int deleteDictDataById(Long id);
+
     /**
      * 删除字典配置
      *

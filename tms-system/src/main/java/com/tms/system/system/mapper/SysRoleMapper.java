@@ -2,6 +2,7 @@ package com.tms.system.system.mapper;
 
 import java.util.List;
 
+import com.tms.system.system.domain.dto.SysRoleSaveReq;
 import com.tms.system.system.domain.vo.SysRoleVo;
 import com.tms.system.system.domain.dto.SysRoleQuery;
 
@@ -88,7 +89,7 @@ public interface SysRoleMapper {
      * @param role 角色信息
      * @return 结果
      */
-    int updateRole(SysRoleVo role);
+    int updateRole(SysRoleSaveReq role);
 
     /**
      * 新增角色信息
@@ -96,7 +97,7 @@ public interface SysRoleMapper {
      * @param role 角色信息
      * @return 结果
      */
-    int insertRole(SysRoleVo role);
+    int insertRole(SysRoleSaveReq role);
 
     /**
      * 通过角色ID删除角色

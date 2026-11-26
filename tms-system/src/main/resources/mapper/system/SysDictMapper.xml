@@ -4,7 +4,7 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tms.system.system.mapper.SysDictMapper">
 
-	<resultMap type="com.tms.system.system.domain.dto.SysDictSaveReq" id="SysDictResult">
+	<resultMap type="com.tms.system.system.domain.vo.SysDictVo" id="SysDictResult">
 		<id     property="dictId"         	column="dict_id"             />
 		<result property="dictName"      	column="dict_name"     />
 		<result property="dictCode"      	column="dict_code"     />
@@ -20,7 +20,7 @@
         select * from sys_dict
     </sql>
 
-    <select id="selectDictList" parameterType="com.tms.system.system.domain.dto.SysDictSaveReq" resultMap="SysDictResult">
+    <select id="selectDictList" parameterType="com.tms.system.system.domain.dto.SysDictQuery" resultMap="SysDictResult">
 		<include refid="selectDictVo"/>
 		<where>
 			is_del = '0'
@@ -45,14 +45,10 @@
 		<include refid="selectDictVo"/>
 		where is_del = '0' and dict_id = #{id}
 	</select>
-	<select id="selectDictByCode" parameterType="com.tms.system.system.domain.dto.SysDictSaveReq" resultMap="SysDictResult">
+	<select id="selectDictByCode" resultMap="SysDictResult">
 		<include refid="selectDictVo"/>
-		<where>
-			is_del = '0'
-			<if test="dictCode != null and dictCode != ''">
-				AND dict_Code = #{dictCode}
-			</if>
-		</where>
+		where is_del = '0' and dict_code = #{dictCode}
+		limit 1
 	</select>
 	<insert id="insertDict" parameterType="com.tms.system.system.domain.dto.SysDictSaveReq" useGeneratedKeys="true"
 	        keyProperty="dictId"

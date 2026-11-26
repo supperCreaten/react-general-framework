@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tms.system.order.mapper.TmsOrderCargoMapper">
+
+	<resultMap type="com.tms.system.order.domain.vo.TmsOrderCargoVo" id="TmsOrderCargoVoResult">
+		<id     property="cargoId"        column="cargo_id"        />
+		<result property="orderId"        column="order_id"        />
+		<result property="cargoName"      column="cargo_name"      />
+		<result property="cargoType"      column="cargo_type"      />
+		<result property="quantity"       column="quantity"        />
+		<result property="unit"           column="unit"            />
+		<result property="weight"         column="weight"          />
+		<result property="vehicleType"    column="vehicle_type"    />
+		<result property="vehicleLength"  column="vehicle_length"  />
+		<result property="vehicleCount"   column="vehicle_count"   />
+	</resultMap>
+
+	<sql id="selectCargoVo">
+		select cargo_id, order_id, cargo_name, cargo_type, quantity, unit, weight,
+			vehicle_type, vehicle_length, vehicle_count
+		from tms_order_cargo
+	</sql>
+
+	<select id="selectCargoListByOrderId" parameterType="Long" resultMap="TmsOrderCargoVoResult">
+		<include refid="selectCargoVo"/>
+		where order_id = #{orderId} and is_del = '0'
+		order by cargo_id asc
+	</select>
+
+	<insert id="insertCargo" parameterType="com.tms.system.order.domain.dto.TmsOrderCargoSaveReq" useGeneratedKeys="true" keyProperty="cargoId">
+		insert into tms_order_cargo(
+			order_id,
+			<if test="cargoName != null and cargoName != ''">cargo_name,</if>
+			<if test="cargoType != null and cargoType != ''">cargo_type,</if>
+			quantity, unit, weight,
+			<if test="vehicleType != null and vehicleType != ''">vehicle_type,</if>
+			<if test="vehicleLength != null and vehicleLength != ''">vehicle_length,</if>
+			<if test="vehicleCount != null">vehicle_count,</if>
+			is_del, create_by, update_by, create_time, update_time
+		)values(
+			#{orderId},
+			<if test="cargoName != null and cargoName != ''">#{cargoName},</if>
+			<if test="cargoType != null and cargoType != ''">#{cargoType},</if>
+			#{quantity}, #{unit}, #{weight},
+			<if test="vehicleType != null and vehicleType != ''">#{vehicleType},</if>
+			<if test="vehicleLength != null and vehicleLength != ''">#{vehicleLength},</if>
+			<if test="vehicleCount != null">#{vehicleCount},</if>
+			'0', #{createBy}, #{updateBy}, sysdate(), sysdate()
+		)
+	</insert>
+
+	<insert id="batchInsertCargo" parameterType="java.util.List">
+		insert into tms_order_cargo(
+			order_id, cargo_name, cargo_type, quantity, unit, weight,
+			vehicle_type, vehicle_length, vehicle_count,
+			is_del, create_by, update_by, create_time, update_time
+		) values
+		<foreach collection="list" item="item" separator=",">
+			(
+				#{item.orderId},
+				#{item.cargoName},
+				#{item.cargoType},
+				#{item.quantity},
+				#{item.unit},
+				#{item.weight},
+				#{item.vehicleType},
+				#{item.vehicleLength},
+				#{item.vehicleCount},
+				'0',
+				#{item.createBy},
+				#{item.updateBy},
+				sysdate(),
+				sysdate()
+			)
+		</foreach>
+	</insert>
+
+	<update id="updateCargo" parameterType="com.tms.system.order.domain.dto.TmsOrderCargoSaveReq">
+		update tms_order_cargo
+		<set>
+			<if test="cargoName != null and cargoName != ''">cargo_name = #{cargoName},</if>
+			<if test="cargoType != null">cargo_type = #{cargoType},</if>
+			<if test="quantity != null">quantity = #{quantity},</if>
+			<if test="unit != null">unit = #{unit},</if>
+			<if test="weight != null">weight = #{weight},</if>
+			<if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+			<if test="vehicleLength != null">vehicle_length = #{vehicleLength},</if>
+			<if test="vehicleCount != null">vehicle_count = #{vehicleCount},</if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate()
+		</set>
+		where cargo_id = #{cargoId}
+	</update>
+
+	<update id="batchUpdateCargo" parameterType="java.util.List">
+		<foreach collection="cargoList" item="item" separator=";">
+			update tms_order_cargo
+			set
+				cargo_name = #{item.cargoName},
+				cargo_type = #{item.cargoType},
+				quantity = #{item.quantity},
+				unit = #{item.unit},
+				weight = #{item.weight},
+				vehicle_type = #{item.vehicleType},
+				vehicle_length = #{item.vehicleLength},
+				vehicle_count = #{item.vehicleCount},
+				update_by = #{item.updateBy},
+				update_time = sysdate()
+			where cargo_id = #{item.cargoId} and is_del = '0'
+		</foreach>
+	</update>
+
+	<update id="deleteCargoByOrderId" parameterType="Long">
+		update tms_order_cargo set is_del = '1', update_time = sysdate() where order_id = #{orderId}
+	</update>
+
+	<update id="deleteCargoById" parameterType="Long">
+		update tms_order_cargo set is_del = '1', update_time = sysdate() where cargo_id = #{cargoId}
+	</update>
+
+</mapper>

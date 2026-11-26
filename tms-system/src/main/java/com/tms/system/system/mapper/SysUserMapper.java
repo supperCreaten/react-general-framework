@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import com.tms.system.system.domain.dto.SysUserSaveReq;
 import com.tms.system.system.domain.vo.SysUserVo;
 import com.tms.system.system.domain.dto.SysUserQuery;
 
@@ -59,7 +60,7 @@ public interface SysUserMapper {
      * @param user 用户信息
      * @return 结果
      */
-    public int insertUser(SysUserVo user);
+    public int insertUser(SysUserSaveReq user);
 
     /**
      * 修改用户信息
@@ -67,12 +68,12 @@ public interface SysUserMapper {
      * @param user 用户信息
      * @return 结果
      */
-    public int updateUser(SysUserVo user);
+    public int updateUser(SysUserSaveReq user);
 
     /**
      * 仅更新敏感字段密文与密钥
      */
-    public int updateUserSensitiveCrypto(SysUserVo user);
+    public int updateUserSensitiveCrypto(SysUserSaveReq user);
 
     /**
      * 修改用户头像

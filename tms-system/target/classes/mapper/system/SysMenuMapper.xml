@@ -150,17 +150,17 @@
 	    select count(1) from sys_menu where parent_id = #{menuId} and is_del = '0'
 	</select>
 	
-	<select id="checkMenuNameUnique" parameterType="com.tms.system.system.domain.vo.SysMenuVo" resultMap="SysMenuResult">
+	<select id="checkMenuNameUnique" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
 		where menu_name= #{menuName} and parent_id = #{parentId} and is_del = '0' limit 1
 	</select>
 	
-	<select id="selectMenusByPathOrRouteName" parameterType="com.tms.system.system.domain.vo.SysMenuVo" resultMap="SysMenuResult">
+	<select id="selectMenusByPathOrRouteName" resultMap="SysMenuResult">
 		<include refid="selectMenuVo"/>
 		where menu_type in ('0', '1', '3') and is_del = '0' and menu_path = #{path}
 	</select>
 	
-	<update id="updateMenu" parameterType="com.tms.system.system.domain.vo.SysMenuVo">
+	<update id="updateMenu" parameterType="com.tms.system.system.domain.dto.SysMenuSaveReq">
 		update sys_menu
 		<set>
 			<if test="menuName != null and menuName != ''">menu_name = #{menuName},</if>
@@ -179,7 +179,7 @@
 		where menu_id = #{menuId}
 	</update>
 
-	<insert id="insertMenu" parameterType="com.tms.system.system.domain.vo.SysMenuVo">
+	<insert id="insertMenu" parameterType="com.tms.system.system.domain.dto.SysMenuSaveReq">
 		insert into sys_menu(
 		<if test="menuId != null and menuId != 0">menu_id,</if>
 		menu_name,
@@ -246,7 +246,7 @@
 		)
 	</insert>
 
-	<update id="updateMenuSort" parameterType="com.tms.system.system.domain.vo.SysMenuVo">
+	<update id="updateMenuSort" parameterType="com.tms.system.system.domain.dto.SysMenuSaveReq">
 	    update sys_menu set order_num = #{orderNum} where menu_id = #{menuId}
 	</update>
 

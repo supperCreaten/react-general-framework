@@ -1,8 +1,9 @@
 package com.tms.system.system.service;
 
-import com.tms.system.system.domain.dto.SysDictDataSaveReq;
 import com.tms.system.system.domain.dto.SysDictQuery;
 import com.tms.system.system.domain.dto.SysDictSaveReq;
+import com.tms.system.system.domain.vo.SysDictDataVo;
+import com.tms.system.system.domain.vo.SysDictVo;
 
 import java.util.List;
 
@@ -13,40 +14,43 @@ public interface SysDictService {
     /**
      * 查询系统字典列表
      *
-     * @return 菜单列表
+     * @param query 查询条件
+     * @return 字典列表
      */
-    List<SysDictSaveReq> selectDictList(SysDictQuery query);
+    List<SysDictVo> selectDictList(SysDictQuery query);
 
     /**
-     * 新增保存菜单信息
+     * 新增保存字典
      *
      * @param dict 字典信息
      */
     void insertDict(SysDictSaveReq dict);
 
     /**
-     * 新增保存菜单信息
+     * 修改保存字典
      *
      * @param dict 字典信息
      */
     void updateDict(SysDictSaveReq dict);
 
     /**
-     * 根据主键id查询字典列表
+     * 根据主键id查询字典
      *
      * @param id 主键ID
      * @return 字典详情
      */
-    SysDictSaveReq selectDictByDictId(Long id);
+    SysDictVo selectDictByDictId(Long id);
+
     /**
-     * 根据字典编码查询字典列表
+     * 根据字典编码查询字典项
      *
      * @param dictCode 字典编码
-     * @return 字典列表
+     * @return 字典项列表
      */
-    List<SysDictDataSaveReq> selectDictDataByCode(String dictCode);
+    List<SysDictDataVo> selectDictDataByCode(String dictCode);
+
     /**
-     * 根据主键id删除字典列表
+     * 根据主键id删除字典
      *
      * @param ids 主键ID集合
      */

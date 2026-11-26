@@ -331,7 +331,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int insertMenu(SysMenuSaveReq menu) {
-        return menuMapper.insertMenu(menu.toEntity());
+        return menuMapper.insertMenu(menu);
     }
 
     /**
@@ -342,7 +342,23 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int updateMenu(SysMenuVo menu) {
-        return menuMapper.updateMenu(menu);
+        SysMenuSaveReq req = new SysMenuSaveReq();
+        req.setMenuId(menu.getMenuId());
+        req.setParentId(menu.getParentId());
+        req.setMenuType(menu.getMenuType());
+        req.setIcon(menu.getIcon());
+        req.setMenuName(menu.getMenuName());
+        req.setOrderNum(menu.getOrderNum());
+        req.setIsFrame(menu.getIsFrame());
+        req.setPath(menu.getPath());
+        req.setPerms(menu.getPerms());
+        req.setIsCache(menu.getIsCache());
+        req.setVisible(menu.getVisible());
+        req.setStatus(menu.getStatus());
+        req.setCreateBy(menu.getCreateBy());
+        req.setUpdateBy(menu.getUpdateBy());
+        req.setRemark(menu.getRemark());
+        return updateMenu(req);
     }
 
     /**
@@ -350,7 +366,13 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int updateMenu(SysMenuSaveReq menu) {
-        return updateMenu(menu.toEntity());
+        if (menu.getOrderNum() == null) {
+            menu.setOrderNum(0);
+        }
+        if (StringUtils.isEmpty(menu.getIsFrame())) {
+            menu.setIsFrame("1");
+        }
+        return menuMapper.updateMenu(menu);
     }
 
     /**
@@ -364,7 +386,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
     public void updateMenuSort(String[] menuIds, String[] orderNums) {
         try {
             for (int i = 0; i < menuIds.length; i++) {
-                SysMenuVo menu = new SysMenuVo();
+                SysMenuSaveReq menu = new SysMenuSaveReq();
                 menu.setMenuId(Convert.toLong(menuIds[i]));
                 menu.setOrderNum(Convert.toInt(orderNums[i]));
                 menuMapper.updateMenuSort(menu);
@@ -406,7 +428,12 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public boolean checkMenuNameUnique(SysMenuSaveReq menu) {
-        return checkMenuNameUnique(menu.toEntity());
+        long menuId = StringUtils.isNull(menu.getMenuId()) ? -1L : menu.getMenuId();
+        SysMenuVo info = menuMapper.checkMenuNameUnique(menu.getMenuName(), menu.getParentId());
+        if (StringUtils.isNotNull(info) && info.getMenuId() != menuId) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -417,10 +444,13 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public boolean checkRouteConfigUnique(SysMenuVo menu) {
-        long menuId = StringUtils.isNull(menu.getMenuId()) ? -1L : menu.getMenuId();
-        Long parentId = menu.getParentId();
         String path = menu.getPath();
         String routeName = StringUtils.isEmpty(menu.getRouteName()) ? path : menu.getRouteName();
+        return isRouteConfigUnique(menu.getMenuId(), menu.getParentId(), path, routeName);
+    }
+
+    private boolean isRouteConfigUnique(Long menuIdValue, Long parentId, String path, String routeName) {
+        long menuId = StringUtils.isNull(menuIdValue) ? -1L : menuIdValue;
         List<SysMenuVo> sysMenuList = menuMapper.selectMenusByPathOrRouteName(path, routeName);
         for (SysMenuVo sysMenu : sysMenuList) {
             if (sysMenu.getMenuId() != menuId) {
@@ -443,7 +473,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public boolean checkRouteConfigUnique(SysMenuSaveReq menu) {
-        return checkRouteConfigUnique(menu.toEntity());
+        return isRouteConfigUnique(menu.getMenuId(), menu.getParentId(), menu.getPath(), menu.getPath());
     }
 
     /**

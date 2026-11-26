@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tms.system.resource.mapper.TmsCustomerMapper">
+
+	<resultMap type="com.tms.system.resource.domain.vo.TmsCustomerVo" id="TmsCustomerResult">
+		<id     property="customerId"          column="customer_id"           />
+		<result property="customerNo"          column="customer_no"           />
+		<result property="customerName"        column="customer_name"         />
+		<result property="shortName"           column="short_name"            />
+		<result property="industry"            column="industry"              />
+		<result property="customerLevel"       column="customer_level"        />
+		<result property="customerTags"        column="customer_tags"         />
+		<result property="region"              column="region"                />
+		<result property="companyAddress"      column="company_address"       />
+		<result property="status"              column="status"                />
+		<result property="customerSource"      column="customer_source"       />
+		<result property="salesUserName"       column="sales_user_name"       />
+		<result property="businessLicenseNo"   column="business_license_no"   />
+		<result property="businessLicenseUrl"  column="business_license_url"  />
+		<result property="contactName"         column="contact_name"          />
+		<result property="contactPhone"        column="contact_phone"         />
+		<result property="contactDept"         column="contact_dept"          />
+		<result property="contactTitle"        column="contact_title"         />
+		<result property="contactEmail"        column="contact_email"         />
+		<result property="contactWechat"       column="contact_wechat"        />
+		<result property="settleType"          column="settle_type"           />
+		<result property="creditLimit"         column="credit_limit"          />
+		<result property="payPeriodDays"       column="pay_period_days"       />
+		<result property="invoiceTitle"        column="invoice_title"         />
+		<result property="taxNo"               column="tax_no"                />
+		<result property="bankName"            column="bank_name"             />
+		<result property="bankAccountName"     column="bank_account_name"     />
+		<result property="bankAccountNo"       column="bank_account_no"       />
+		<result property="remark"              column="remark"                />
+		<result property="createBy"            column="create_by"             />
+		<result property="createTime"          column="create_time"           />
+	</resultMap>
+
+	<sql id="selectCustomerVo">
+		select customer_id, customer_no, customer_name, short_name, industry, customer_level, customer_tags,
+			region, company_address, status, customer_source, sales_user_name,
+			business_license_no, business_license_url,
+			contact_name, contact_phone, contact_dept, contact_title, contact_email, contact_wechat,
+			settle_type, credit_limit, pay_period_days,
+			invoice_title, tax_no, bank_name, bank_account_name, bank_account_no,
+			remark, create_by, create_time
+		from tms_customer
+	</sql>
+
+	<select id="selectCustomerList" parameterType="com.tms.system.resource.domain.dto.TmsCustomerQuery" resultMap="TmsCustomerResult">
+		<include refid="selectCustomerVo"/>
+		where is_del = '0'
+		<if test="customerLevel != null and customerLevel != ''">
+			AND customer_level = #{customerLevel}
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+		<if test="settleType != null and settleType != ''">
+			AND settle_type = #{settleType}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (
+				customer_name like concat('%', #{keyword}, '%')
+				or customer_no like concat('%', #{keyword}, '%')
+				or contact_name like concat('%', #{keyword}, '%')
+				or contact_phone like concat('%', #{keyword}, '%')
+			)
+		</if>
+		<if test="beginCreateTime != null">
+			AND create_time &gt;= #{beginCreateTime}
+		</if>
+		<if test="endCreateTime != null">
+			AND create_time &lt;= #{endCreateTime}
+		</if>
+		order by create_time desc
+	</select>
+
+	<select id="selectCustomerById" parameterType="Long" resultMap="TmsCustomerResult">
+		<include refid="selectCustomerVo"/>
+		where customer_id = #{customerId} and is_del = '0'
+	</select>
+
+	<select id="checkCustomerNameUnique" resultMap="TmsCustomerResult">
+		<include refid="selectCustomerVo"/>
+		where customer_name = #{customerName} and is_del = '0' limit 1
+	</select>
+
+	<select id="selectMaxCustomerNoByPrefix" resultType="String">
+		select max(customer_no) from tms_customer where customer_no like concat(#{prefix}, '%')
+	</select>
+
+	<insert id="insertCustomer" parameterType="com.tms.system.resource.domain.dto.TmsCustomerSaveReq" useGeneratedKeys="true" keyProperty="customerId">
+		insert into tms_customer(
+			customer_no, customer_name,
+			<if test="shortName != null and shortName != ''">short_name,</if>
+			<if test="industry != null and industry != ''">industry,</if>
+			customer_level,
+			<if test="customerTags != null and customerTags != ''">customer_tags,</if>
+			<if test="region != null and region != ''">region,</if>
+			<if test="companyAddress != null and companyAddress != ''">company_address,</if>
+			status,
+			<if test="customerSource != null and customerSource != ''">customer_source,</if>
+			<if test="salesUserName != null and salesUserName != ''">sales_user_name,</if>
+			<if test="businessLicenseNo != null and businessLicenseNo != ''">business_license_no,</if>
+			<if test="businessLicenseUrl != null and businessLicenseUrl != ''">business_license_url,</if>
+			contact_name, contact_phone,
+			<if test="contactDept != null and contactDept != ''">contact_dept,</if>
+			<if test="contactTitle != null and contactTitle != ''">contact_title,</if>
+			<if test="contactEmail != null and contactEmail != ''">contact_email,</if>
+			<if test="contactWechat != null and contactWechat != ''">contact_wechat,</if>
+			settle_type,
+			<if test="creditLimit != null">credit_limit,</if>
+			<if test="payPeriodDays != null">pay_period_days,</if>
+			invoice_title,
+			<if test="taxNo != null and taxNo != ''">tax_no,</if>
+			<if test="bankName != null and bankName != ''">bank_name,</if>
+			<if test="bankAccountName != null and bankAccountName != ''">bank_account_name,</if>
+			<if test="bankAccountNo != null and bankAccountNo != ''">bank_account_no,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			is_del, create_by, update_by, create_time, update_time
+		) values (
+			#{customerNo}, #{customerName},
+			<if test="shortName != null and shortName != ''">#{shortName},</if>
+			<if test="industry != null and industry != ''">#{industry},</if>
+			#{customerLevel},
+			<if test="customerTags != null and customerTags != ''">#{customerTags},</if>
+			<if test="region != null and region != ''">#{region},</if>
+			<if test="companyAddress != null and companyAddress != ''">#{companyAddress},</if>
+			#{status},
+			<if test="customerSource != null and customerSource != ''">#{customerSource},</if>
+			<if test="salesUserName != null and salesUserName != ''">#{salesUserName},</if>
+			<if test="businessLicenseNo != null and businessLicenseNo != ''">#{businessLicenseNo},</if>
+			<if test="businessLicenseUrl != null and businessLicenseUrl != ''">#{businessLicenseUrl},</if>
+			#{contactName}, #{contactPhone},
+			<if test="contactDept != null and contactDept != ''">#{contactDept},</if>
+			<if test="contactTitle != null and contactTitle != ''">#{contactTitle},</if>
+			<if test="contactEmail != null and contactEmail != ''">#{contactEmail},</if>
+			<if test="contactWechat != null and contactWechat != ''">#{contactWechat},</if>
+			#{settleType},
+			<if test="creditLimit != null">#{creditLimit},</if>
+			<if test="payPeriodDays != null">#{payPeriodDays},</if>
+			#{invoiceTitle},
+			<if test="taxNo != null and taxNo != ''">#{taxNo},</if>
+			<if test="bankName != null and bankName != ''">#{bankName},</if>
+			<if test="bankAccountName != null and bankAccountName != ''">#{bankAccountName},</if>
+			<if test="bankAccountNo != null and bankAccountNo != ''">#{bankAccountNo},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			'0', #{createBy}, #{updateBy}, sysdate(), sysdate()
+		)
+	</insert>
+
+	<update id="updateCustomer" parameterType="com.tms.system.resource.domain.dto.TmsCustomerSaveReq">
+		update tms_customer
+		<set>
+			<if test="customerName != null and customerName != ''">customer_name = #{customerName},</if>
+			short_name = #{shortName},
+			industry = #{industry},
+			<if test="customerLevel != null and customerLevel != ''">customer_level = #{customerLevel},</if>
+			customer_tags = #{customerTags},
+			region = #{region},
+			company_address = #{companyAddress},
+			<if test="status != null and status != ''">status = #{status},</if>
+			customer_source = #{customerSource},
+			sales_user_name = #{salesUserName},
+			business_license_no = #{businessLicenseNo},
+			business_license_url = #{businessLicenseUrl},
+			<if test="contactName != null and contactName != ''">contact_name = #{contactName},</if>
+			<if test="contactPhone != null and contactPhone != ''">contact_phone = #{contactPhone},</if>
+			contact_dept = #{contactDept},
+			contact_title = #{contactTitle},
+			contact_email = #{contactEmail},
+			contact_wechat = #{contactWechat},
+			<if test="settleType != null and settleType != ''">settle_type = #{settleType},</if>
+			credit_limit = #{creditLimit},
+			pay_period_days = #{payPeriodDays},
+			<if test="invoiceTitle != null and invoiceTitle != ''">invoice_title = #{invoiceTitle},</if>
+			tax_no = #{taxNo},
+			bank_name = #{bankName},
+			bank_account_name = #{bankAccountName},
+			bank_account_no = #{bankAccountNo},
+			remark = #{remark},
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate()
+		</set>
+		where customer_id = #{customerId} and is_del = '0'
+	</update>
+
+	<update id="deleteCustomerByIds">
+		update tms_customer set is_del = '1', update_time = sysdate()
+		where customer_id in
+		<foreach collection="customerIds" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+</mapper>

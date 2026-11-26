@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.tms.system.system.domain.SysOperLog;
+import com.tms.system.system.domain.dto.SysOperLogQuery;
+import com.tms.system.system.domain.dto.SysOperLogSaveReq;
+import com.tms.system.system.domain.vo.SysOperLogVo;
 import com.tms.system.system.mapper.SysOperLogMapper;
 import com.tms.system.system.service.ISysOperLogService;
 
@@ -20,7 +22,7 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
      * 新增操作日志
      */
     @Override
-    public void insertOperlog(SysOperLog operLog) {
+    public void insertOperlog(SysOperLogSaveReq operLog) {
         operLogMapper.insertOperlog(operLog);
     }
 
@@ -28,15 +30,15 @@ public class SysOperLogServiceImpl implements ISysOperLogService {
      * 查询操作日志列表
      */
     @Override
-    public List<SysOperLog> selectOperLogList(SysOperLog operLog) {
-        return operLogMapper.selectOperLogList(operLog);
+    public List<SysOperLogVo> selectOperLogList(SysOperLogQuery query) {
+        return operLogMapper.selectOperLogList(query == null ? new SysOperLogQuery() : query);
     }
 
     /**
      * 按主键查询操作日志
      */
     @Override
-    public SysOperLog selectOperLogById(Long operId) {
+    public SysOperLogVo selectOperLogById(Long operId) {
         return operLogMapper.selectOperLogById(operId);
     }
 

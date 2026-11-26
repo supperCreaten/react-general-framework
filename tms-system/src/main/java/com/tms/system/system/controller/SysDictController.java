@@ -4,9 +4,10 @@ import com.tms.common.annotation.Log;
 import com.tms.common.core.controller.BaseController;
 import com.tms.common.core.domain.AjaxResult;
 import com.tms.common.enums.BusinessType;
-import com.tms.system.system.domain.dto.SysDictDataSaveReq;
 import com.tms.system.system.domain.dto.SysDictQuery;
 import com.tms.system.system.domain.dto.SysDictSaveReq;
+import com.tms.system.system.domain.vo.SysDictDataVo;
+import com.tms.system.system.domain.vo.SysDictVo;
 import com.tms.system.system.service.SysDictService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +35,7 @@ public class SysDictController extends BaseController {
     @PostMapping("/pageQuery")
     public AjaxResult pageQuery(@RequestBody(required = false) SysDictQuery query) {
         startPage();
-        List<SysDictSaveReq> items = dictService.selectDictList(query);
+        List<SysDictVo> items = dictService.selectDictList(query);
         return getDataTable(items);
     }
 
@@ -45,7 +46,7 @@ public class SysDictController extends BaseController {
     @PostMapping("/allDict")
     public AjaxResult allDict(@RequestBody(required = false) SysDictQuery query) {
         String dictCode = query == null ? null : query.getDictCode();
-        List<SysDictDataSaveReq> dictData = dictService.selectDictDataByCode(dictCode);
+        List<SysDictDataVo> dictData = dictService.selectDictDataByCode(dictCode);
         return success(dictData);
     }
 
@@ -86,7 +87,7 @@ public class SysDictController extends BaseController {
     @Operation(summary = "字典详情")
     @PostMapping("/queryById/{id}")
     public AjaxResult queryById(@Validated @PathVariable Long id) {
-        SysDictSaveReq dict = dictService.selectDictByDictId(id);
+        SysDictVo dict = dictService.selectDictByDictId(id);
         return success(dict);
     }
 

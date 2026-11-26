@@ -23,7 +23,7 @@ import com.tms.common.utils.StringUtils;
 import com.tms.common.utils.bean.BeanValidators;
 import com.tms.common.utils.encrypt.SensitiveCryptoResult;
 import com.tms.common.utils.encrypt.SensitiveDataCrypto;
-import com.tms.system.system.domain.SysUserRole;
+import com.tms.system.system.domain.dto.SysUserRoleSaveReq;
 import com.tms.system.system.domain.convert.PageVos;
 import com.tms.system.system.domain.dto.SysUserAuthRoleReq;
 import com.tms.system.system.domain.dto.SysUserQuery;
@@ -68,7 +68,13 @@ public class SysUserServiceImpl implements ISysUserService {
         List<SysUserVo> list = userMapper.selectUserList(query == null ? new SysUserQuery() : query);
         for (SysUserVo item : list) {
             if (ensureSensitiveCrypto(item)) {
-                userMapper.updateUserSensitiveCrypto(item);
+                SysUserSaveReq crypto = new SysUserSaveReq();
+                crypto.setUserId(item.getUserId());
+                crypto.setPhoneCipher(item.getPhoneCipher());
+                crypto.setPhoneSecretKey(item.getPhoneSecretKey());
+                crypto.setIdCardCipher(item.getIdCardCipher());
+                crypto.setIdCardSecretKey(item.getIdCardSecretKey());
+                userMapper.updateUserSensitiveCrypto(crypto);
             }
         }
         return PageVos.map(list, SysUserPageVo::from);
@@ -168,7 +174,12 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean checkUserNameUnique(SysUserSaveReq user) {
-        return checkUserNameUnique(user.toEntity());
+        Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
+        SysUserVo info = userMapper.checkUserNameUnique(user.getAccount());
+        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -193,7 +204,12 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean checkPhoneUnique(SysUserSaveReq user) {
-        return checkPhoneUnique(user.toEntity());
+        Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
+        SysUserVo info = userMapper.checkPhoneUnique(user.getPhone(), null);
+        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -217,7 +233,12 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean checkEmailUnique(SysUserSaveReq user) {
-        return checkEmailUnique(user.toEntity());
+        Long userId = StringUtils.isNull(user.getUserId()) ? -1L : user.getUserId();
+        SysUserVo info = userMapper.checkEmailUnique(user.getEmail());
+        if (StringUtils.isNotNull(info) && info.getUserId().longValue() != userId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -249,12 +270,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @Transactional
     public int insertUser(SysUserVo user) {
-        resolveUserAccount(user);
-        fillSensitiveCrypto(user);
-        int rows = userMapper.insertUser(user);
-        // 新增用户与角色管理
-        insertUserRole(user);
-        return rows;
+        return insertPreparedUser(toSaveReq(user));
     }
 
     /**
@@ -263,13 +279,21 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @Transactional
     public int insertUser(SysUserSaveReq req) {
-        SysUserVo user = req.toEntity();
-        String rawPassword = StringUtils.isNotEmpty(user.getPassword()) ? user.getPassword() : TmsConfig.getInitPassword();
-        user.setPassword(SecurityUtils.encryptPassword(rawPassword));
-        if (StringUtils.isEmpty(user.getStatus())) {
-            user.setStatus(UserConstants.NORMAL);
+        String rawPassword = StringUtils.isNotEmpty(req.getPassword()) ? req.getPassword() : TmsConfig.getInitPassword();
+        req.setPassword(SecurityUtils.encryptPassword(rawPassword));
+        if (StringUtils.isEmpty(req.getStatus())) {
+            req.setStatus(UserConstants.NORMAL);
         }
-        return insertUser(user);
+        return insertPreparedUser(req);
+    }
+
+    /** 补齐账号与密文后写入用户，并保存角色关系 */
+    private int insertPreparedUser(SysUserSaveReq req) {
+        normalizeUser(req);
+        fillSensitiveCrypto(req);
+        int rows = userMapper.insertUser(req);
+        insertUserRole(req.getUserId(), req.getRoleIds());
+        return rows;
     }
 
     /**
@@ -280,9 +304,10 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public boolean registerUser(SysUserVo user) {
-        resolveUserAccount(user);
-        fillSensitiveCrypto(user);
-        return userMapper.insertUser(user) > 0;
+        SysUserSaveReq req = toSaveReq(user);
+        normalizeUser(req);
+        fillSensitiveCrypto(req);
+        return userMapper.insertUser(req) > 0;
     }
 
     /**
@@ -294,14 +319,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @Transactional
     public int updateUser(SysUserVo user) {
-        Long userId = user.getUserId();
-        resolveUserAccount(user);
-        fillSensitiveCrypto(user);
-        // 删除用户与角色关联
-        userRoleMapper.deleteUserRoleByUserId(userId);
-        // 新增用户与角色管理
-        insertUserRole(user);
-        return userMapper.updateUser(user);
+        return updatePreparedUser(toSaveReq(user));
     }
 
     /**
@@ -310,14 +328,22 @@ public class SysUserServiceImpl implements ISysUserService {
     @Override
     @Transactional
     public int updateUser(SysUserSaveReq req) {
-        SysUserVo user = req.toEntity();
-        checkUserAllowed(user);
-        if (StringUtils.isNotEmpty(user.getPassword())) {
-            user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+        checkUserAllowed(req.getUserId());
+        if (StringUtils.isNotEmpty(req.getPassword())) {
+            req.setPassword(SecurityUtils.encryptPassword(req.getPassword()));
         } else {
-            user.setPassword(null);
+            req.setPassword(null);
         }
-        return updateUser(user);
+        return updatePreparedUser(req);
+    }
+
+    /** 补齐账号与密文后更新用户，并重建角色关系 */
+    private int updatePreparedUser(SysUserSaveReq req) {
+        normalizeUser(req);
+        fillSensitiveCrypto(req);
+        userRoleMapper.deleteUserRoleByUserId(req.getUserId());
+        insertUserRole(req.getUserId(), req.getRoleIds());
+        return userMapper.updateUser(req);
     }
 
     /**
@@ -371,9 +397,10 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public int updateUserProfile(SysUserVo user) {
-        resolveUserAccount(user);
-        fillSensitiveCrypto(user);
-        return userMapper.updateUser(user);
+        SysUserSaveReq req = toSaveReq(user);
+        normalizeUser(req);
+        fillSensitiveCrypto(req);
+        return userMapper.updateUser(req);
     }
 
     /**
@@ -443,23 +470,41 @@ public class SysUserServiceImpl implements ISysUserService {
         this.insertUserRole(user.getUserId(), user.getRoleIds());
     }
 
-    /** 登录账号只填了一侧时，把 account 与 userName 补成同一个值 */
-    private void syncLoginName(SysUserVo user) {
-        if (StringUtils.isEmpty(user.getAccount()) && StringUtils.isNotEmpty(user.getUserName())) {
-            user.setAccount(user.getUserName());
-        }
-        if (StringUtils.isEmpty(user.getUserName()) && StringUtils.isNotEmpty(user.getAccount())) {
-            user.setUserName(user.getAccount());
-        }
+    /** 查询结果或导入行转成写入参数。登录名优先用 account，没有则用 userName */
+    private SysUserSaveReq toSaveReq(SysUserVo user) {
+        SysUserSaveReq req = new SysUserSaveReq();
+        req.setUserId(user.getUserId());
+        req.setNickName(user.getNickName());
+        req.setDeptId(user.getDeptId());
+        req.setPhone(user.getPhonenumber());
+        req.setEmail(user.getEmail());
+        req.setAccount(StringUtils.isNotEmpty(user.getAccount()) ? user.getAccount() : user.getUserName());
+        req.setPassword(user.getPassword());
+        req.setSex(user.getSex());
+        req.setStatus(user.getStatus());
+        req.setPostId(user.getPostId());
+        req.setRoleIds(user.getRoleIds());
+        req.setAge(user.getAge());
+        req.setAddress(user.getAddress());
+        req.setEmployeeNo(user.getEmployeeNo());
+        req.setEducation(user.getEducation());
+        req.setIdCard(user.getIdCard());
+        req.setPhoneCipher(user.getPhoneCipher());
+        req.setPhoneSecretKey(user.getPhoneSecretKey());
+        req.setIdCardCipher(user.getIdCardCipher());
+        req.setIdCardSecretKey(user.getIdCardSecretKey());
+        req.setCreateBy(user.getCreateBy());
+        req.setUpdateBy(user.getUpdateBy());
+        req.setRemark(user.getRemark());
+        return req;
     }
 
     /**
      * 入库前补齐账号字段。昵称缺省用登录账号，性别、年龄、地址、邮箱缺省给空值，避免非空列写入失败。
      */
-    private void resolveUserAccount(SysUserVo user) {
-        syncLoginName(user);
+    private void normalizeUser(SysUserSaveReq user) {
         if (StringUtils.isEmpty(user.getNickName())) {
-            user.setNickName(StringUtils.isNotEmpty(user.getUserName()) ? user.getUserName() : user.getAccount());
+            user.setNickName(user.getAccount());
         }
         if (StringUtils.isEmpty(user.getSex())) {
             user.setSex("男");
@@ -473,16 +518,16 @@ public class SysUserServiceImpl implements ISysUserService {
         if (user.getEmail() == null) {
             user.setEmail("");
         }
-        if (user.getPhonenumber() == null) {
-            user.setPhonenumber("");
+        if (user.getPhone() == null) {
+            user.setPhone("");
         }
     }
 
     /**
      * 按明文手机号/身份证生成并写入密文与密钥（脱敏值或空值不处理）
      */
-    private void fillSensitiveCrypto(SysUserVo user) {
-        String phone = user.getPhonenumber();
+    private void fillSensitiveCrypto(SysUserSaveReq user) {
+        String phone = user.getPhone();
         if (StringUtils.isNotEmpty(phone) && !SensitiveDataCrypto.isMasked(phone)) {
             SensitiveCryptoResult phoneEnc = SensitiveDataCrypto.encrypt(phone, DesensitizedType.PHONE);
             user.setPhoneCipher(phoneEnc.getCipherText());
@@ -536,9 +581,9 @@ public class SysUserServiceImpl implements ISysUserService {
     public void insertUserRole(Long userId, Long[] roleIds) {
         if (StringUtils.isNotEmpty(roleIds)) {
             // 新增用户与角色管理
-            List<SysUserRole> list = new ArrayList<SysUserRole>(roleIds.length);
+            List<SysUserRoleSaveReq> list = new ArrayList<SysUserRoleSaveReq>(roleIds.length);
             for (Long roleId : roleIds) {
-                SysUserRole ur = new SysUserRole();
+                SysUserRoleSaveReq ur = new SysUserRoleSaveReq();
                 ur.setUserId(userId);
                 ur.setRoleId(roleId);
                 list.add(ur);
@@ -597,23 +642,26 @@ public class SysUserServiceImpl implements ISysUserService {
         StringBuilder failureMsg = new StringBuilder();
         for (SysUserVo user : userList) {
             try {
-                syncLoginName(user);
+                if (StringUtils.isEmpty(user.getAccount())) {
+                    user.setAccount(user.getUserName());
+                }
                 // 验证是否存在这个用户
                 SysUserVo u = userMapper.selectUserByUserName(user.getUserName());
                 if (StringUtils.isNull(u)) {
                     BeanValidators.validateWithException(validator, user);
-                    String password = TmsConfig.getInitPassword();
-                    user.setPassword(SecurityUtils.encryptPassword(password));
-                    resolveUserAccount(user);
-                    userMapper.insertUser(user);
+                    SysUserSaveReq req = toSaveReq(user);
+                    req.setPassword(SecurityUtils.encryptPassword(TmsConfig.getInitPassword()));
+                    normalizeUser(req);
+                    userMapper.insertUser(req);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");
                 } else if (isUpdateSupport) {
                     BeanValidators.validateWithException(validator, user);
                     checkUserAllowed(u);
                     user.setUserId(u.getUserId());
-                    resolveUserAccount(user);
-                    userMapper.updateUser(user);
+                    SysUserSaveReq req = toSaveReq(user);
+                    normalizeUser(req);
+                    userMapper.updateUser(req);
                     successNum++;
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 更新成功");
                 } else {

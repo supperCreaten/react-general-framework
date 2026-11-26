@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tms.system.resource.mapper.TmsCarrierMapper">
+
+	<resultMap type="com.tms.system.resource.domain.vo.TmsCarrierVo" id="TmsCarrierResult">
+		<id     property="carrierId"           column="carrier_id"            />
+		<result property="carrierNo"           column="carrier_no"            />
+		<result property="carrierName"         column="carrier_name"          />
+		<result property="shortName"           column="short_name"            />
+		<result property="legalPerson"         column="legal_person"          />
+		<result property="carrierType"         column="carrier_type"          />
+		<result property="carrierLevel"        column="carrier_level"         />
+		<result property="taxRegNo"            column="tax_reg_no"            />
+		<result property="region"              column="region"                />
+		<result property="companyAddress"      column="company_address"       />
+		<result property="companyEmail"        column="company_email"         />
+		<result property="status"              column="status"                />
+		<result property="businessLicenseNo"   column="business_license_no"   />
+		<result property="businessLicenseUrl"  column="business_license_url"  />
+		<result property="roadPermitNo"        column="road_permit_no"        />
+		<result property="roadPermitUrl"       column="road_permit_url"       />
+		<result property="contactName"         column="contact_name"          />
+		<result property="contactPhone"        column="contact_phone"         />
+		<result property="contactDept"         column="contact_dept"          />
+		<result property="contactTitle"        column="contact_title"         />
+		<result property="contactEmail"        column="contact_email"         />
+		<result property="contactWechat"       column="contact_wechat"        />
+		<result property="settleType"          column="settle_type"           />
+		<result property="invoiceTitle"        column="invoice_title"         />
+		<result property="taxNo"               column="tax_no"                />
+		<result property="bankName"            column="bank_name"             />
+		<result property="bankAccountName"     column="bank_account_name"     />
+		<result property="bankAccountNo"       column="bank_account_no"       />
+		<result property="contractSigned"      column="contract_signed"       />
+		<result property="contractFileUrl"     column="contract_file_url"     />
+		<result property="contractExpireDate"  column="contract_expire_date"  />
+		<result property="remark"              column="remark"                />
+		<result property="createBy"            column="create_by"             />
+		<result property="createTime"          column="create_time"           />
+	</resultMap>
+
+	<sql id="selectCarrierVo">
+		select carrier_id, carrier_no, carrier_name, short_name, legal_person, carrier_type, carrier_level,
+			tax_reg_no, region, company_address, company_email, status,
+			business_license_no, business_license_url, road_permit_no, road_permit_url,
+			contact_name, contact_phone, contact_dept, contact_title, contact_email, contact_wechat,
+			settle_type, invoice_title, tax_no, bank_name, bank_account_name, bank_account_no,
+			contract_signed, contract_file_url, contract_expire_date,
+			remark, is_del, create_by, create_time, update_by, update_time
+		from tms_carrier
+	</sql>
+
+	<select id="selectCarrierList" parameterType="com.tms.system.resource.domain.dto.TmsCarrierQuery" resultMap="TmsCarrierResult">
+		<include refid="selectCarrierVo"/>
+		where is_del = '0'
+		<if test="contractSigned != null and contractSigned != ''">
+			AND contract_signed = #{contractSigned}
+		</if>
+		<if test="status != null and status != ''">
+			AND status = #{status}
+		</if>
+		<if test="carrierType != null and carrierType != ''">
+			AND carrier_type = #{carrierType}
+		</if>
+		<if test="carrierLevel != null and carrierLevel != ''">
+			AND carrier_level = #{carrierLevel}
+		</if>
+		<if test="keyword != null and keyword != ''">
+			AND (
+				carrier_name like concat('%', #{keyword}, '%')
+				or carrier_no like concat('%', #{keyword}, '%')
+				or contact_name like concat('%', #{keyword}, '%')
+				or contact_phone like concat('%', #{keyword}, '%')
+			)
+		</if>
+		<if test="beginCreateTime != null">
+			AND create_time &gt;= #{beginCreateTime}
+		</if>
+		<if test="endCreateTime != null">
+			AND create_time &lt;= #{endCreateTime}
+		</if>
+		order by create_time desc
+	</select>
+
+	<select id="selectCarrierById" parameterType="Long" resultMap="TmsCarrierResult">
+		<include refid="selectCarrierVo"/>
+		where carrier_id = #{carrierId} and is_del = '0'
+	</select>
+
+	<select id="checkCarrierNameUnique" resultMap="TmsCarrierResult">
+		<include refid="selectCarrierVo"/>
+		where carrier_name = #{carrierName} and is_del = '0' limit 1
+	</select>
+
+	<select id="selectMaxCarrierNoByPrefix" resultType="String">
+		select max(carrier_no) from tms_carrier where carrier_no like concat(#{prefix}, '%')
+	</select>
+
+	<insert id="insertCarrier" parameterType="com.tms.system.resource.domain.dto.TmsCarrierSaveReq" useGeneratedKeys="true" keyProperty="carrierId">
+		insert into tms_carrier(
+			carrier_no, carrier_name,
+			<if test="shortName != null and shortName != ''">short_name,</if>
+			legal_person, carrier_type,
+			<if test="carrierLevel != null and carrierLevel != ''">carrier_level,</if>
+			<if test="taxRegNo != null and taxRegNo != ''">tax_reg_no,</if>
+			<if test="region != null and region != ''">region,</if>
+			<if test="companyAddress != null and companyAddress != ''">company_address,</if>
+			<if test="companyEmail != null and companyEmail != ''">company_email,</if>
+			status,
+			<if test="businessLicenseNo != null and businessLicenseNo != ''">business_license_no,</if>
+			<if test="businessLicenseUrl != null and businessLicenseUrl != ''">business_license_url,</if>
+			<if test="roadPermitNo != null and roadPermitNo != ''">road_permit_no,</if>
+			<if test="roadPermitUrl != null and roadPermitUrl != ''">road_permit_url,</if>
+			contact_name, contact_phone,
+			<if test="contactDept != null and contactDept != ''">contact_dept,</if>
+			<if test="contactTitle != null and contactTitle != ''">contact_title,</if>
+			<if test="contactEmail != null and contactEmail != ''">contact_email,</if>
+			<if test="contactWechat != null and contactWechat != ''">contact_wechat,</if>
+			settle_type, invoice_title,
+			<if test="taxNo != null and taxNo != ''">tax_no,</if>
+			<if test="bankName != null and bankName != ''">bank_name,</if>
+			<if test="bankAccountName != null and bankAccountName != ''">bank_account_name,</if>
+			<if test="bankAccountNo != null and bankAccountNo != ''">bank_account_no,</if>
+			contract_signed,
+			<if test="contractFileUrl != null and contractFileUrl != ''">contract_file_url,</if>
+			<if test="contractExpireDate != null">contract_expire_date,</if>
+			<if test="remark != null and remark != ''">remark,</if>
+			is_del, create_by, update_by, create_time, update_time
+		) values (
+			#{carrierNo}, #{carrierName},
+			<if test="shortName != null and shortName != ''">#{shortName},</if>
+			#{legalPerson}, #{carrierType},
+			<if test="carrierLevel != null and carrierLevel != ''">#{carrierLevel},</if>
+			<if test="taxRegNo != null and taxRegNo != ''">#{taxRegNo},</if>
+			<if test="region != null and region != ''">#{region},</if>
+			<if test="companyAddress != null and companyAddress != ''">#{companyAddress},</if>
+			<if test="companyEmail != null and companyEmail != ''">#{companyEmail},</if>
+			#{status},
+			<if test="businessLicenseNo != null and businessLicenseNo != ''">#{businessLicenseNo},</if>
+			<if test="businessLicenseUrl != null and businessLicenseUrl != ''">#{businessLicenseUrl},</if>
+			<if test="roadPermitNo != null and roadPermitNo != ''">#{roadPermitNo},</if>
+			<if test="roadPermitUrl != null and roadPermitUrl != ''">#{roadPermitUrl},</if>
+			#{contactName}, #{contactPhone},
+			<if test="contactDept != null and contactDept != ''">#{contactDept},</if>
+			<if test="contactTitle != null and contactTitle != ''">#{contactTitle},</if>
+			<if test="contactEmail != null and contactEmail != ''">#{contactEmail},</if>
+			<if test="contactWechat != null and contactWechat != ''">#{contactWechat},</if>
+			#{settleType}, #{invoiceTitle},
+			<if test="taxNo != null and taxNo != ''">#{taxNo},</if>
+			<if test="bankName != null and bankName != ''">#{bankName},</if>
+			<if test="bankAccountName != null and bankAccountName != ''">#{bankAccountName},</if>
+			<if test="bankAccountNo != null and bankAccountNo != ''">#{bankAccountNo},</if>
+			#{contractSigned},
+			<if test="contractFileUrl != null and contractFileUrl != ''">#{contractFileUrl},</if>
+			<if test="contractExpireDate != null">#{contractExpireDate},</if>
+			<if test="remark != null and remark != ''">#{remark},</if>
+			'0', #{createBy}, #{updateBy}, sysdate(), sysdate()
+		)
+	</insert>
+
+	<update id="updateCarrier" parameterType="com.tms.system.resource.domain.dto.TmsCarrierSaveReq">
+		update tms_carrier
+		<set>
+			<if test="carrierName != null and carrierName != ''">carrier_name = #{carrierName},</if>
+			short_name = #{shortName},
+			<if test="legalPerson != null and legalPerson != ''">legal_person = #{legalPerson},</if>
+			<if test="carrierType != null and carrierType != ''">carrier_type = #{carrierType},</if>
+			carrier_level = #{carrierLevel},
+			tax_reg_no = #{taxRegNo},
+			region = #{region},
+			company_address = #{companyAddress},
+			company_email = #{companyEmail},
+			<if test="status != null and status != ''">status = #{status},</if>
+			business_license_no = #{businessLicenseNo},
+			business_license_url = #{businessLicenseUrl},
+			road_permit_no = #{roadPermitNo},
+			road_permit_url = #{roadPermitUrl},
+			<if test="contactName != null and contactName != ''">contact_name = #{contactName},</if>
+			<if test="contactPhone != null and contactPhone != ''">contact_phone = #{contactPhone},</if>
+			contact_dept = #{contactDept},
+			contact_title = #{contactTitle},
+			contact_email = #{contactEmail},
+			contact_wechat = #{contactWechat},
+			<if test="settleType != null and settleType != ''">settle_type = #{settleType},</if>
+			<if test="invoiceTitle != null and invoiceTitle != ''">invoice_title = #{invoiceTitle},</if>
+			tax_no = #{taxNo},
+			bank_name = #{bankName},
+			bank_account_name = #{bankAccountName},
+			bank_account_no = #{bankAccountNo},
+			<if test="contractSigned != null and contractSigned != ''">contract_signed = #{contractSigned},</if>
+			contract_file_url = #{contractFileUrl},
+			contract_expire_date = #{contractExpireDate},
+			remark = #{remark},
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate()
+		</set>
+		where carrier_id = #{carrierId} and is_del = '0'
+	</update>
+
+	<update id="deleteCarrierByIds">
+		update tms_carrier set is_del = '1', update_time = sysdate()
+		where carrier_id in
+		<foreach collection="carrierIds" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+</mapper>

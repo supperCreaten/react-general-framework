@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tms.system.order.mapper.TmsOrderMapper">
+
+	<resultMap type="com.tms.system.order.domain.vo.TmsOrderVo" id="TmsOrderVoResult">
+		<id     property="orderId"               column="order_id"                />
+		<result property="orderNo"               column="order_no"                />
+		<result property="waybillNo"             column="waybill_no"              />
+		<result property="customerId"            column="customer_id"             />
+		<result property="customerName"          column="customer_name"           />
+		<result property="orderStatus"           column="order_status"            />
+		<result property="orderSource"           column="order_source"            />
+		<result property="orderSourceText"       column="order_source_text"       />
+		<result property="transportType"         column="transport_type"          />
+		<result property="transportTypeText"     column="transport_type_text"     />
+		<result property="senderName"            column="sender_name"             />
+		<result property="senderPhone"           column="sender_phone"            />
+		<result property="originProvince"        column="origin_province"         />
+		<result property="originCity"            column="origin_city"             />
+		<result property="originDistrict"        column="origin_district"         />
+		<result property="originProvinceText"    column="origin_province_text"    />
+		<result property="originCityText"        column="origin_city_text"        />
+		<result property="originDistrictText"    column="origin_district_text"    />
+		<result property="senderAddress"         column="sender_address"          />
+		<result property="receiverName"          column="receiver_name"           />
+		<result property="receiverPhone"         column="receiver_phone"          />
+		<result property="destinationProvince"   column="destination_province"    />
+		<result property="destinationCity"       column="destination_city"        />
+		<result property="destinationDistrict"   column="destination_district"    />
+		<result property="destinationProvinceText" column="destination_province_text" />
+		<result property="destinationCityText"   column="destination_city_text"   />
+		<result property="destinationDistrictText" column="destination_district_text" />
+		<result property="receiverAddress"       column="receiver_address"        />
+		<result property="expectArriveTime"      column="expect_arrive_time"      />
+		<result property="customerQuote"         column="customer_quote"          />
+		<result property="totalQuantity"         column="total_quantity"          />
+		<result property="totalWeight"           column="total_weight"            />
+		<result property="totalVehicleCount"     column="total_vehicle_count"     />
+		<result property="createBy"              column="create_by"               />
+		<result property="createTime"            column="create_time"             />
+		<result property="remark"                column="remark"                  />
+	</resultMap>
+
+	<resultMap type="com.tms.system.order.domain.vo.TmsOrderVo" id="TmsOrderDetailResult" extends="TmsOrderVoResult">
+		<collection property="cargoList" ofType="com.tms.system.order.domain.vo.TmsOrderCargoVo"
+			column="order_id" select="com.tms.system.order.mapper.TmsOrderCargoMapper.selectCargoListByOrderId" />
+	</resultMap>
+
+	<sql id="selectOrderVo">
+		select o.order_id, o.order_no, o.waybill_no, o.customer_id, c.customer_name,
+			o.order_status, o.order_source, o.transport_type, o.sender_name, o.sender_phone,
+			o.origin_province, o.origin_city, o.origin_district,
+			o.origin_province_text, o.origin_city_text, o.origin_district_text, o.sender_address,
+			o.receiver_name, o.receiver_phone,
+			o.destination_province, o.destination_city, o.destination_district,
+			o.destination_province_text, o.destination_city_text, o.destination_district_text, o.receiver_address,
+			o.expect_arrive_time, o.customer_quote,
+			(select d.dict_label from sys_dict_data d
+				inner join sys_dict t on t.dict_id = d.dict_id and t.is_del = '0'
+				where t.dict_code = 'tms_order_source'
+					and d.dict_value = o.order_source
+					and d.is_del = '0'
+				limit 1) as order_source_text,
+			(select d.dict_label from sys_dict_data d
+				inner join sys_dict t on t.dict_id = d.dict_id and t.is_del = '0'
+				where t.dict_code = 'tms_transport_type'
+					and d.dict_value = o.transport_type
+					and d.is_del = '0'
+				limit 1) as transport_type_text,
+			(select cgo.cargo_type from tms_order_cargo cgo
+				where cgo.order_id = o.order_id and cgo.is_del = '0'
+				order by cgo.sort_num asc, cgo.cargo_id asc limit 1) as cargo_type_summary,
+			(select ifnull(sum(cgo.quantity), 0) from tms_order_cargo cgo
+				where cgo.order_id = o.order_id and cgo.is_del = '0') as total_quantity,
+			(select ifnull(sum(cgo.weight), 0) from tms_order_cargo cgo
+				where cgo.order_id = o.order_id and cgo.is_del = '0') as total_weight,
+			(select ifnull(sum(cgo.vehicle_count), 0) from tms_order_cargo cgo
+				where cgo.order_id = o.order_id and cgo.is_del = '0') as total_vehicle_count,
+			o.is_del, o.create_by, o.create_time, o.update_by, o.update_time, o.remark
+		from tms_order o
+		left join tms_customer c on c.customer_id = o.customer_id and c.is_del = '0'
+	</sql>
+
+	<select id="selectOrderList" parameterType="com.tms.system.order.domain.dto.TmsOrderQuery" resultMap="TmsOrderVoResult">
+		<include refid="selectOrderVo"/>
+		where o.is_del = '0'
+		<if test="orderNo != null and orderNo != ''">
+			AND o.order_no like concat('%', #{orderNo}, '%')
+		</if>
+		<if test="waybillNo != null and waybillNo != ''">
+			AND o.waybill_no like concat('%', #{waybillNo}, '%')
+		</if>
+		<if test="customerId != null">
+			AND o.customer_id = #{customerId}
+		</if>
+		<if test="orderStatus != null and orderStatus != ''">
+			AND o.order_status = #{orderStatus}
+		</if>
+		<if test="origin != null and origin != ''">
+			AND (
+				o.origin_province like concat('%', #{origin}, '%')
+				OR o.origin_city like concat('%', #{origin}, '%')
+				OR o.origin_district like concat('%', #{origin}, '%')
+				OR o.origin_province_text like concat('%', #{origin}, '%')
+				OR o.origin_city_text like concat('%', #{origin}, '%')
+				OR o.origin_district_text like concat('%', #{origin}, '%')
+				OR concat_ws(',', o.origin_province, o.origin_city, o.origin_district) like concat('%', #{origin}, '%')
+				OR concat_ws('/', o.origin_province_text, o.origin_city_text, o.origin_district_text) like concat('%', #{origin}, '%')
+			)
+		</if>
+		<if test="destination != null and destination != ''">
+			AND (
+				o.destination_province like concat('%', #{destination}, '%')
+				OR o.destination_city like concat('%', #{destination}, '%')
+				OR o.destination_district like concat('%', #{destination}, '%')
+				OR o.destination_province_text like concat('%', #{destination}, '%')
+				OR o.destination_city_text like concat('%', #{destination}, '%')
+				OR o.destination_district_text like concat('%', #{destination}, '%')
+				OR concat_ws(',', o.destination_province, o.destination_city, o.destination_district) like concat('%', #{destination}, '%')
+				OR concat_ws('/', o.destination_province_text, o.destination_city_text, o.destination_district_text) like concat('%', #{destination}, '%')
+			)
+		</if>
+		<if test="beginOrderTime != null">
+			AND o.create_time &gt;= #{beginOrderTime}
+		</if>
+		<if test="endOrderTime != null">
+			AND o.create_time &lt;= #{endOrderTime}
+		</if>
+		order by o.create_time desc
+	</select>
+
+	<select id="selectOrderById" parameterType="Long" resultMap="TmsOrderDetailResult">
+		<include refid="selectOrderVo"/>
+		where o.order_id = #{orderId} and o.is_del = '0'
+	</select>
+
+	<select id="selectOrderByOrderNo" parameterType="String" resultMap="TmsOrderVoResult">
+		<include refid="selectOrderVo"/>
+		where o.order_no = #{orderNo} and o.is_del = '0' limit 1
+	</select>
+
+	<select id="selectMaxOrderNoByPrefix" resultType="String">
+		select max(order_no) from tms_order where order_no like concat(#{prefix}, '%')
+	</select>
+
+	<insert id="insertOrder" parameterType="com.tms.system.order.domain.dto.TmsOrderSaveReq" useGeneratedKeys="true" keyProperty="orderId">
+		insert into tms_order(
+			<if test="orderNo != null and orderNo != ''">order_no,</if>
+			<if test="waybillNo != null and waybillNo != ''">waybill_no,</if>
+			<if test="customerId != null">customer_id,</if>
+			<if test="orderStatus != null and orderStatus != ''">order_status,</if>
+			<if test="orderSource != null and orderSource != ''">order_source,</if>
+			<if test="transportType != null and transportType != ''">transport_type,</if>
+			<if test="senderName != null and senderName != ''">sender_name,</if>
+			<if test="senderPhone != null and senderPhone != ''">sender_phone,</if>
+			<if test="originProvince != null and originProvince != ''">origin_province,</if>
+			<if test="originCity != null and originCity != ''">origin_city,</if>
+			<if test="originDistrict != null and originDistrict != ''">origin_district,</if>
+			<if test="originProvinceText != null and originProvinceText != ''">origin_province_text,</if>
+			<if test="originCityText != null and originCityText != ''">origin_city_text,</if>
+			<if test="originDistrictText != null and originDistrictText != ''">origin_district_text,</if>
+			<if test="senderAddress != null and senderAddress != ''">sender_address,</if>
+			<if test="receiverName != null and receiverName != ''">receiver_name,</if>
+			<if test="receiverPhone != null and receiverPhone != ''">receiver_phone,</if>
+			<if test="destinationProvince != null and destinationProvince != ''">destination_province,</if>
+			<if test="destinationCity != null and destinationCity != ''">destination_city,</if>
+			<if test="destinationDistrict != null and destinationDistrict != ''">destination_district,</if>
+			<if test="destinationProvinceText != null and destinationProvinceText != ''">destination_province_text,</if>
+			<if test="destinationCityText != null and destinationCityText != ''">destination_city_text,</if>
+			<if test="destinationDistrictText != null and destinationDistrictText != ''">destination_district_text,</if>
+			<if test="receiverAddress != null and receiverAddress != ''">receiver_address,</if>
+			<if test="expectArriveTime != null">expect_arrive_time,</if>
+			customer_quote,
+			<if test="remark != null and remark != ''">remark,</if>
+			is_del, create_by, update_by, create_time, update_time
+		)values(
+			<if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+			<if test="waybillNo != null and waybillNo != ''">#{waybillNo},</if>
+			<if test="customerId != null">#{customerId},</if>
+			<if test="orderStatus != null and orderStatus != ''">#{orderStatus},</if>
+			<if test="orderSource != null and orderSource != ''">#{orderSource},</if>
+			<if test="transportType != null and transportType != ''">#{transportType},</if>
+			<if test="senderName != null and senderName != ''">#{senderName},</if>
+			<if test="senderPhone != null and senderPhone != ''">#{senderPhone},</if>
+			<if test="originProvince != null and originProvince != ''">#{originProvince},</if>
+			<if test="originCity != null and originCity != ''">#{originCity},</if>
+			<if test="originDistrict != null and originDistrict != ''">#{originDistrict},</if>
+			<if test="originProvinceText != null and originProvinceText != ''">#{originProvinceText},</if>
+			<if test="originCityText != null and originCityText != ''">#{originCityText},</if>
+			<if test="originDistrictText != null and originDistrictText != ''">#{originDistrictText},</if>
+			<if test="senderAddress != null and senderAddress != ''">#{senderAddress},</if>
+			<if test="receiverName != null and receiverName != ''">#{receiverName},</if>
+			<if test="receiverPhone != null and receiverPhone != ''">#{receiverPhone},</if>
+			<if test="destinationProvince != null and destinationProvince != ''">#{destinationProvince},</if>
+			<if test="destinationCity != null and destinationCity != ''">#{destinationCity},</if>
+			<if test="destinationDistrict != null and destinationDistrict != ''">#{destinationDistrict},</if>
+			<if test="destinationProvinceText != null and destinationProvinceText != ''">#{destinationProvinceText},</if>
+			<if test="destinationCityText != null and destinationCityText != ''">#{destinationCityText},</if>
+			<if test="destinationDistrictText != null and destinationDistrictText != ''">#{destinationDistrictText},</if>
+			<if test="receiverAddress != null and receiverAddress != ''">#{receiverAddress},</if>
+			<if test="expectArriveTime != null">#{expectArriveTime},</if>
+			#{customerQuote},
+			<if test="remark != null and remark != ''">#{remark},</if>
+			'0', #{createBy}, #{updateBy}, sysdate(), sysdate()
+		)
+	</insert>
+
+	<update id="updateOrder" parameterType="com.tms.system.order.domain.dto.TmsOrderSaveReq">
+		update tms_order
+		<set>
+			<if test="waybillNo != null">waybill_no = #{waybillNo},</if>
+			<if test="customerId != null">customer_id = #{customerId},</if>
+			<if test="orderStatus != null and orderStatus != ''">order_status = #{orderStatus},</if>
+			<if test="orderSource != null and orderSource != ''">order_source = #{orderSource},</if>
+			<if test="transportType != null and transportType != ''">transport_type = #{transportType},</if>
+			<if test="senderName != null and senderName != ''">sender_name = #{senderName},</if>
+			<if test="senderPhone != null and senderPhone != ''">sender_phone = #{senderPhone},</if>
+			<if test="originProvince != null">origin_province = #{originProvince},</if>
+			<if test="originCity != null">origin_city = #{originCity},</if>
+			<if test="originDistrict != null">origin_district = #{originDistrict},</if>
+			<if test="originProvinceText != null">origin_province_text = #{originProvinceText},</if>
+			<if test="originCityText != null">origin_city_text = #{originCityText},</if>
+			<if test="originDistrictText != null">origin_district_text = #{originDistrictText},</if>
+			<if test="senderAddress != null and senderAddress != ''">sender_address = #{senderAddress},</if>
+			<if test="receiverName != null and receiverName != ''">receiver_name = #{receiverName},</if>
+			<if test="receiverPhone != null and receiverPhone != ''">receiver_phone = #{receiverPhone},</if>
+			<if test="destinationProvince != null">destination_province = #{destinationProvince},</if>
+			<if test="destinationCity != null">destination_city = #{destinationCity},</if>
+			<if test="destinationDistrict != null">destination_district = #{destinationDistrict},</if>
+			<if test="destinationProvinceText != null">destination_province_text = #{destinationProvinceText},</if>
+			<if test="destinationCityText != null">destination_city_text = #{destinationCityText},</if>
+			<if test="destinationDistrictText != null">destination_district_text = #{destinationDistrictText},</if>
+			<if test="receiverAddress != null and receiverAddress != ''">receiver_address = #{receiverAddress},</if>
+			<if test="expectArriveTime != null">expect_arrive_time = #{expectArriveTime},</if>
+			<if test="customerQuote != null">customer_quote = #{customerQuote},</if>
+			<if test="remark != null">remark = #{remark},</if>
+			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+			update_time = sysdate()
+		</set>
+		where order_id = #{orderId}
+	</update>
+
+	<update id="deleteOrderById" parameterType="Long">
+		update tms_order set is_del = '1', update_time = sysdate() where order_id = #{orderId}
+	</update>
+
+	<update id="deleteOrderByIds" parameterType="Long">
+		update tms_order set is_del = '1', update_time = sysdate()
+		where order_id in
+		<foreach collection="orderIds" item="orderId" open="(" separator="," close=")">
+			#{orderId}
+		</foreach>
+	</update>
+
+</mapper>

@@ -1,7 +1,6 @@
 package com.tms.system.system.domain.dto;
 
 import com.tms.common.core.domain.BaseEntity;
-import com.tms.system.system.domain.vo.SysRoleVo;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -48,20 +47,4 @@ public class SysRoleSaveReq extends BaseEntity {
     /** 菜单权限 */
     @NotEmpty(message = "请选择菜单权限")
     private Long[] menuIds;
-
-    /** 转成持久化使用的角色对象 */
-    public SysRoleVo toEntity() {
-        SysRoleVo role = new SysRoleVo();
-        role.setRoleId(roleId);
-        role.setRoleCode(roleCode);
-        role.setRoleKey(roleKey);
-        role.setRoleName(roleName);
-        role.setRoleSort(roleSort);
-        role.setStatus(status);
-        role.setMenuIds(menuIds);
-        role.setRemark(getRemark());
-        role.setCreateBy(getCreateBy());
-        role.setUpdateBy(getUpdateBy());
-        return role;
-    }
 }

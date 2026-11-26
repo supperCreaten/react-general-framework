@@ -4,8 +4,8 @@ import com.tms.common.constant.UserConstants;
 import com.tms.system.system.domain.vo.SysRoleVo;
 import com.tms.common.exception.ServiceException;
 import com.tms.common.utils.StringUtils;
-import com.tms.system.system.domain.SysRoleMenu;
-import com.tms.system.system.domain.SysUserRole;
+import com.tms.system.system.domain.dto.SysRoleMenuSaveReq;
+import com.tms.system.system.domain.dto.SysUserRoleSaveReq;
 import com.tms.system.system.domain.dto.SysRoleMenuReq;
 import com.tms.system.system.domain.dto.SysRoleQuery;
 import com.tms.system.system.domain.dto.SysRoleSaveReq;
@@ -155,7 +155,12 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public boolean checkRoleNameUnique(SysRoleSaveReq role) {
-        return checkRoleNameUnique(role.toEntity());
+        Long roleId = StringUtils.isNull(role.getRoleId()) ? -1L : role.getRoleId();
+        SysRoleVo info = roleMapper.checkRoleNameUnique(role.getRoleName());
+        if (StringUtils.isNotNull(info) && info.getRoleId().longValue() != roleId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -183,7 +188,16 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public boolean checkRoleKeyUnique(SysRoleSaveReq role) {
-        return checkRoleKeyUnique(role.toEntity());
+        Long roleId = StringUtils.isNull(role.getRoleId()) ? -1L : role.getRoleId();
+        String roleKey = role.getRoleKey();
+        if (StringUtils.isEmpty(roleKey)) {
+            return UserConstants.UNIQUE;
+        }
+        SysRoleVo info = roleMapper.checkRoleKeyUnique(roleKey);
+        if (StringUtils.isNotNull(info) && info.getRoleId().longValue() != roleId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -209,7 +223,16 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public boolean checkRoleCodeUnique(SysRoleSaveReq role) {
-        return checkRoleCodeUnique(role.toEntity());
+        Long roleId = StringUtils.isNull(role.getRoleId()) ? -1L : role.getRoleId();
+        String roleCode = role.getRoleCode();
+        if (StringUtils.isEmpty(roleCode)) {
+            return UserConstants.UNIQUE;
+        }
+        SysRoleVo info = roleMapper.checkRoleCodeUnique(roleCode);
+        if (StringUtils.isNotNull(info) && info.getRoleId().longValue() != roleId.longValue()) {
+            return UserConstants.NOT_UNIQUE;
+        }
+        return UserConstants.UNIQUE;
     }
 
     /**
@@ -244,15 +267,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     @Transactional
     public int insertRole(SysRoleVo role) {
-        // 角色编码为空时自动生成 7 位数字编号；权限字符独立，不可与编码互相回填
-        if (StringUtils.isEmpty(role.getRoleCode())) {
-            role.setRoleCode(generateNumericRoleCode());
-        }
-        if (StringUtils.isEmpty(role.getRoleKey())) {
-            throw new ServiceException("权限字符不能为空");
-        }
-        roleMapper.insertRole(role);
-        return insertRoleMenu(role);
+        return insertRole(toSaveReq(role));
     }
 
     /**
@@ -261,14 +276,36 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     @Transactional
     public int insertRole(SysRoleSaveReq req) {
-        SysRoleVo role = req.toEntity();
-        if (role.getRoleSort() == null) {
-            role.setRoleSort(0);
+        if (req.getRoleSort() == null) {
+            req.setRoleSort(0);
         }
-        if (StringUtils.isEmpty(role.getStatus())) {
-            role.setStatus(UserConstants.ROLE_NORMAL);
+        if (StringUtils.isEmpty(req.getStatus())) {
+            req.setStatus(UserConstants.ROLE_NORMAL);
         }
-        return insertRole(role);
+        if (StringUtils.isEmpty(req.getRoleCode())) {
+            req.setRoleCode(generateNumericRoleCode());
+        }
+        if (StringUtils.isEmpty(req.getRoleKey())) {
+            throw new ServiceException("权限字符不能为空");
+        }
+        roleMapper.insertRole(req);
+        return insertRoleMenu(req);
+    }
+
+    /** 查询结果转成写入参数 */
+    private SysRoleSaveReq toSaveReq(SysRoleVo role) {
+        SysRoleSaveReq req = new SysRoleSaveReq();
+        req.setRoleId(role.getRoleId());
+        req.setRoleCode(role.getRoleCode());
+        req.setRoleKey(role.getRoleKey());
+        req.setRoleName(role.getRoleName());
+        req.setRoleSort(role.getRoleSort());
+        req.setStatus(role.getStatus());
+        req.setMenuIds(role.getMenuIds());
+        req.setRemark(role.getRemark());
+        req.setCreateBy(role.getCreateBy());
+        req.setUpdateBy(role.getUpdateBy());
+        return req;
     }
 
     /**
@@ -294,11 +331,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     @Transactional
     public int updateRole(SysRoleVo role) {
-        // 修改角色信息
-        roleMapper.updateRole(role);
-        // 删除角色与菜单关联
-        roleMenuMapper.deleteRoleMenuByRoleId(role.getRoleId());
-        return insertRoleMenu(role);
+        return updateRole(toSaveReq(role));
     }
 
     /**
@@ -307,8 +340,12 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     @Transactional
     public int updateRole(SysRoleSaveReq req) {
-        checkRoleAllowed(req.toEntity());
-        return updateRole(req.toEntity());
+        if (req.getRoleId() != null && (SysRoleVo.isAdmin(req.getRoleId()) || SysRoleVo.isAdmin(req.getRoleKey()))) {
+            throw new ServiceException("不允许操作超级管理员角色");
+        }
+        roleMapper.updateRole(req);
+        roleMenuMapper.deleteRoleMenuByRoleId(req.getRoleId());
+        return insertRoleMenu(req);
     }
 
     /**
@@ -318,10 +355,12 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Transactional
     public int saveRoleMenu(SysRoleMenuReq req) {
         checkRoleAllowed(new SysRoleVo(req.getRoleId()));
-        SysRoleVo role = new SysRoleVo();
+        SysRoleSaveReq role = new SysRoleSaveReq();
         role.setRoleId(req.getRoleId());
         role.setMenuIds(req.getMenuIds());
-        return updateRole(role);
+        roleMapper.updateRole(role);
+        roleMenuMapper.deleteRoleMenuByRoleId(role.getRoleId());
+        return insertRoleMenu(role);
     }
 
     /**
@@ -332,7 +371,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public int updateRoleStatus(SysRoleVo role) {
-        return roleMapper.updateRole(role);
+        return roleMapper.updateRole(toSaveReq(role));
     }
 
     /**
@@ -341,10 +380,10 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     public int updateRoleStatus(SysRoleStatusReq req) {
         checkRoleAllowed(new SysRoleVo(req.getRoleId()));
-        SysRoleVo role = new SysRoleVo();
+        SysRoleSaveReq role = new SysRoleSaveReq();
         role.setRoleId(req.getRoleId());
         role.setStatus(req.getStatus());
-        return updateRoleStatus(role);
+        return roleMapper.updateRole(role);
     }
 
     /**
@@ -352,15 +391,15 @@ public class SysRoleServiceImpl implements ISysRoleService {
      *
      * @param role 角色对象
      */
-    public int insertRoleMenu(SysRoleVo role) {
+    public int insertRoleMenu(SysRoleSaveReq role) {
         int rows = 1;
         Long[] menuIds = role.getMenuIds();
         if (menuIds == null || menuIds.length == 0) {
             return rows;
         }
-        List<SysRoleMenu> list = new ArrayList<SysRoleMenu>();
+        List<SysRoleMenuSaveReq> list = new ArrayList<SysRoleMenuSaveReq>();
         for (Long menuId : menuIds) {
-            SysRoleMenu rm = new SysRoleMenu();
+            SysRoleMenuSaveReq rm = new SysRoleMenuSaveReq();
             rm.setRoleId(role.getRoleId());
             rm.setMenuId(menuId);
             list.add(rm);
@@ -411,7 +450,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      * @return 结果
      */
     @Override
-    public int deleteAuthUser(SysUserRole userRole) {
+    public int deleteAuthUser(SysUserRoleSaveReq userRole) {
         return userRoleMapper.deleteUserRoleInfo(userRole);
     }
 
@@ -437,9 +476,9 @@ public class SysRoleServiceImpl implements ISysRoleService {
     @Override
     public int insertAuthUsers(Long roleId, Long[] userIds) {
         // 新增用户与角色管理
-        List<SysUserRole> list = new ArrayList<SysUserRole>();
+        List<SysUserRoleSaveReq> list = new ArrayList<SysUserRoleSaveReq>();
         for (Long userId : userIds) {
-            SysUserRole ur = new SysUserRole();
+            SysUserRoleSaveReq ur = new SysUserRoleSaveReq();
             ur.setUserId(userId);
             ur.setRoleId(roleId);
             list.add(ur);

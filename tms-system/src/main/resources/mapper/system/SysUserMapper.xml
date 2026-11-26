@@ -167,7 +167,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select a.user_id, a.email from sys_user a where a.email = #{email} and a.is_del = 0 limit 1
 	</select>
 	
-	<insert id="insertUser" parameterType="com.tms.system.system.domain.vo.SysUserVo" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+	<insert id="insertUser" parameterType="com.tms.system.system.domain.dto.SysUserSaveReq" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
  		insert into sys_user(
  			account,
  			user_name,
@@ -197,15 +197,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)values(
  			<choose>
  				<when test="account != null and account != ''">#{account},</when>
- 				<otherwise>#{userName},</otherwise>
+ 				<otherwise>'',</otherwise>
  			</choose>
  			<choose>
  				<when test="nickName != null and nickName != ''">#{nickName},</when>
- 				<when test="userName != null and userName != ''">#{userName},</when>
  				<otherwise>#{account},</otherwise>
  			</choose>
  			#{email},
- 			#{phonenumber},
+ 			#{phone},
  			#{phoneCipher},
  			#{phoneSecretKey},
  			#{sex},
@@ -246,13 +245,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)
 	</insert>
 	
-	<update id="updateUser" parameterType="com.tms.system.system.domain.vo.SysUserVo">
+	<update id="updateUser" parameterType="com.tms.system.system.domain.dto.SysUserSaveReq">
  		update sys_user
  		<set>
  			<if test="account != null and account != ''">account = #{account},</if>
  			<if test="nickName != null">user_name = #{nickName},</if>
  			<if test="email != null">email = #{email},</if>
- 			<if test="phonenumber != null">phone = #{phonenumber},</if>
+ 			<if test="phone != null">phone = #{phone},</if>
  			<if test="phoneCipher != null">phone_cipher = #{phoneCipher},</if>
  			<if test="phoneSecretKey != null">phone_secret_key = #{phoneSecretKey},</if>
  			<if test="sex != null">sex = #{sex},</if>
@@ -273,7 +272,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		where user_id = #{userId}
 	</update>
 	
-	<update id="updateUserSensitiveCrypto" parameterType="com.tms.system.system.domain.vo.SysUserVo">
+	<update id="updateUserSensitiveCrypto" parameterType="com.tms.system.system.domain.dto.SysUserSaveReq">
  		update sys_user
  		<set>
  			phone_cipher = #{phoneCipher},
@@ -285,7 +284,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		where user_id = #{userId}
 	</update>
 
-	<update id="updateUserStatus" parameterType="com.tms.system.system.domain.vo.SysUserVo">
+	<update id="updateUserStatus">
  		update sys_user set status = #{status}, update_time = sysdate() where user_id = #{userId}
 	</update>
 	
@@ -303,7 +302,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		update sys_user set update_time = sysdate() where user_id = #{userId}
 	</update>
 	
-	<update id="resetUserPwd" parameterType="com.tms.system.system.domain.vo.SysUserVo">
+	<update id="resetUserPwd">
  		update sys_user set password_hash = #{password}, update_time = sysdate() where user_id = #{userId}
 	</update>
 	

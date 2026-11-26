@@ -15,7 +15,7 @@ import com.tms.common.annotation.Log;
 import com.tms.common.core.controller.BaseController;
 import com.tms.common.core.domain.AjaxResult;
 import com.tms.common.enums.BusinessType;
-import com.tms.system.system.domain.SysOperLog;
+import com.tms.system.system.domain.dto.SysOperLogQuery;
 import com.tms.system.system.service.ISysOperLogService;
 
 /**
@@ -35,10 +35,10 @@ public class SysOperLogController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:operLog:list')")
     @Operation(summary = "操作日志分页")
     @PostMapping("/pageQuery")
-    public AjaxResult pageQuery(@RequestBody(required = false) SysOperLog query)
+    public AjaxResult pageQuery(@RequestBody(required = false) SysOperLogQuery query)
     {
         startPage();
-        return getDataTable(operLogService.selectOperLogList(query == null ? new SysOperLog() : query));
+        return getDataTable(operLogService.selectOperLogList(query));
     }
 
     /**

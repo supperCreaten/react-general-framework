@@ -50,7 +50,7 @@ public interface SysDeptMapper {
     /**
      * 修改子元素关系
      */
-    int updateDeptChildren(@Param("depts") List<SysDeptVo> depts);
+    int updateDeptChildren(@Param("depts") List<SysDeptSaveReq> depts);
 
     /**
      * 根据ID查询所有子部门

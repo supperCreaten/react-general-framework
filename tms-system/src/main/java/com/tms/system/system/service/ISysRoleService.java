@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.tms.system.system.domain.vo.SysRoleVo;
-import com.tms.system.system.domain.SysUserRole;
+import com.tms.system.system.domain.dto.SysUserRoleSaveReq;
 import com.tms.system.system.domain.dto.SysRoleMenuReq;
 import com.tms.system.system.domain.dto.SysRoleQuery;
 import com.tms.system.system.domain.dto.SysRoleSaveReq;
@@ -220,7 +220,7 @@ public interface ISysRoleService {
      * @param userRole 用户和角色关联信息
      * @return 结果
      */
-    int deleteAuthUser(SysUserRole userRole);
+    int deleteAuthUser(SysUserRoleSaveReq userRole);
 
     /**
      * 批量取消授权用户角色

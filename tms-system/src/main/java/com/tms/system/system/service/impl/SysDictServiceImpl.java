@@ -1,9 +1,10 @@
 package com.tms.system.system.service.impl;
 
-import com.tms.common.utils.bean.BeanUtils;
 import com.tms.system.system.domain.dto.SysDictDataSaveReq;
 import com.tms.system.system.domain.dto.SysDictQuery;
 import com.tms.system.system.domain.dto.SysDictSaveReq;
+import com.tms.system.system.domain.vo.SysDictDataVo;
+import com.tms.system.system.domain.vo.SysDictVo;
 import com.tms.system.system.mapper.SysDictDataMapper;
 import com.tms.system.system.mapper.SysDictMapper;
 import com.tms.system.system.service.SysDictService;
@@ -24,18 +25,15 @@ public class SysDictServiceImpl implements SysDictService {
     @Autowired
     private SysDictDataMapper dictDataMapper;
 
-    private void selectDictByCode(SysDictSaveReq dict) {
+    private void assertDictCodeUnique(SysDictSaveReq dict) {
         String dictCode = dict.getDictCode();
         Long dictId = dict.getDictId();
-        SysDictSaveReq row = dictMapper.selectDictByCode(dictCode);
-        if (dictId == null) {
-            if (row != null && row.getDictCode().equals(dictCode)) {
-                throw new IllegalArgumentException("字典编码已存在");
-            }
-        } else {
-            if (row != null && row.getDictCode().equals(dictCode) && !dictId.equals(row.getDictId())) {
-                throw new IllegalArgumentException("字典编码已存在");
-            }
+        SysDictVo row = dictMapper.selectDictByCode(dictCode);
+        if (row == null || !dictCode.equals(row.getDictCode())) {
+            return;
+        }
+        if (dictId == null || !dictId.equals(row.getDictId())) {
+            throw new IllegalArgumentException("字典编码已存在");
         }
     }
 
@@ -43,21 +41,17 @@ public class SysDictServiceImpl implements SysDictService {
      * 查询字典类型列表
      */
     @Override
-    public List<SysDictSaveReq> selectDictList(SysDictQuery query) {
-        SysDictSaveReq dict = new SysDictSaveReq();
-        if (query != null) {
-            BeanUtils.copyBeanProp(dict, query);
-        }
-        return dictMapper.selectDictList(dict);
+    public List<SysDictVo> selectDictList(SysDictQuery query) {
+        return dictMapper.selectDictList(query == null ? new SysDictQuery() : query);
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     /**
      * 新增字典类型
      */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertDict(SysDictSaveReq req) {
-        selectDictByCode(req);
+        assertDictCodeUnique(req);
         dictMapper.insertDict(req);
         Long dictId = req.getDictId();
         List<SysDictDataSaveReq> dictData = req.getItems();
@@ -70,16 +64,16 @@ public class SysDictServiceImpl implements SysDictService {
         });
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     /**
      * 修改字典类型
      */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateDict(SysDictSaveReq req) {
         if (req.getDictId() == null) {
             throw new IllegalArgumentException("主键id不能为空");
         }
-        selectDictByCode(req);
+        assertDictCodeUnique(req);
         dictMapper.updateDict(req);
         List<SysDictDataSaveReq> dictData = req.getItems();
         if (dictData == null) {
@@ -92,9 +86,9 @@ public class SysDictServiceImpl implements SysDictService {
      * 根据ID查询字典类型
      */
     @Override
-    public SysDictSaveReq selectDictByDictId(Long id) {
-        SysDictSaveReq dict = dictMapper.selectDictById(id);
-        List<SysDictDataSaveReq> items = dictDataMapper.selectDictDataByDictId(id);
+    public SysDictVo selectDictByDictId(Long id) {
+        SysDictVo dict = dictMapper.selectDictById(id);
+        List<SysDictDataVo> items = dictDataMapper.selectDictDataByDictId(id);
         dict.setItems(items);
         return dict;
     }
@@ -103,13 +97,12 @@ public class SysDictServiceImpl implements SysDictService {
      * 按编码查询字典项
      */
     @Override
-    public List<SysDictDataSaveReq> selectDictDataByCode(String dictCode) {
-        SysDictSaveReq row = dictMapper.selectDictByCode(dictCode);
+    public List<SysDictDataVo> selectDictDataByCode(String dictCode) {
+        SysDictVo row = dictMapper.selectDictByCode(dictCode);
         if (row == null) {
             throw new IllegalArgumentException("未找到");
         }
-        Long dictId = row.getDictId();
-        return dictDataMapper.selectDictDataByDictId(dictId);
+        return dictDataMapper.selectDictDataByDictId(row.getDictId());
     }
 
     /**
@@ -123,4 +116,3 @@ public class SysDictServiceImpl implements SysDictService {
         }
     }
 }
-
