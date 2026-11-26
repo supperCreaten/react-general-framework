@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.tms.common.constant.CacheConstants;
-import com.tms.common.core.domain.entity.SysUser;
+import com.tms.system.system.domain.vo.SysUserVo;
 import com.tms.common.core.redis.RedisCache;
 import com.tms.common.exception.user.UserPasswordNotMatchException;
 import com.tms.common.exception.user.UserPasswordRetryLimitExceedException;
@@ -41,7 +41,10 @@ public class SysPasswordService
         return CacheConstants.PWD_ERR_CNT_KEY + username;
     }
 
-    public void validate(SysUser user)
+    /**
+     * 校验密码并累计错误次数
+     */
+    public void validate(SysUserVo user)
     {
         Authentication usernamePasswordAuthenticationToken = AuthenticationContextHolder.getContext();
         String username = usernamePasswordAuthenticationToken.getName();
@@ -71,11 +74,17 @@ public class SysPasswordService
         }
     }
 
-    public boolean matches(SysUser user, String rawPassword)
+    /**
+     * 比对明文密码与库中密文
+     */
+    public boolean matches(SysUserVo user, String rawPassword)
     {
         return SecurityUtils.matchesPassword(rawPassword, user.getPassword());
     }
 
+    /**
+     * 清除密码错误次数缓存
+     */
     public void clearLoginRecordCache(String loginName)
     {
         if (redisCache.hasKey(getCacheKey(loginName)))

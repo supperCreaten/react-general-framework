@@ -21,6 +21,9 @@ public class RepeatedlyRequestWrapper extends HttpServletRequestWrapper
 {
     private final byte[] body;
 
+    /**
+     * RepeatedlyRequestWrapper
+     */
     public RepeatedlyRequestWrapper(HttpServletRequest request, ServletResponse response) throws IOException
     {
         super(request);
@@ -31,42 +34,63 @@ public class RepeatedlyRequestWrapper extends HttpServletRequestWrapper
     }
 
     @Override
+    /**
+     * 获取构建可重复读取inputStream的request * * @author tms
+     */
     public BufferedReader getReader() throws IOException
     {
         return new BufferedReader(new InputStreamReader(getInputStream()));
     }
 
     @Override
+    /**
+     * 获取构建可重复读取inputStream的request * * @author tms
+     */
     public ServletInputStream getInputStream() throws IOException
     {
         final ByteArrayInputStream bais = new ByteArrayInputStream(body);
         return new ServletInputStream()
         {
             @Override
+            /**
+             * 读取字节
+             */
             public int read() throws IOException
             {
                 return bais.read();
             }
 
             @Override
+            /**
+             * 可读字节数
+             */
             public int available() throws IOException
             {
                 return body.length;
             }
 
             @Override
+            /**
+             * 是否为finished
+             */
             public boolean isFinished()
             {
                 return false;
             }
 
             @Override
+            /**
+             * 是否为ready
+             */
             public boolean isReady()
             {
                 return false;
             }
 
             @Override
+            /**
+             * 设置构建可重复读取inputStream的request * * @author tms
+             */
             public void setReadListener(ReadListener readListener)
             {
 

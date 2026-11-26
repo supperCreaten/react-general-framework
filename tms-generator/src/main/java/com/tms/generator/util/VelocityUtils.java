@@ -38,7 +38,8 @@ public class VelocityUtils
     /**
      * 设置模板变量信息
      *
-     * @return 模板列表
+     * @param genTable 代码生成业务表
+     * @return Velocity 上下文
      */
     public static VelocityContext prepareContext(GenTable genTable)
     {
@@ -80,6 +81,12 @@ public class VelocityUtils
         return velocityContext;
     }
 
+    /**
+     * 向模板上下文写入菜单相关变量
+     *
+     * @param context  Velocity 上下文
+     * @param genTable 代码生成业务表
+     */
     public static void setMenuVelocityContext(VelocityContext context, GenTable genTable)
     {
         String options = genTable.getOptions();
@@ -88,6 +95,12 @@ public class VelocityUtils
         context.put("parentMenuId", parentMenuId);
     }
 
+    /**
+     * 向模板上下文写入树表相关变量
+     *
+     * @param context  Velocity 上下文
+     * @param genTable 代码生成业务表
+     */
     public static void setTreeVelocityContext(VelocityContext context, GenTable genTable)
     {
         String options = genTable.getOptions();
@@ -110,6 +123,12 @@ public class VelocityUtils
         }
     }
 
+    /**
+     * 向模板上下文写入主子表相关变量
+     *
+     * @param context  Velocity 上下文
+     * @param genTable 代码生成业务表
+     */
     public static void setSubVelocityContext(VelocityContext context, GenTable genTable)
     {
         GenTable subTable = genTable.getSubTable();
@@ -178,7 +197,11 @@ public class VelocityUtils
     }
 
     /**
-     * 获取文件名
+     * 根据模板与表信息解析生成文件路径
+     *
+     * @param template 模板路径
+     * @param genTable 代码生成业务表
+     * @return 目标文件相对路径
      */
     public static String getFileName(String template, GenTable genTable)
     {

@@ -55,56 +55,69 @@ public class Server
      */
     private List<SysFile> sysFiles = new LinkedList<SysFile>();
 
+    /** 获取 CPU 信息 */
     public Cpu getCpu()
     {
         return cpu;
     }
 
+    /** 设置 CPU 信息 */
     public void setCpu(Cpu cpu)
     {
         this.cpu = cpu;
     }
 
+    /** 获取内存信息 */
     public Mem getMem()
     {
         return mem;
     }
 
+    /** 设置内存信息 */
     public void setMem(Mem mem)
     {
         this.mem = mem;
     }
 
+    /** 获取 JVM 信息 */
     public Jvm getJvm()
     {
         return jvm;
     }
 
+    /** 设置 JVM 信息 */
     public void setJvm(Jvm jvm)
     {
         this.jvm = jvm;
     }
 
+    /** 获取系统信息 */
     public Sys getSys()
     {
         return sys;
     }
 
+    /** 设置系统信息 */
     public void setSys(Sys sys)
     {
         this.sys = sys;
     }
 
+    /** 获取磁盘分区列表 */
     public List<SysFile> getSysFiles()
     {
         return sysFiles;
     }
 
+    /** 设置磁盘分区列表 */
     public void setSysFiles(List<SysFile> sysFiles)
     {
         this.sysFiles = sysFiles;
     }
 
+    /**
+     * 采集并填充服务器监控各项指标
+     */
     public void copyTo() throws Exception
     {
         SystemInfo si = new SystemInfo();

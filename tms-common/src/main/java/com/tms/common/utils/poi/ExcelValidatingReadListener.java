@@ -21,11 +21,17 @@ public class ExcelValidatingReadListener<T> extends AnalysisEventListener<T> {
     private final List<Integer> sheetRowIndexes = new ArrayList<>();
     private final Map<Integer, String> errors = new LinkedHashMap<>();
 
+    /**
+     * ExcelValidatingReadListener
+     */
     public ExcelValidatingReadListener(Class<T> clazz) {
         this.clazz = clazz;
     }
 
     @Override
+    /**
+     * 解析单行数据
+     */
     public void invoke(T data, AnalysisContext context) {
         if (isBlankRow(data)) {
             return;
@@ -40,6 +46,9 @@ public class ExcelValidatingReadListener<T> extends AnalysisEventListener<T> {
     }
 
     @Override
+    /**
+     * 解析异常处理
+     */
     public void onException(Exception exception, AnalysisContext context) throws Exception {
         int rowIndex = context.readRowHolder() == null ? -1 : context.readRowHolder().getRowIndex();
         if (rowIndex < 0) {
@@ -66,18 +75,30 @@ public class ExcelValidatingReadListener<T> extends AnalysisEventListener<T> {
     }
 
     @Override
+    /**
+     * 全部数据解析完成
+     */
     public void doAfterAllAnalysed(AnalysisContext context) {
         // no-op
     }
 
+    /**
+     * 获取EasyExcel 读取监听：收集数据行、sheet 行号，并做注解校验
+     */
     public List<T> getRows() {
         return rows;
     }
 
+    /**
+     * 获取EasyExcel 读取监听：收集数据行、sheet 行号，并做注解校验
+     */
     public List<Integer> getSheetRowIndexes() {
         return sheetRowIndexes;
     }
 
+    /**
+     * 获取EasyExcel 读取监听：收集数据行、sheet 行号，并做注解校验
+     */
     public Map<Integer, String> getErrors() {
         return errors;
     }

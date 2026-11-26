@@ -23,6 +23,9 @@ import com.tms.common.utils.StringUtils;
 public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint, Serializable {
     private static final long serialVersionUID = -8970718410437077606L;
 
+    /**
+     * 未认证访问时返回 401 JSON
+     */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e)
             throws IOException {

@@ -31,6 +31,9 @@ public class FilterConfig
     @Value("${referer.allowed-domains}")
     private String allowedDomains;
 
+    /**
+     * XSS 过滤注册
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Bean
     @ConditionalOnProperty(value = "xss.enabled", havingValue = "true")
@@ -48,6 +51,9 @@ public class FilterConfig
         return registration;
     }
 
+    /**
+     * Referer 防盗链过滤注册
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Bean
     @ConditionalOnProperty(value = "referer.enabled", havingValue = "true")
@@ -65,6 +71,9 @@ public class FilterConfig
         return registration;
     }
 
+    /**
+     * 可重复读请求体过滤注册
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Bean
     public FilterRegistrationBean someFilterRegistration()

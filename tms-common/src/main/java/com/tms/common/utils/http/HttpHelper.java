@@ -19,6 +19,9 @@ public class HttpHelper
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpHelper.class);
 
+    /**
+     * 获取通用http工具封装 * * @author tms
+     */
     public static String getBodyString(ServletRequest request)
     {
         StringBuilder sb = new StringBuilder();

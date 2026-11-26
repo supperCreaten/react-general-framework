@@ -9,10 +9,15 @@ import tools.jackson.databind.ser.std.ToStringSerializer;
 /**
  * Jackson 3（Spring Boot 4）全局配置：Long / long 序列化为字符串，
  * 避免前端 JS 大整数精度丢失。仅影响响应；请求仍可绑定数字或数字字符串。
+ *
+ * @author tms
  */
 @Configuration
 public class JacksonConfig
 {
+    /**
+     * Long 类型序列化为字符串，避免前端精度丢失
+     */
     @Bean
     public JsonMapperBuilderCustomizer longAsStringCustomizer()
     {

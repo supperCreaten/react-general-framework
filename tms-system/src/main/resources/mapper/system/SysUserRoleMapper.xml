@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tms.system.mapper.SysUserRoleMapper">
+<mapper namespace="com.tms.system.system.mapper.SysUserRoleMapper">
 
-	<resultMap type="com.tms.system.domain.SysUserRole" id="SysUserRoleResult">
+	<resultMap type="com.tms.system.system.domain.SysUserRole" id="SysUserRoleResult">
 		<id     property="id"         column="id"           />
 		<result property="userId"     column="user_id"      />
 		<result property="roleId"     column="role_id"      />
@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</foreach>
 	</insert>
 	
-	<delete id="deleteUserRoleInfo" parameterType="com.tms.system.domain.SysUserRole">
+	<delete id="deleteUserRoleInfo" parameterType="com.tms.system.system.domain.SysUserRole">
 		delete from sys_user_role where user_id=#{userId} and role_id=#{roleId}
 	</delete>
 	

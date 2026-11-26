@@ -11,10 +11,10 @@ import com.tms.common.utils.http.UserAgentUtils;
 import com.tms.common.utils.ip.AddressUtils;
 import com.tms.common.utils.ip.IpUtils;
 import com.tms.common.utils.spring.SpringUtils;
-import com.tms.system.domain.SysLogininfor;
-import com.tms.system.domain.SysOperLog;
-import com.tms.system.service.ISysLogininforService;
-import com.tms.system.service.ISysOperLogService;
+import com.tms.system.system.domain.SysLogininfor;
+import com.tms.system.system.domain.SysOperLog;
+import com.tms.system.system.service.ISysLogininforService;
+import com.tms.system.system.service.ISysOperLogService;
 
 /**
  * 异步工厂（产生任务用）

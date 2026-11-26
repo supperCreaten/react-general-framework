@@ -172,11 +172,17 @@ public final class HTMLFilter
 
     // ---------------------------------------------------------------
     // my versions of some PHP library functions
+    /**
+     * 字符编码转换
+     */
     public static String chr(final int decimal)
     {
         return String.valueOf((char) decimal);
     }
 
+    /**
+     * HTML 特殊字符转义
+     */
     public static String htmlSpecialChars(final String s)
     {
         String result = s;
@@ -213,11 +219,17 @@ public final class HTMLFilter
         return s;
     }
 
+    /**
+     * 是否为alwaysmaketags
+     */
     public boolean isAlwaysMakeTags()
     {
         return alwaysMakeTags;
     }
 
+    /**
+     * 是否为stripcomments
+     */
     public boolean isStripComments()
     {
         return stripComment;

@@ -27,6 +27,9 @@ public class XssFilter implements Filter
     public List<String> excludes = new ArrayList<>();
 
     @Override
+    /**
+     * 过滤器初始化
+     */
     public void init(FilterConfig filterConfig) throws ServletException
     {
         String tempExcludes = filterConfig.getInitParameter("excludes");
@@ -41,6 +44,9 @@ public class XssFilter implements Filter
     }
 
     @Override
+    /**
+     * 执行过滤
+     */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException
     {
@@ -68,6 +74,9 @@ public class XssFilter implements Filter
     }
 
     @Override
+    /**
+     * 过滤器销毁
+     */
     public void destroy()
     {
 

@@ -7,14 +7,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.tms.common.core.domain.entity.SysUser;
+import com.tms.system.system.domain.vo.SysUserVo;
 import com.tms.common.core.domain.model.LoginUser;
 import com.tms.common.enums.UserStatus;
 import com.tms.common.exception.ServiceException;
 import com.tms.common.utils.MessageUtils;
 import com.tms.common.utils.StringUtils;
-import com.tms.system.service.ISysUserService;
-import com.tms.system.service.SysPermissionService;
+import com.tms.system.system.service.ISysUserService;
+import com.tms.system.system.service.SysPermissionService;
 
 /**
  * 用户验证处理
@@ -35,10 +35,13 @@ public class UserDetailsServiceImpl implements UserDetailsService
     @Autowired
     private SysPermissionService permissionService;
 
+    /**
+     * 按用户名加载登录用户并校验密码
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
-        SysUser user = userService.selectUserByUserName(username);
+        SysUserVo user = userService.selectUserByUserName(username);
         if (StringUtils.isNull(user))
         {
             log.info("登录用户：{} 不存在.", username);
@@ -60,7 +63,10 @@ public class UserDetailsServiceImpl implements UserDetailsService
         return createLoginUser(user);
     }
 
-    public UserDetails createLoginUser(SysUser user)
+    /**
+     * 组装带菜单权限的 LoginUser
+     */
+    public UserDetails createLoginUser(SysUserVo user)
     {
         return new LoginUser(user.getUserId(), user, permissionService.getMenuPermission(user));
     }

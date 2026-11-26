@@ -22,6 +22,9 @@ import com.tms.common.utils.EntityAuditUtils;
 })
 public class AuditFieldInterceptor implements Interceptor
 {
+    /**
+     * insert/update 前自动填充审计字段
+     */
     @Override
     public Object intercept(Invocation invocation) throws Throwable
     {
@@ -39,12 +42,18 @@ public class AuditFieldInterceptor implements Interceptor
         return invocation.proceed();
     }
 
+    /**
+     * 包装目标为插件代理
+     */
     @Override
     public Object plugin(Object target)
     {
         return Plugin.wrap(target, this);
     }
 
+    /**
+     * 插件属性配置（暂无实现）
+     */
     @Override
     public void setProperties(Properties properties)
     {

@@ -34,6 +34,9 @@ public class PermitAllUrlProperties implements InitializingBean, ApplicationCont
 
     public String ASTERISK = "*";
 
+    /**
+     * 扫描 @Anonymous 注解并收集允许匿名访问的 URL
+     */
     @SuppressWarnings("deprecation")
     @Override
     public void afterPropertiesSet()
@@ -56,17 +59,26 @@ public class PermitAllUrlProperties implements InitializingBean, ApplicationCont
         });
     }
 
+    /**
+     * 注入 Spring 应用上下文
+     */
     @Override
     public void setApplicationContext(ApplicationContext context) throws BeansException
     {
         this.applicationContext = context;
     }
 
+    /**
+     * 获取匿名可访问 URL 列表
+     */
     public List<String> getUrls()
     {
         return urls;
     }
 
+    /**
+     * 设置匿名可访问 URL 列表
+     */
     public void setUrls(List<String> urls)
     {
         this.urls = urls;

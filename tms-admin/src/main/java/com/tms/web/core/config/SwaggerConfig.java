@@ -22,6 +22,11 @@ public class SwaggerConfig
     @Autowired
     private TmsConfig tmsConfig;
 
+    /**
+     * 注册 OpenAPI 文档 Bean（含 JWT 鉴权说明）
+     *
+     * @return OpenAPI 配置
+     */
     @Bean
     public OpenAPI customOpenApi()
     {

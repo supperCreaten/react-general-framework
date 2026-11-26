@@ -18,16 +18,25 @@ import java.math.BigDecimal;
  */
 public class ExcelIntegerExpConverter implements Converter<Integer> {
     @Override
+    /**
+     * 支持的 Java 类型
+     */
     public Class<?> supportJavaTypeKey() {
         return Integer.class;
     }
 
     @Override
+    /**
+     * 支持的 Excel 单元格类型
+     */
     public CellDataTypeEnum supportExcelTypeKey() {
         return null;
     }
 
     @Override
+    /**
+     * Excel 单元格转为 Java 数据
+     */
     public Integer convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty,
                                      GlobalConfiguration globalConfiguration) {
         String raw = readAsString(cellData);
@@ -50,6 +59,9 @@ public class ExcelIntegerExpConverter implements Converter<Integer> {
     }
 
     @Override
+    /**
+     * Java 数据写入 Excel 单元格
+     */
     public WriteCellData<?> convertToExcelData(Integer value, ExcelContentProperty contentProperty,
                                                GlobalConfiguration globalConfiguration) {
         if (value == null) {

@@ -12,7 +12,7 @@ import com.tms.common.constant.Constants;
 public class VelocityInitializer
 {
     /**
-     * 初始化vm方法
+     * 初始化 Velocity 引擎（加载 classpath 模板）
      */
     public static void initVelocity()
     {

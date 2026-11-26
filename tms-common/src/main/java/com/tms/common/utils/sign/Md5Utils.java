@@ -52,6 +52,9 @@ public class Md5Utils
         return buf.toString();
     }
 
+    /**
+     * 是否存在h
+     */
     public static String hash(String s)
     {
         try

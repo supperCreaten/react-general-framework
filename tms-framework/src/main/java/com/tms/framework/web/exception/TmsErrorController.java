@@ -19,6 +19,9 @@ import com.tms.common.utils.StringUtils;
 @RequestMapping("${server.error.path:${error.path:/error}}")
 public class TmsErrorController implements ErrorController
 {
+    /**
+     * 统一错误页响应为 AjaxResult
+     */
     @RequestMapping
     public AjaxResult error(HttpServletRequest request)
     {

@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.tms.common.core.domain.entity.SysUser;
 
 /**
  * 登录用户身份权限
@@ -68,19 +67,19 @@ public class LoginUser implements UserDetails
     /**
      * 用户信息
      */
-    private SysUser user;
+    private AuthUser user;
 
     public LoginUser()
     {
     }
 
-    public LoginUser(SysUser user, Set<String> permissions)
+    public LoginUser(AuthUser user, Set<String> permissions)
     {
         this.user = user;
         this.permissions = permissions;
     }
 
-    public LoginUser(Long userId, SysUser user, Set<String> permissions)
+    public LoginUser(Long userId, AuthUser user, Set<String> permissions)
     {
         this.userId = userId;
         this.user = user;
@@ -236,12 +235,12 @@ public class LoginUser implements UserDetails
         this.permissions = permissions;
     }
 
-    public SysUser getUser()
+    public AuthUser getUser()
     {
         return user;
     }
 
-    public void setUser(SysUser user)
+    public void setUser(AuthUser user)
     {
         this.user = user;
     }

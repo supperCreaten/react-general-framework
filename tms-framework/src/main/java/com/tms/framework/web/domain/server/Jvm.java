@@ -36,41 +36,49 @@ public class Jvm
      */
     private String home;
 
+    /** 获取当前占用内存（MB） */
     public double getTotal()
     {
         return Arith.div(total, (1024 * 1024), 2);
     }
 
+    /** 设置当前占用内存（字节） */
     public void setTotal(double total)
     {
         this.total = total;
     }
 
+    /** 获取最大可用内存（MB） */
     public double getMax()
     {
         return Arith.div(max, (1024 * 1024), 2);
     }
 
+    /** 设置最大可用内存（字节） */
     public void setMax(double max)
     {
         this.max = max;
     }
 
+    /** 获取空闲内存（MB） */
     public double getFree()
     {
         return Arith.div(free, (1024 * 1024), 2);
     }
 
+    /** 设置空闲内存（字节） */
     public void setFree(double free)
     {
         this.free = free;
     }
 
+    /** 获取已用内存（MB） */
     public double getUsed()
     {
         return Arith.div(total - free, (1024 * 1024), 2);
     }
 
+    /** 获取内存使用率（百分比） */
     public double getUsage()
     {
         return Arith.mul(Arith.div(total - free, total, 4), 100);
@@ -84,21 +92,25 @@ public class Jvm
         return ManagementFactory.getRuntimeMXBean().getVmName();
     }
 
+    /** 获取JDK版本号 */
     public String getVersion()
     {
         return version;
     }
 
+    /** 设置JDK版本号 */
     public void setVersion(String version)
     {
         this.version = version;
     }
 
+    /** 获取JDK安装路径 */
     public String getHome()
     {
         return home;
     }
 
+    /** 设置JDK安装路径 */
     public void setHome(String home)
     {
         this.home = home;

@@ -38,6 +38,9 @@ public class MimeTypeUtils
             // pdf
             "pdf" };
 
+    /**
+     * 获取媒体类型工具类 * * @author tms
+     */
     public static String getExtension(String prefix)
     {
         switch (prefix)

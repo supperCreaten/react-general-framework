@@ -1,10 +1,14 @@
 /* TDesign 表格内部结构覆盖（不要放进 @layer，否则会被未分层的 TDesign 样式盖掉） */
-/* 对齐 Element Plus el-table / el-table--border：满高容器 + 固定行高 + 完整网格边框 */
+/* 对齐 Element Plus el-table：13px / #606266，表头底 #f5f7fa，边框 #ebeef5，悬停 #f5f7fa */
 .basic-table {
+  --basic-table-text-color: #606266;
   --basic-table-border-color: #ebeef5;
   --basic-table-header-bg: #f5f7fa;
-  --basic-table-row-height: 48px;
+  --basic-table-row-hover-bg: #f5f7fa;
+  --basic-table-current-row-bg: #ecf5ff;
+  --basic-table-row-height: 40px;
   --basic-table-cell-line-height: 23px;
+  --basic-table-font-size: 13px;
 }
 
 .basic-table .t-table {
@@ -13,11 +17,10 @@
   flex: 1;
   min-height: 0;
   height: 100%;
-  color: var(--td-text-color-secondary);
-  font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
+  color: var(--basic-table-text-color);
+  font-size: var(--basic-table-font-size);
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    Arial, sans-serif;
 }
 
 .basic-table .t-table__content {
@@ -29,7 +32,7 @@
   border-radius: 0 !important;
 }
 
-/* 表体/固定列内部 table 不随容器拉伸，行高只由固定 cell 高度决定 */
+/* 表体/固定列内部 table 不随容器拉伸，行高由单元格内容决定 */
 .basic-table .t-table__content table,
 .basic-table .t-table__body table,
 .basic-table .t-table__header table,
@@ -48,19 +51,18 @@
   font-weight: 600;
 }
 
-/* Element 默认行高约 48px；单元格网格线（右 + 底） */
+/* Element 单元格：上下 8px、左右 12px，行高约 40px；网格线为右 + 底 */
 .basic-table .t-table thead td,
 .basic-table .t-table th,
 .basic-table .t-table td {
   box-sizing: border-box;
-  height: var(--basic-table-row-height);
-  max-height: var(--basic-table-row-height);
-  padding-top: 8px;
-  padding-bottom: 8px;
+  min-height: var(--basic-table-row-height);
+  padding: 8px 12px;
   line-height: var(--basic-table-cell-line-height);
   vertical-align: middle;
-  overflow: hidden;
-  font-size: 14px;
+  font-size: var(--basic-table-font-size);
+  color: var(--basic-table-text-color);
+  background-color: #fff;
   border-right: 1px solid var(--basic-table-border-color) !important;
   border-bottom: 1px solid var(--basic-table-border-color) !important;
   border-left: none !important;
@@ -80,18 +82,38 @@
 }
 
 .basic-table .t-table thead td,
-.basic-table .t-table th {
-  color: var(--td-text-color-primary);
+.basic-table .t-table th,
+.basic-table .t-table th .t-table__th-cell-inner {
+  color: var(--basic-table-text-color);
+  font-size: var(--basic-table-font-size);
   font-weight: 600;
   background-color: var(--basic-table-header-bg);
 }
 
-.basic-table .t-table td {
-  color: var(--td-text-color-secondary);
+.basic-table .t-table td,
+.basic-table .t-table td .t-text-ellipsis {
+  color: var(--basic-table-text-color);
+  font-size: var(--basic-table-font-size);
   font-weight: 400;
 }
 
-/* 单元格内容单行省略，避免撑破固定行高 */
+/* 行悬停、当前行，对应 el-table row-hover / current-row */
+.basic-table .t-table.t-table--hoverable tbody > tr:hover > td,
+.basic-table .t-table tbody > tr:hover > td {
+  background-color: var(--basic-table-row-hover-bg);
+}
+
+.basic-table .t-table tbody > tr.t-table__row--selected > td,
+.basic-table .t-table tbody > tr.t-table__row--active > td {
+  background-color: var(--basic-table-current-row-bg);
+}
+
+.basic-table .t-table tbody > tr.t-table__row--selected:hover > td,
+.basic-table .t-table tbody > tr.t-table__row--active:hover > td {
+  background-color: var(--basic-table-current-row-bg);
+}
+
+/* 开启省略的列保持单行，行高仍由内容撑开 */
 .basic-table .t-table td .t-text-ellipsis,
 .basic-table .t-table th .t-text-ellipsis {
   display: block;

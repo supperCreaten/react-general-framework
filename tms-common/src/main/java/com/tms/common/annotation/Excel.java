@@ -189,6 +189,9 @@ public @interface Excel
             this.value = value;
         }
 
+        /**
+         * value
+         */
         public int value()
         {
             return this.value;
@@ -205,6 +208,9 @@ public @interface Excel
             this.value = value;
         }
 
+        /**
+         * value
+         */
         public int value()
         {
             return this.value;

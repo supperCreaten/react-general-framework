@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tms.system.mapper.SysPostMapper">
+<mapper namespace="com.tms.system.system.mapper.SysPostMapper">
 
-	<resultMap type="com.tms.system.domain.vo.SysPostVo" id="SysPostResult">
+	<resultMap type="com.tms.system.system.domain.vo.SysPostVo" id="SysPostResult">
 		<id     property="postId"     column="post_id"     />
 		<result property="postCode"   column="post_code"   />
 		<result property="postName"   column="post_name"   />
@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from sys_post
     </sql>
 
-	<select id="selectPostList" parameterType="com.tms.system.domain.dto.SysPostQuery" resultMap="SysPostResult">
+	<select id="selectPostList" parameterType="com.tms.system.system.domain.dto.SysPostQuery" resultMap="SysPostResult">
 	    <include refid="selectPostVo"/>
 		where is_del = '0'
 		<if test="postCode != null and postCode != ''">
@@ -54,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 where post_code=#{postCode} and is_del = '0' limit 1
 	</select>
 
- 	<insert id="insertPost" parameterType="com.tms.system.domain.dto.SysPostSaveReq" useGeneratedKeys="true" keyProperty="postId">
+ 	<insert id="insertPost" parameterType="com.tms.system.system.domain.dto.SysPostSaveReq" useGeneratedKeys="true" keyProperty="postId">
  		insert into sys_post(
  			<if test="postId != null and postId != 0">post_id,</if>
  			<if test="postCode != null and postCode != ''">post_code,</if>
@@ -88,7 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)
 	</insert>
 
-	<update id="updatePost" parameterType="com.tms.system.domain.dto.SysPostSaveReq">
+	<update id="updatePost" parameterType="com.tms.system.system.domain.dto.SysPostSaveReq">
  		update sys_post
  		<set>
  			<if test="postCode != null and postCode != ''">post_code = #{postCode},</if>

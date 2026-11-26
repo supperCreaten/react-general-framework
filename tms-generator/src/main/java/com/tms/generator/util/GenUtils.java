@@ -17,6 +17,9 @@ public class GenUtils
 {
     /**
      * 初始化表信息
+     *
+     * @param genTable  业务表
+     * @param operName  操作人
      */
     public static void initTable(GenTable genTable, String operName)
     {
@@ -30,7 +33,10 @@ public class GenUtils
     }
 
     /**
-     * 初始化列属性字段
+     * 根据数据库列类型初始化生成列属性
+     *
+     * @param column 列信息
+     * @param table  所属业务表
      */
     public static void initColumnField(GenTableColumn column, GenTable table)
     {

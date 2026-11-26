@@ -22,12 +22,18 @@ public class FastJson2JsonRedisSerializer<T> implements RedisSerializer<T>
 
     private Class<T> clazz;
 
+    /**
+     * @param clazz 反序列化目标类型
+     */
     public FastJson2JsonRedisSerializer(Class<T> clazz)
     {
         super();
         this.clazz = clazz;
     }
 
+    /**
+     * 序列化对象为 JSON 字节数组
+     */
     @Override
     public byte[] serialize(T t) throws SerializationException
     {
@@ -38,6 +44,9 @@ public class FastJson2JsonRedisSerializer<T> implements RedisSerializer<T>
         return JSON.toJSONString(t, JSONWriter.Feature.WriteClassName).getBytes(DEFAULT_CHARSET);
     }
 
+    /**
+     * 反序列化 JSON 字节数组为对象
+     */
     @Override
     public T deserialize(byte[] bytes) throws SerializationException
     {

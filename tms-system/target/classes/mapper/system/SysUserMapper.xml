@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tms.system.mapper.SysUserMapper">
+<mapper namespace="com.tms.system.system.mapper.SysUserMapper">
 
     <!-- 登录与用户管理均使用 sys_user -->
-    <resultMap type="com.tms.common.core.domain.entity.SysUser" id="SysUserResult">
+    <resultMap type="com.tms.system.system.domain.vo.SysUserVo" id="SysUserResult">
         <id     property="userId"        column="user_id"         />
         <result property="account"       column="account"         />
         <result property="userName"      column="account"         />
@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <collection  property="roles"    javaType="java.util.List"  resultMap="RoleResult" />
     </resultMap>
 	
-    <resultMap id="RoleResult" type="com.tms.common.core.domain.entity.SysRole">
+    <resultMap id="RoleResult" type="com.tms.system.system.domain.vo.SysRoleVo">
         <id     property="roleId"       column="role_id"        />
         <result property="roleName"     column="role_name"      />
         <result property="roleKey"      column="role_code"      />
@@ -63,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		    left join sys_role r on r.role_id = ur.role_id
     </sql>
     
-    <select id="selectUserList" parameterType="com.tms.common.core.domain.entity.SysUser" resultMap="SysUserResult">
+    <select id="selectUserList" parameterType="com.tms.system.system.domain.dto.SysUserQuery" resultMap="SysUserResult">
 		select a.user_id, a.account, a.user_name, a.email, a.dept_id, a.post_id,
 		       d.dept_name, p.post_name,
 		       null as avatar, a.phone, a.phone_cipher, a.phone_secret_key,
@@ -111,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 	</select>
 	
-	<select id="selectAllocatedList" parameterType="com.tms.common.core.domain.entity.SysUser" resultMap="SysUserResult">
+	<select id="selectAllocatedList" parameterType="com.tms.system.system.domain.dto.SysUserQuery" resultMap="SysUserResult">
 	    select distinct a.user_id, a.account, a.user_name, a.email, a.phone, a.status, a.create_time
 	    from sys_user a
 			 left join sys_user_role ur on a.user_id = ur.user_id
@@ -125,7 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 	</select>
 	
-	<select id="selectUnallocatedList" parameterType="com.tms.common.core.domain.entity.SysUser" resultMap="SysUserResult">
+	<select id="selectUnallocatedList" parameterType="com.tms.system.system.domain.dto.SysUserQuery" resultMap="SysUserResult">
 	    select distinct a.user_id, a.account, a.user_name, a.email, a.phone, a.status, a.create_time
 	    from sys_user a
 			 left join sys_user_role ur on a.user_id = ur.user_id
@@ -167,7 +167,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select a.user_id, a.email from sys_user a where a.email = #{email} and a.is_del = 0 limit 1
 	</select>
 	
-	<insert id="insertUser" parameterType="com.tms.common.core.domain.entity.SysUser" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+	<insert id="insertUser" parameterType="com.tms.system.system.domain.vo.SysUserVo" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
  		insert into sys_user(
  			account,
  			user_name,
@@ -246,7 +246,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)
 	</insert>
 	
-	<update id="updateUser" parameterType="com.tms.common.core.domain.entity.SysUser">
+	<update id="updateUser" parameterType="com.tms.system.system.domain.vo.SysUserVo">
  		update sys_user
  		<set>
  			<if test="account != null and account != ''">account = #{account},</if>
@@ -273,7 +273,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		where user_id = #{userId}
 	</update>
 	
-	<update id="updateUserSensitiveCrypto" parameterType="com.tms.common.core.domain.entity.SysUser">
+	<update id="updateUserSensitiveCrypto" parameterType="com.tms.system.system.domain.vo.SysUserVo">
  		update sys_user
  		<set>
  			phone_cipher = #{phoneCipher},
@@ -285,7 +285,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		where user_id = #{userId}
 	</update>
 
-	<update id="updateUserStatus" parameterType="com.tms.common.core.domain.entity.SysUser">
+	<update id="updateUserStatus" parameterType="com.tms.system.system.domain.vo.SysUserVo">
  		update sys_user set status = #{status}, update_time = sysdate() where user_id = #{userId}
 	</update>
 	
@@ -303,7 +303,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		update sys_user set update_time = sysdate() where user_id = #{userId}
 	</update>
 	
-	<update id="resetUserPwd" parameterType="com.tms.common.core.domain.entity.SysUser">
+	<update id="resetUserPwd" parameterType="com.tms.system.system.domain.vo.SysUserVo">
  		update sys_user set password_hash = #{password}, update_time = sysdate() where user_id = #{userId}
 	</update>
 	

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tms.system.mapper.SysRoleMapper">
+<mapper namespace="com.tms.system.system.mapper.SysRoleMapper">
 
-	<resultMap type="com.tms.common.core.domain.entity.SysRole" id="SysRoleResult">
+	<resultMap type="com.tms.system.system.domain.vo.SysRoleVo" id="SysRoleResult">
 		<id     property="roleId"             column="role_id"               />
 		<result property="roleCode"           column="role_code"             />
 		<result property="roleKey"            column="role_key"              />
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	        left join sys_user u on u.user_id = ur.user_id
     </sql>
     
-    <select id="selectRoleList" parameterType="com.tms.common.core.domain.entity.SysRole" resultMap="SysRoleResult">
+    <select id="selectRoleList" parameterType="com.tms.system.system.domain.dto.SysRoleQuery" resultMap="SysRoleResult">
 		select r.role_id, r.role_name, r.role_code, r.role_key, r.order_num,
 		       r.status, r.is_del, r.create_by, r.create_time, r.remark,
 		       (select count(1)
@@ -99,7 +99,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		 where r.role_code=#{roleCode} and r.is_del = '0' limit 1
 	</select>
 	
- 	<insert id="insertRole" parameterType="com.tms.common.core.domain.entity.SysRole" useGeneratedKeys="true" keyProperty="roleId">
+ 	<insert id="insertRole" parameterType="com.tms.system.system.domain.vo.SysRoleVo" useGeneratedKeys="true" keyProperty="roleId">
  		insert into sys_role(
  			<if test="roleId != null and roleId != 0">role_id,</if>
  			<if test="roleName != null and roleName != ''">role_name,</if>
@@ -133,7 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		)
 	</insert>
 	
-	<update id="updateRole" parameterType="com.tms.common.core.domain.entity.SysRole">
+	<update id="updateRole" parameterType="com.tms.system.system.domain.vo.SysRoleVo">
  		update sys_role
  		<set>
  			<if test="roleName != null and roleName != ''">role_name = #{roleName},</if>

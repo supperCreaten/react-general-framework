@@ -23,6 +23,12 @@ public class ServerConfig
         return getDomain(request);
     }
 
+    /**
+     * 从请求中拼接域名与上下文路径
+     *
+     * @param request HTTP 请求
+     * @return 完整服务根地址
+     */
     public static String getDomain(HttpServletRequest request)
     {
         StringBuffer url = request.getRequestURL();

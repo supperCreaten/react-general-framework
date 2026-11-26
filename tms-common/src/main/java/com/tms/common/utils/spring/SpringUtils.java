@@ -25,12 +25,18 @@ public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationC
     private static ApplicationContext applicationContext;
 
     @Override
+    /**
+     * 注册 Bean 后处理
+     */
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException 
     {
         SpringUtils.beanFactory = beanFactory;
     }
 
     @Override
+    /**
+     * 设置applicationcontext
+     */
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException 
     {
         SpringUtils.applicationContext = applicationContext;

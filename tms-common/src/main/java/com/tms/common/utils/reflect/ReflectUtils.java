@@ -374,6 +374,9 @@ public class ReflectUtils
         return (Class) params[index];
     }
 
+    /**
+     * 获取通过反射, 获得Class定义中声明的父类的泛型参数的类型. * 如无法找到, 返回Object.class.
+     */
     public static Class<?> getUserClass(Object instance)
     {
         if (instance == null)

@@ -22,6 +22,9 @@ public class ImageUtils
 {
     private static final Logger log = LoggerFactory.getLogger(ImageUtils.class);
 
+    /**
+     * 获取图片处理工具类 * * @author tms
+     */
     public static byte[] getImage(String imagePath)
     {
         InputStream is = getFile(imagePath);
@@ -40,6 +43,9 @@ public class ImageUtils
         }
     }
 
+    /**
+     * 获取图片处理工具类 * * @author tms
+     */
     public static InputStream getFile(String imagePath)
     {
         try

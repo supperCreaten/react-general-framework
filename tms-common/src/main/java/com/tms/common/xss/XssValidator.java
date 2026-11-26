@@ -16,6 +16,9 @@ public class XssValidator implements ConstraintValidator<Xss, String>
     private static final String HTML_PATTERN = "<(\\S*?)[^>]*>.*?|<.*? />";
 
     @Override
+    /**
+     * 是否为valid
+     */
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext)
     {
         if (StringUtils.isBlank(value))
@@ -25,6 +28,9 @@ public class XssValidator implements ConstraintValidator<Xss, String>
         return !containsHtml(value);
     }
 
+    /**
+     * 判断是否包含 HTML
+     */
     public static boolean containsHtml(String value)
     {
         StringBuilder sHtml = new StringBuilder();

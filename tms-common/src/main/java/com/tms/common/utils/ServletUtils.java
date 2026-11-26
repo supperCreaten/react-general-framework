@@ -124,6 +124,9 @@ public class ServletUtils
         return getRequest().getSession();
     }
 
+    /**
+     * 获取当前请求的 {@link ServletRequestAttributes}
+     */
     public static ServletRequestAttributes getRequestAttributes()
     {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();

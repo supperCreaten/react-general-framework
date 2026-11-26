@@ -21,6 +21,9 @@ public class ExceptionUtil
         return sw.toString();
     }
 
+    /**
+     * 获取根异常的简要错误信息
+     */
     public static String getRootErrorMessage(Exception e)
     {
         Throwable root = ExceptionUtils.getRootCause(e);

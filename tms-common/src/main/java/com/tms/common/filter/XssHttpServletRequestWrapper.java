@@ -28,6 +28,9 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper
     }
 
     @Override
+    /**
+     * 获取@param request
+     */
     public String[] getParameterValues(String name)
     {
         String[] values = super.getParameterValues(name);
@@ -46,6 +49,9 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper
     }
 
     @Override
+    /**
+     * 获取@param request
+     */
     public ServletInputStream getInputStream() throws IOException
     {
         // 非json类型，直接返回
@@ -68,29 +74,44 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper
         return new ServletInputStream()
         {
             @Override
+            /**
+             * 是否为finished
+             */
             public boolean isFinished()
             {
                 return true;
             }
 
             @Override
+            /**
+             * 是否为ready
+             */
             public boolean isReady()
             {
                 return true;
             }
 
             @Override
+            /**
+             * 可读字节数
+             */
             public int available() throws IOException
             {
                 return jsonBytes.length;
             }
 
             @Override
+            /**
+             * 设置@param request
+             */
             public void setReadListener(ReadListener readListener)
             {
             }
 
             @Override
+            /**
+             * 读取字节
+             */
             public int read() throws IOException
             {
                 return bis.read();

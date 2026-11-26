@@ -38,11 +38,17 @@ public class FileUploadUtils
      */
     private static String defaultBaseDir = TmsConfig.getProfile();
 
+    /**
+     * 设置默认上传的地址
+     */
     public static void setDefaultBaseDir(String defaultBaseDir)
     {
         FileUploadUtils.defaultBaseDir = defaultBaseDir;
     }
 
+    /**
+     * 获取defaultbasedir
+     */
     public static String getDefaultBaseDir()
     {
         return defaultBaseDir;
@@ -154,6 +160,9 @@ public class FileUploadUtils
         return StringUtils.format("{}/{}.{}", DateUtils.datePath(), IdUtils.fastSimpleUUID(), getExtension(file));
     }
 
+    /**
+     * 获取编编码文件名(日期格式目录 + UUID + 后缀)
+     */
     public static final File getAbsoluteFile(String uploadDir, String fileName) throws IOException
     {
         File desc = new File(uploadDir + File.separator + fileName);
@@ -168,6 +177,9 @@ public class FileUploadUtils
         return desc;
     }
 
+    /**
+     * 获取编编码文件名(日期格式目录 + UUID + 后缀)
+     */
     public static final String getPathFileName(String uploadDir, String fileName) throws IOException
     {
         int dirLastIndex = TmsConfig.getProfile().length() + 1;

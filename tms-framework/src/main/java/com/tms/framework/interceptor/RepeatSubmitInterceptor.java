@@ -19,6 +19,9 @@ import com.tms.common.utils.ServletUtils;
 @Component
 public abstract class RepeatSubmitInterceptor implements HandlerInterceptor
 {
+    /**
+     * 检测 @RepeatSubmit 并拦截重复提交
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
     {

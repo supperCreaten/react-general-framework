@@ -27,10 +27,16 @@ public class ExcelImportResult<T> {
     /** 错误文件下载名 */
     private String errorFileName = "导入错误明细.xlsx";
 
+    /**
+     * 是否存在errors
+     */
     public boolean hasErrors() {
         return errors != null && !errors.isEmpty();
     }
 
+    /**
+     * 获取Excel 导入结果（含校验错误与错误文件）
+     */
     public int getErrorCount() {
         return errors == null ? 0 : errors.size();
     }

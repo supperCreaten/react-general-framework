@@ -12,6 +12,9 @@ import jakarta.validation.Validator;
  */
 public class BeanValidators
 {
+    /**
+     * 校验 Bean 并在失败时抛出异常
+     */
     public static void validateWithException(Validator validator, Object object, Class<?>... groups)
             throws ConstraintViolationException
     {

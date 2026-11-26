@@ -23,6 +23,9 @@ public class SensitiveJsonSerializer extends JsonSerializer<String> implements C
     private DesensitizedType desensitizedType;
 
     @Override
+    /**
+     * 序列化字段值
+     */
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException
     {
         if (desensitization())
@@ -36,6 +39,9 @@ public class SensitiveJsonSerializer extends JsonSerializer<String> implements C
     }
 
     @Override
+    /**
+     * 按字段注解创建序列化器
+     */
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property)
             throws JsonMappingException
     {

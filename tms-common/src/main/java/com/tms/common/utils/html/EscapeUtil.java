@@ -153,6 +153,9 @@ public class EscapeUtil
         return tmp.toString();
     }
 
+    /**
+     * main
+     */
     public static void main(String[] args)
     {
         String html = "<script>alert(1);</script>";

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tms.system.mapper.SysDictMapper">
+<mapper namespace="com.tms.system.system.mapper.SysDictMapper">
 
-	<resultMap type="com.tms.system.domain.dto.SysDictSaveReq" id="SysDictResult">
+	<resultMap type="com.tms.system.system.domain.dto.SysDictSaveReq" id="SysDictResult">
 		<id     property="dictId"         	column="dict_id"             />
 		<result property="dictName"      	column="dict_name"     />
 		<result property="dictCode"      	column="dict_code"     />
@@ -20,7 +20,7 @@
         select * from sys_dict
     </sql>
 
-    <select id="selectDictList" parameterType="com.tms.system.domain.dto.SysDictSaveReq" resultMap="SysDictResult">
+    <select id="selectDictList" parameterType="com.tms.system.system.domain.dto.SysDictSaveReq" resultMap="SysDictResult">
 		<include refid="selectDictVo"/>
 		<where>
 			is_del = '0'
@@ -45,7 +45,7 @@
 		<include refid="selectDictVo"/>
 		where is_del = '0' and dict_id = #{id}
 	</select>
-	<select id="selectDictByCode" parameterType="com.tms.system.domain.dto.SysDictSaveReq" resultMap="SysDictResult">
+	<select id="selectDictByCode" parameterType="com.tms.system.system.domain.dto.SysDictSaveReq" resultMap="SysDictResult">
 		<include refid="selectDictVo"/>
 		<where>
 			is_del = '0'
@@ -54,7 +54,7 @@
 			</if>
 		</where>
 	</select>
-	<insert id="insertDict" parameterType="com.tms.system.domain.dto.SysDictSaveReq" useGeneratedKeys="true"
+	<insert id="insertDict" parameterType="com.tms.system.system.domain.dto.SysDictSaveReq" useGeneratedKeys="true"
 	        keyProperty="dictId"
 	        keyColumn="dict_id">
 		insert into sys_dict(
@@ -92,7 +92,7 @@
 		sysdate()
 		)
 	</insert>
-	<update id="updateDict" parameterType="com.tms.system.domain.dto.SysDictSaveReq">
+	<update id="updateDict" parameterType="com.tms.system.system.domain.dto.SysDictSaveReq">
 		update sys_dict
 		<set>
 			<if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>

@@ -30,11 +30,17 @@ public class ExcelSheet<T>
     /** Sheet 顶部大标题（可为空） */
     private String title;
 
+    /**
+     * ExcelSheet
+     */
     public ExcelSheet(String sheetName, List<T> list, Class<T> clazz)
     {
         this(sheetName, list, clazz, "");
     }
 
+    /**
+     * ExcelSheet
+     */
     public ExcelSheet(String sheetName, List<T> list, Class<T> clazz, String title)
     {
         this.sheetName = sheetName;
@@ -43,41 +49,65 @@ public class ExcelSheet<T>
         this.title = title != null ? title : "";
     }
 
+    /**
+     * 获取sheetname
+     */
     public String getSheetName()
     {
         return sheetName;
     }
 
+    /**
+     * 获取list
+     */
     public List<T> getList()
     {
         return list;
     }
 
+    /**
+     * 获取clazz
+     */
     public Class<T> getClazz()
     {
         return clazz;
     }
 
+    /**
+     * 获取title
+     */
     public String getTitle()
     {
         return title;
     }
 
+    /**
+     * 设置sheetname
+     */
     public void setSheetName(String sheetName)
     {
         this.sheetName = sheetName;
     }
 
+    /**
+     * 设置list
+     */
     public void setList(List<T> list)
     {
         this.list = list;
     }
 
+    /**
+     * 设置clazz
+     */
     public void setClazz(Class<T> clazz)
     {
         this.clazz = clazz;
     }
 
+    /**
+     * 设置title
+     */
     public void setTitle(String title)
     {
         this.title = title;

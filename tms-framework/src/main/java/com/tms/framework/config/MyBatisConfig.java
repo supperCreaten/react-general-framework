@@ -39,6 +39,12 @@ public class MyBatisConfig
 
     static final String DEFAULT_RESOURCE_PATTERN = "**/*.class";
 
+    /**
+     * 解析并展开 MyBatis 类型别名包路径
+     *
+     * @param typeAliasesPackage 配置的别名包，逗号分隔
+     * @return 扫描后的别名包列表
+     */
     public static String setTypeAliasesPackage(String typeAliasesPackage)
     {
         ResourcePatternResolver resolver = (ResourcePatternResolver) new PathMatchingResourcePatternResolver();
@@ -93,6 +99,12 @@ public class MyBatisConfig
         return typeAliasesPackage;
     }
 
+    /**
+     * 解析 Mapper XML 资源路径
+     *
+     * @param mapperLocations Mapper 路径数组
+     * @return 资源数组
+     */
     public Resource[] resolveMapperLocations(String[] mapperLocations)
     {
         ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
@@ -115,6 +127,9 @@ public class MyBatisConfig
         return resources.toArray(new Resource[resources.size()]);
     }
 
+    /**
+     * 创建 SqlSessionFactory，并注册审计字段拦截器
+     */
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception
     {

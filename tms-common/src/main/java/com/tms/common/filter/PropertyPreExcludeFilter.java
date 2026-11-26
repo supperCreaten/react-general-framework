@@ -9,10 +9,16 @@ import com.alibaba.fastjson2.filter.SimplePropertyPreFilter;
  */
 public class PropertyPreExcludeFilter extends SimplePropertyPreFilter
 {
+    /**
+     * PropertyPreExcludeFilter
+     */
     public PropertyPreExcludeFilter()
     {
     }
 
+    /**
+     * 追加排除属性
+     */
     public PropertyPreExcludeFilter addExcludes(String... filters)
     {
         for (int i = 0; i < filters.length; i++)

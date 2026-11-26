@@ -12,6 +12,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class Knife4jConfig implements WebMvcConfigurer
 {
+    /**
+     * 注册 Knife4j 静态资源映射
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.tms.common.constant.Constants;
 import com.tms.common.constant.UserConstants;
-import com.tms.common.core.domain.entity.SysUser;
+import com.tms.system.system.domain.vo.SysUserVo;
 import com.tms.common.core.domain.model.RegisterBody;
 import com.tms.common.core.service.ISysRegisterService;
 import com.tms.common.utils.MessageUtils;
@@ -12,7 +12,7 @@ import com.tms.common.utils.SecurityUtils;
 import com.tms.common.utils.StringUtils;
 import com.tms.framework.manager.AsyncManager;
 import com.tms.framework.manager.factory.AsyncFactory;
-import com.tms.system.service.ISysUserService;
+import com.tms.system.system.service.ISysUserService;
 
 /**
  * 注册校验方法
@@ -31,7 +31,7 @@ public class SysRegisterService implements ISysRegisterService
     public String register(RegisterBody registerBody)
     {
         String msg = "", username = registerBody.getUsername(), password = registerBody.getPassword();
-        SysUser sysUser = new SysUser();
+        SysUserVo sysUser = new SysUserVo();
         sysUser.setUserName(username);
 
         if (StringUtils.isEmpty(username))

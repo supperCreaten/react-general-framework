@@ -17,6 +17,9 @@ import com.tms.common.constant.Constants;
 @Configuration
 public class I18nConfig implements WebMvcConfigurer
 {
+    /**
+     * 会话语言解析器
+     */
     @Bean
     public LocaleResolver localeResolver()
     {
@@ -26,6 +29,9 @@ public class I18nConfig implements WebMvcConfigurer
         return slr;
     }
 
+    /**
+     * 语言切换拦截器
+     */
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor()
     {
@@ -35,6 +41,9 @@ public class I18nConfig implements WebMvcConfigurer
         return lci;
     }
 
+    /**
+     * 注册国际化拦截器
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry)
     {

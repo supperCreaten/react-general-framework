@@ -24,7 +24,7 @@ import com.tms.common.utils.ip.IpUtils;
 import com.tms.framework.manager.AsyncManager;
 import com.tms.framework.manager.factory.AsyncFactory;
 import com.tms.framework.security.context.AuthenticationContextHolder;
-import com.tms.system.service.ISysUserService;
+import com.tms.system.system.service.ISysUserService;
 
 /**
  * 登录校验方法
@@ -42,11 +42,17 @@ public class SysLoginService implements ISysLoginService {
     @Autowired
     private ISysUserService userService;
 
+    /**
+     * 登录并返回 accessToken
+     */
     @Override
     public String login(String username, String password) {
         return doLogin(username, password, null);
     }
 
+    /**
+     * 登录并下发 refreshToken Cookie
+     */
     @Override
     public String login(String username, String password, HttpServletResponse response) {
         return doLogin(username, password, response);
@@ -86,6 +92,9 @@ public class SysLoginService implements ISysLoginService {
         return accessToken;
     }
 
+    /**
+     * 登录前参数与黑名单校验
+     */
     public void loginPreCheck(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("not.null")));
@@ -108,6 +117,9 @@ public class SysLoginService implements ISysLoginService {
         }
     }
 
+    /**
+     * 记录用户最近登录 IP 与时间
+     */
     public void recordLoginInfo(Long userId) {
         userService.updateLoginInfo(userId, IpUtils.getIpAddr(), DateUtils.getNowDate());
     }

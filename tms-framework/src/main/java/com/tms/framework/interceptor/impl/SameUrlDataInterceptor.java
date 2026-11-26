@@ -36,6 +36,9 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
     @Autowired
     private RedisCache redisCache;
 
+    /**
+     * 比较同 URL 与参数在间隔时间内是否重复
+     */
     @SuppressWarnings("unchecked")
     @Override
     public boolean isRepeatSubmit(HttpServletRequest request, RepeatSubmit annotation)

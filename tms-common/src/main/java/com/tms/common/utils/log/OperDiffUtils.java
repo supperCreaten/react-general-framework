@@ -37,6 +37,9 @@ public final class OperDiffUtils
     {
     }
 
+    /**
+     * 对比前后对象字段变更
+     */
     public static List<OperChangeItem> diff(Object before, Object after, String[] excludeFields)
     {
         return diff(before, after, null, excludeFields);
@@ -123,11 +126,17 @@ public final class OperDiffUtils
     }
 
     /** 是否存在有效字段变更 */
+    /**
+     * 是否存在changes
+     */
     public static boolean hasChanges(List<OperChangeItem> items)
     {
         return items != null && !items.isEmpty();
     }
 
+    /**
+     * 变更列表序列化为 JSON
+     */
     public static String toJson(List<OperChangeItem> items)
     {
         if (items == null || items.isEmpty())
@@ -137,6 +146,9 @@ public final class OperDiffUtils
         return JSON.toJSONString(items);
     }
 
+    /**
+     * 从方法参数中提取业务对象
+     */
     public static Object extractBizArg(Object[] args)
     {
         if (args == null)

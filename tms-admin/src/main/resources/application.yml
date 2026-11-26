@@ -146,7 +146,7 @@ springdoc:
     doc-expansion: none
     default-models-expand-depth: -1
   show-actuator: false
-  packages-to-scan: com.tms.system.controller,com.tms.web.controller,com.tms.generator.controller
+  packages-to-scan: com.tms.system.system.controller,com.tms.system.order.controller,com.tms.system.resource.controller,com.tms.web.controller,com.tms.generator.controller
   paths-to-match: /**
 
 # Knife4j 经典文档 UI（访问地址：/doc.html）

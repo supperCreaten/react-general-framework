@@ -15,6 +15,9 @@ public class ShutdownManager
 {
     private static final Logger logger = LoggerFactory.getLogger("sys-user");
 
+    /**
+     * 容器销毁时关闭异步任务线程池
+     */
     @PreDestroy
     public void destroy()
     {

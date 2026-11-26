@@ -205,6 +205,9 @@ public class ExcelUtil<T>
      */
     public String[] excludeFields;
 
+    /**
+     * ExcelUtil
+     */
     public ExcelUtil(Class<T> clazz)
     {
         this.clazz = clazz;
@@ -230,6 +233,9 @@ public class ExcelUtil<T>
         this.excludeFields = fields;
     }
 
+    /**
+     * 过滤器初始化
+     */
     public void init(List<T> list, String sheetName, String title, Type type)
     {
         if (list == null)

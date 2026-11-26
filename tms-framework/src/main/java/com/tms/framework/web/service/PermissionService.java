@@ -4,7 +4,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import com.tms.common.constant.Constants;
-import com.tms.common.core.domain.entity.SysRole;
+import com.tms.common.core.domain.model.AuthRole;
 import com.tms.common.core.domain.model.LoginUser;
 import com.tms.common.utils.SecurityUtils;
 import com.tms.common.utils.StringUtils;
@@ -96,7 +96,7 @@ public class PermissionService
         {
             return false;
         }
-        for (SysRole sysRole : loginUser.getUser().getRoles())
+        for (AuthRole sysRole : loginUser.getUser().getRoles())
         {
             String roleKey = sysRole.getRoleKey();
             if (Constants.SUPER_ADMIN.equals(roleKey) || roleKey.equals(StringUtils.trim(role)))

@@ -34,18 +34,27 @@ public class RateLimiterAspect
 
     private RedisScript<Long> limitScript;
 
+    /**
+     * 注入 Redis 模板
+     */
     @Autowired
     public void setRedisTemplate1(RedisTemplate<Object, Object> redisTemplate)
     {
         this.redisTemplate = redisTemplate;
     }
 
+    /**
+     * 注入限流 Lua 脚本
+     */
     @Autowired
     public void setLimitScript(RedisScript<Long> limitScript)
     {
         this.limitScript = limitScript;
     }
 
+    /**
+     * 请求前置：执行 Redis 限流校验
+     */
     @Before("@annotation(rateLimiter)")
     public void doBefore(JoinPoint point, RateLimiter rateLimiter) throws Throwable
     {
@@ -73,6 +82,9 @@ public class RateLimiterAspect
         }
     }
 
+    /**
+     * 组装限流 Redis 缓存键
+     */
     public String getCombineKey(RateLimiter rateLimiter, JoinPoint point)
     {
         StringBuffer stringBuffer = new StringBuffer(rateLimiter.key());

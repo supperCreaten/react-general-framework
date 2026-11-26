@@ -757,6 +757,9 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * 类型转换
+     */
     public static <T> T cast(Object obj) {
         return (T) obj;
     }

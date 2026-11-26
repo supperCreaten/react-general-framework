@@ -36,20 +36,19 @@ public class UserAgentUtils
     private static final Pattern LINUX_PATTERN = Pattern.compile("Linux");
     private static final Pattern CHROMEOS_PATTERN = Pattern.compile("CrOS");
 
-    private static final UserAgentAnalyzer userAgentAnalyzer = UserAgentAnalyzer
-            .newBuilder().hideMatcherLoadStats()
-            .withCache(5000)
-            .showMinimalVersion()
-            .withField(UserAgent.AGENT_NAME_VERSION)
-            .withField(UserAgent.OPERATING_SYSTEM_NAME_VERSION)
-            .build();
+    /** 延迟到首次日志解析时再建，避免类加载把登录请求线程卡住 */
+    private static volatile UserAgentAnalyzer userAgentAnalyzer;
 
     /**
-     * 获取客户端浏览器
+     * 获取客户端浏览器（会触发 YAUAA 初始化，仅用于异步日志）
      */
     public static String getBrowser(String userAgent)
     {
-        UserAgent.ImmutableUserAgent iua = userAgentAnalyzer.parse(userAgent);
+        if (StringUtils.isEmpty(userAgent))
+        {
+            return UNKNOWN;
+        }
+        UserAgent.ImmutableUserAgent iua = analyzer().parse(userAgent);
         String agentNameVersion = iua.get(UserAgent.AGENT_NAME_VERSION).getValue();
         if (StringUtils.isBlank(agentNameVersion) || agentNameVersion.contains("??"))
         {
@@ -59,17 +58,69 @@ public class UserAgentUtils
     }
 
     /**
-     * 获取客户端操作系统
+     * 获取客户端操作系统（会触发 YAUAA 初始化，仅用于异步日志）
      */
     public static String getOperatingSystem(String userAgent)
     {
-        UserAgent.ImmutableUserAgent iua = userAgentAnalyzer.parse(userAgent);
+        if (StringUtils.isEmpty(userAgent))
+        {
+            return UNKNOWN;
+        }
+        UserAgent.ImmutableUserAgent iua = analyzer().parse(userAgent);
         String operatingSystemNameVersion = iua.get(UserAgent.OPERATING_SYSTEM_NAME_VERSION).getValue();
         if (StringUtils.isBlank(operatingSystemNameVersion) || operatingSystemNameVersion.contains("??"))
         {
             return formatOperatingSystem(userAgent);
         }
         return operatingSystemNameVersion;
+    }
+
+    /**
+     * 登录请求线程使用的浏览器解析，不加载 YAUAA
+     */
+    public static String getBrowserFast(String userAgent)
+    {
+        if (StringUtils.isEmpty(userAgent))
+        {
+            return UNKNOWN;
+        }
+        return formatBrowser(userAgent);
+    }
+
+    /**
+     * 登录请求线程使用的操作系统解析，不加载 YAUAA
+     */
+    public static String getOperatingSystemFast(String userAgent)
+    {
+        if (StringUtils.isEmpty(userAgent))
+        {
+            return UNKNOWN;
+        }
+        return formatOperatingSystem(userAgent);
+    }
+
+    private static UserAgentAnalyzer analyzer()
+    {
+        UserAgentAnalyzer current = userAgentAnalyzer;
+        if (current != null)
+        {
+            return current;
+        }
+        synchronized (UserAgentUtils.class)
+        {
+            if (userAgentAnalyzer == null)
+            {
+                userAgentAnalyzer = UserAgentAnalyzer
+                        .newBuilder().hideMatcherLoadStats()
+                        .withCache(5000)
+                        .showMinimalVersion()
+                        .withField(UserAgent.AGENT_NAME_VERSION)
+                        .withField(UserAgent.OPERATING_SYSTEM_NAME_VERSION)
+                        .immediateInitialization()
+                        .build();
+            }
+            return userAgentAnalyzer;
+        }
     }
 
     /**

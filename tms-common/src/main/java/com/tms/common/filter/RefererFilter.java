@@ -25,6 +25,9 @@ public class RefererFilter implements Filter
     public List<String> allowedDomains;
 
     @Override
+    /**
+     * 过滤器初始化
+     */
     public void init(FilterConfig filterConfig) throws ServletException
     {
         String domains = filterConfig.getInitParameter("allowedDomains");
@@ -32,6 +35,9 @@ public class RefererFilter implements Filter
     }
 
     @Override
+    /**
+     * 执行过滤
+     */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException
     {
@@ -70,6 +76,9 @@ public class RefererFilter implements Filter
     }
 
     @Override
+    /**
+     * 过滤器销毁
+     */
     public void destroy()
     {
 

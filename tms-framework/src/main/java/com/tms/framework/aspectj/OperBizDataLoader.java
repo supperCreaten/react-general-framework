@@ -7,14 +7,16 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.tms.common.utils.StringUtils;
-import com.tms.system.service.ISysLogininforService;
-import com.tms.system.service.ISysMenuService;
-import com.tms.system.service.ISysOperLogService;
-import com.tms.system.service.ISysRoleService;
-import com.tms.system.service.ISysUserService;
+import com.tms.system.system.service.ISysLogininforService;
+import com.tms.system.system.service.ISysMenuService;
+import com.tms.system.system.service.ISysOperLogService;
+import com.tms.system.system.service.ISysRoleService;
+import com.tms.system.system.service.ISysUserService;
 
 /**
  * 按模块标题加载业务旧数据，供操作日志字段对比
+ *
+ * @author tms
  */
 @Component
 public class OperBizDataLoader
@@ -35,6 +37,13 @@ public class OperBizDataLoader
     private ISysLogininforService logininforService;
 
 
+    /**
+     * 按业务模块与主键加载变更前数据
+     *
+     * @param title 模块标题（与 @Log title 一致）
+     * @param bizId 业务主键或批量 id
+     * @return 业务实体或批量包装对象
+     */
     public Object load(String title, Object bizId)
     {
         if (StringUtils.isEmpty(title) || bizId == null || "".equals(String.valueOf(bizId)))

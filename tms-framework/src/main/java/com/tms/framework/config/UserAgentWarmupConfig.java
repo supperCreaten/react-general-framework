@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import com.tms.common.utils.http.UserAgentUtils;
 
 /**
- * 启动时预热 YAUAA，避免首次登录同步初始化导致超时
+ * 启动时预热 YAUAA。登录发牌已改走正则解析，这里只让异步登录日志避开首次规则加载。
  *
  * @author tms
  */
@@ -19,6 +19,9 @@ public class UserAgentWarmupConfig
     private static final String SAMPLE_UA =
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 
+    /**
+     * 启动时预热 User-Agent 解析器
+     */
     @PostConstruct
     public void warmUp()
     {

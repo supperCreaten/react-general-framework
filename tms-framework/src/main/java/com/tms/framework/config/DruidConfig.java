@@ -6,13 +6,20 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot4.autoconfigure.DruidDataSourceBuilder;
 import com.alibaba.druid.spring.boot4.autoconfigure.properties.DruidStatProperties;
+import com.alibaba.druid.spring.boot4.autoconfigure.stat.DruidFilterConfiguration;
+import com.alibaba.druid.spring.boot4.autoconfigure.stat.DruidSpringAopConfiguration;
+import com.alibaba.druid.spring.boot4.autoconfigure.stat.DruidStatViewServletConfiguration;
+import com.alibaba.druid.spring.boot4.autoconfigure.stat.DruidWebStatFilterConfiguration;
 import com.alibaba.druid.util.Utils;
 import com.tms.common.enums.DataSourceType;
 import com.tms.common.utils.spring.SpringUtils;
@@ -30,8 +37,18 @@ import jakarta.servlet.ServletResponse;
  * @author tms
  */
 @Configuration
+@EnableConfigurationProperties({ DruidStatProperties.class, DataSourceProperties.class })
+@Import({
+        DruidSpringAopConfiguration.class,
+        DruidStatViewServletConfiguration.class,
+        DruidWebStatFilterConfiguration.class,
+        DruidFilterConfiguration.class
+})
 public class DruidConfig
 {
+    /**
+     * 主库数据源
+     */
     @Bean
     @ConfigurationProperties("spring.datasource.druid.master")
     public DataSource masterDataSource(DruidProperties druidProperties)
@@ -40,6 +57,9 @@ public class DruidConfig
         return druidProperties.dataSource(dataSource);
     }
 
+    /**
+     * 从库数据源
+     */
     @Bean
     @ConfigurationProperties("spring.datasource.druid.slave")
     @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "enabled", havingValue = "true")
@@ -49,6 +69,9 @@ public class DruidConfig
         return druidProperties.dataSource(dataSource);
     }
 
+    /**
+     * 动态数据源路由
+     */
     @Bean(name = "dynamicDataSource")
     @Primary
     public DynamicDataSource dataSource(DataSource masterDataSource)

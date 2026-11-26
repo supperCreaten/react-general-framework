@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.PatternMatchUtils;
 import com.tms.common.constant.Constants;
 import com.tms.common.constant.HttpStatus;
-import com.tms.common.core.domain.entity.SysRole;
+import com.tms.common.core.domain.model.AuthRole;
 import com.tms.common.core.domain.model.LoginUser;
 import com.tms.common.exception.ServiceException;
 
@@ -24,6 +24,9 @@ public class SecurityUtils {
     /**
      * 用户ID
      **/
+    /**
+     * 获取用户ID *
+     */
     public static Long getUserId() {
         try {
             return getLoginUser().getUserId();
@@ -35,6 +38,9 @@ public class SecurityUtils {
     /**
      * 获取用户账户（登录账号 account）
      **/
+    /**
+     * 获取获取用户账户（登录账号 account） *
+     */
     public static String getUsername() {
         try {
             return getLoginUser().getUsername();
@@ -44,9 +50,9 @@ public class SecurityUtils {
     }
 
     /**
-     * 获取用户姓名（sys_user.user_name，对应 SysUser.nickName）
+     * 获取用户姓名（sys_user.user_name，对应用户昵称）
      * <p>用于 create_by / update_by 等展示字段；为空时回退登录账号</p>
-     **/
+     */
     public static String getNickName() {
         try {
             LoginUser loginUser = getLoginUser();
@@ -65,6 +71,9 @@ public class SecurityUtils {
     /**
      * 获取用户
      **/
+    /**
+     * 获取获取用户 *
+     */
     public static LoginUser getLoginUser() {
         try {
             return (LoginUser) getAuthentication().getPrincipal();
@@ -158,8 +167,8 @@ public class SecurityUtils {
      * @return 用户是否具备某角色
      */
     public static boolean hasRole(String role) {
-        List<SysRole> roleList = getLoginUser().getUser().getRoles();
-        Collection<String> roles = roleList.stream().map(SysRole::getRoleKey).collect(Collectors.toSet());
+        List<? extends AuthRole> roleList = getLoginUser().getUser().getRoles();
+        Collection<String> roles = roleList.stream().map(AuthRole::getRoleKey).collect(Collectors.toSet());
         return hasRole(roles, role);
     }
 

@@ -27,6 +27,9 @@ public class DataSourceAspect
 {
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
+    /**
+     * 多数据源切换切点
+     */
     @Pointcut("@annotation(com.tms.common.annotation.DataSource)"
             + "|| @within(com.tms.common.annotation.DataSource)")
     public void dsPointCut()
@@ -34,6 +37,9 @@ public class DataSourceAspect
 
     }
 
+    /**
+     * 环绕通知：切换数据源并在执行后清理
+     */
     @Around("dsPointCut()")
     public Object around(ProceedingJoinPoint point) throws Throwable
     {

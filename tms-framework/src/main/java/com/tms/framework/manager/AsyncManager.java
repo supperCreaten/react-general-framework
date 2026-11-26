@@ -30,6 +30,9 @@ public class AsyncManager
 
     private static AsyncManager me = new AsyncManager();
 
+    /**
+     * 获取异步管理器单例
+     */
     public static AsyncManager me()
     {
         return me;

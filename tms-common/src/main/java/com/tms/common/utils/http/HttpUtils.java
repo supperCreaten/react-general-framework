@@ -203,11 +203,17 @@ public class HttpUtils
         return result.toString();
     }
 
+    /**
+     * 发送 HTTPS POST 请求
+     */
     public static String sendSSLPost(String url, String param)
     {
         return sendSSLPost(url, param, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
     }
 
+    /**
+     * 发送 HTTPS POST 请求
+     */
     public static String sendSSLPost(String url, String param, String contentType)
     {
         StringBuilder result = new StringBuilder();
@@ -266,16 +272,25 @@ public class HttpUtils
     private static class TrustAnyTrustManager implements X509TrustManager
     {
         @Override
+        /**
+         * 证书信任校验（空实现）
+         */
         public void checkClientTrusted(X509Certificate[] chain, String authType)
         {
         }
 
         @Override
+        /**
+         * 证书信任校验（空实现）
+         */
         public void checkServerTrusted(X509Certificate[] chain, String authType)
         {
         }
 
         @Override
+        /**
+         * 获取向指定 URL 发送POST方法的请求 * * @param url 发送请求的 URL * @param param 请求参数 * @param contentType 内容类型 * @return 所代表远程资源的响应结果
+         */
         public X509Certificate[] getAcceptedIssuers()
         {
             return new X509Certificate[] {};
@@ -285,6 +300,9 @@ public class HttpUtils
     private static class TrustAnyHostnameVerifier implements HostnameVerifier
     {
         @Override
+        /**
+         * verify
+         */
         public boolean verify(String hostname, SSLSession session)
         {
             return true;
